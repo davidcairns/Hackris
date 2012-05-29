@@ -97,11 +97,10 @@
 
 
 #pragma mark 
-- (BOOL)_canMovePiece:(SPGamePiece *)piece alongVector:(CGPoint)movementVector {
+- (BOOL)_canMovePiece:(SPGamePiece *)piece toNewBlockLocations:(NSArray *)newBlockLocations {
 	__block BOOL foundIntersection = NO;
-	[piece.componentBlocks enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-		CALayer *pieceBlock = (CALayer *)obj;
-		const CGPoint positionAfterMovement = CGPointMake(pieceBlock.position.x + movementVector.x, pieceBlock.position.y + movementVector.y);
+	[newBlockLocations enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+		const CGPoint positionAfterMovement = [(NSValue *)obj CGPointValue];
 		
 		// Check to see if the component block hits the bottom of sides of the game board.
 		if(positionAfterMovement.x < 10.0f || positionAfterMovement.x > 20.0f * self.gridNumColumns - 10.0f || positionAfterMovement.y > 20.0f * self.gridNumRows - 10.0f) {
@@ -127,51 +126,32 @@
 	
 	return !foundIntersection;
 }
-- (void)_movePiece:(SPGamePiece *)piece alongVector:(CGPoint)vector {
+- (void)_moveBlocksForPiece:(SPGamePiece *)piece toNewBlockLocations:(NSArray *)blockLocations {
 	[piece.componentBlocks enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 		CALayer *componentBlock = (CALayer *)obj;
-		componentBlock.position = CGPointMake(componentBlock.position.x + vector.x, componentBlock.position.y + vector.y);
+		componentBlock.position = [(NSValue *)[blockLocations objectAtIndex:idx] CGPointValue];
 	}];
 }
 
 - (BOOL)_canExecuteGameAction:(SPGameAction *)action againstPiece:(SPGamePiece *)piece {
-	if(SPGameActionRotate == action.type) {
-		// TODO: Handle the rotation action check.
-		return NO;
-	}
-	else {
-		const CGPoint movementVector = CGPointMake((SPGameActionMoveLeft == action.type ? -20.0f : 20.0f), 0.0f);
-		return [self _canMovePiece:piece alongVector:movementVector];
-	}
+	// Get the locations of the piece's component blocks after this action is applied.
+	NSArray *newBlockLocations = [piece blockLocationsAfterApplyingAction:action];
 	
-	NSLog(@"WARNING: Unknown game action type: %i", action.type);
-	return NO;
+	// Check to see if all of the piece's component blocks locations are valid.
+	return [self _canMovePiece:piece toNewBlockLocations:newBlockLocations];
 }
 - (void)_executeGameAction:(SPGameAction *)action againstPiece:(SPGamePiece *)piece {
-	switch(action.type) {
-		case SPGameActionMoveLeft:
-			[self _movePiece:piece alongVector:CGPointMake(-20.0f, 0.0f)];
-			break;
-			
-		case SPGameActionMoveRight:
-			[self _movePiece:piece alongVector:CGPointMake(20.0f, 0.0f)];
-			break;
-			
-		case SPGameActionRotate:
-			[piece rotate];
-			break;
-			
-		default:
-			NSLog(@"WARNING: Attempted to execute invalid game action type: %i", action.type);
-			break;
-	}
+	NSArray *newBlockLocations = [piece blockLocationsAfterApplyingAction:action];
+	[self _moveBlocksForPiece:piece toNewBlockLocations:newBlockLocations];
 }
 
 
 - (SPGamePiece *)_currentlyDroppingPiece {
 	if(!self.currentlyDroppingPiece) {
 		// Create a piece with a randomly-selected type.
-		self.currentlyDroppingPiece = [[SPGamePiece alloc] initWithGamePieceType:(rand() % SPGamePieceNumTypes)];
+		const SPGamePieceType gamePieceType = rand() % SPGamePieceNumTypes;
+		self.currentlyDroppingPiece = [[SPGamePiece alloc] initWithGamePieceType:gamePieceType];
+		NSLog(@"Created piece of type: %i", gamePieceType);
 		
 		// Add the game piece's component blocks and position them.
 		const NSInteger droppingPieceBlockOffset = self.gridNumColumns / 2;
@@ -222,9 +202,9 @@
 		self.lastGameStepTimestamp = self.currentGameTime;
 		
 		// See if we can move the piece down.
-		const CGPoint downVector = CGPointMake(0.0f, 20.0f);
-		if([self _canMovePiece:currentPiece alongVector:downVector]) {
-			[self _movePiece:currentPiece alongVector:downVector];
+		NSArray *newBlockLocations = [currentPiece blockLocationsAfterApplyingAction:[SPGameAction gameActionWithType:SPGameActionMoveDown]];
+		if([self _canMovePiece:currentPiece toNewBlockLocations:newBlockLocations]) {
+			[self _moveBlocksForPiece:currentPiece toNewBlockLocations:newBlockLocations];
 		}
 		else {
 			[self _clearCurrentlyDroppingPiece];
@@ -239,6 +219,11 @@
 		if([self _canExecuteGameAction:self.nextGameAction againstPiece:currentPiece]) {
 			// Actually execute the game action.
 			[self _executeGameAction:self.nextGameAction againstPiece:currentPiece];
+			
+			// If this was a rotation action, update the piece's rotation.
+			if(SPGameActionRotate == self.nextGameAction.type) {
+				self.currentlyDroppingPiece.rotation = (self.currentlyDroppingPiece.rotation + 1) % SPGamePieceRotationNumAngles;
+			}
 		}
 		
 		// Clear the game action.

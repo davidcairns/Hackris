@@ -12,6 +12,7 @@ typedef enum {
 	SPGameActionRotate = 0, 
 	SPGameActionMoveLeft, 
 	SPGameActionMoveRight, 
+	SPGameActionMoveDown, 
 	SPGameNumActions, 
 } SPGameActionType;
 

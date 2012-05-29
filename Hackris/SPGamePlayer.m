@@ -16,6 +16,10 @@
 	// Randomly select a move.
 	SPGameActionType actionType = rand() % SPGameNumActions;
 	switch(actionType) {
+		case SPGameActionRotate:
+			[gameController rotateCurrentPiece];
+			break;
+			
 		case SPGameActionMoveLeft:
 			[gameController moveCurrentPieceLeft];
 			break;
@@ -24,8 +28,8 @@
 			[gameController moveCurrentPieceRight];
 			break;
 			
-		case SPGameActionRotate:
-			[gameController rotateCurrentPiece];
+		case SPGameActionMoveDown:
+			// no-op.
 			break;
 			
 		default:

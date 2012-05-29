@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <QuartzCore/QuartzCore.h>
+#import "SPGameAction.h"
 
 typedef enum {
 	SPGamePieceTypeStraight = 0, 
@@ -34,9 +35,10 @@ typedef enum {
 
 @property(nonatomic, strong, readonly)NSArray *componentBlocks;
 
+- (NSArray *)blockLocationsAfterApplyingAction:(SPGameAction *)action;
+
 // Mutable state.
-- (SPGamePieceRotation)rotation;
-- (void)rotate;
+@property(nonatomic, assign)SPGamePieceRotation rotation;
 
 - (NSInteger)numBlocksHigh;
 - (NSInteger)numBlocksWide;
