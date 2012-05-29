@@ -11,6 +11,8 @@
 #import "SPGameController+SPGameInteraction.h"
 #import "SPGameAction.h"
 
+#define DC_DRAW_BACKGROUND_GRID 0
+
 #pragma mark 
 @interface SPGameController ()
 @property(nonatomic, strong)CALayer *gameContainerLayer;
@@ -69,6 +71,7 @@
 
 #pragma mark - CALayerDelegate
 - (void)drawLayer:(CALayer *)layer inContext:(CGContextRef)ctx {
+#if DC_DRAW_BACKGROUND_GRID
 	// Push context state.
 	CGContextSaveGState(ctx);
 	
@@ -89,6 +92,7 @@
 	
 	// Pop context state.
 	CGContextRestoreGState(ctx);
+#endif
 }
 
 

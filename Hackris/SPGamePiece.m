@@ -15,8 +15,9 @@
 @implementation CALayer (SPGamePieceBlock)
 + (CALayer *)SPGamePieceBlock_layerWithColor:(UIColor *)color {
 	CALayer *layer = [CALayer layer];
-	layer.bounds = CGRectMake(0.0f, 0.0f, 20.0f, 20.0f);
+	layer.bounds = CGRectMake(0.0f, 0.0f, 18.0f, 18.0f);
 	layer.backgroundColor = [color CGColor];
+	layer.cornerRadius = 3.0f;
 	return layer;
 }
 @end
