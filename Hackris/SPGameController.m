@@ -11,7 +11,7 @@
 #import "SPGameController+SPGameInteraction.h"
 #import "SPGameAction.h"
 
-#define DC_DRAW_BACKGROUND_GRID 0
+#define DC_DRAW_BACKGROUND_GRID 1
 
 #pragma mark 
 @interface SPGameController ()
@@ -57,7 +57,7 @@
 		self.gameContainerLayer.delegate = self;
 		
 		// Set up the game's rules.
-		_gridNumRows = 10;
+		_gridNumRows = 16;
 		_gridNumColumns = 10;
 		_gameStepInterval = 0.5f;
 		_gameActionInterval = 0.25f;
@@ -77,13 +77,13 @@
 	
 	if(layer == self.gameContainerLayer) {
 		// Draw a grid!
-		for(CGFloat penX = 0.0f; penX <= self.gameContainerLayer.bounds.size.width; penX += 20.0f) {
+		for(CGFloat penX = 0.0f; penX <= 20.0f * self.gridNumColumns; penX += 20.0f) {
 			CGContextMoveToPoint(ctx, penX, 0.0f);
-			CGContextAddLineToPoint(ctx, penX, self.gameContainerLayer.bounds.size.height);
+			CGContextAddLineToPoint(ctx, penX, 20.0f * self.gridNumRows);
 		}
-		for(CGFloat penY = 0.0f; penY <= self.gameContainerLayer.bounds.size.width; penY += 20.0f) {
+		for(CGFloat penY = 0.0f; penY <= 20.0f * self.gridNumRows; penY += 20.0f) {
 			CGContextMoveToPoint(ctx, 0.0f, penY);
-			CGContextAddLineToPoint(ctx, self.gameContainerLayer.bounds.size.width, penY);
+			CGContextAddLineToPoint(ctx, 20.0f * self.gridNumColumns, penY);
 		}
 		
 		CGContextSetStrokeColorWithColor(ctx, [[UIColor redColor] CGColor]);
@@ -104,7 +104,7 @@
 		const CGPoint positionAfterMovement = CGPointMake(pieceBlock.position.x + movementVector.x, pieceBlock.position.y + movementVector.y);
 		
 		// Check to see if the component block hits the bottom of sides of the game board.
-		if(positionAfterMovement.x < 10.0f || positionAfterMovement.x > self.gameContainerLayer.bounds.size.width - 10.0f || positionAfterMovement.y > self.gameContainerLayer.bounds.size.height - 10.0f) {
+		if(positionAfterMovement.x < 10.0f || positionAfterMovement.x > 20.0f * self.gridNumColumns - 10.0f || positionAfterMovement.y > 20.0f * self.gridNumRows - 10.0f) {
 			foundIntersection = YES;
 			*stop = YES;
 		}
@@ -174,7 +174,8 @@
 		self.currentlyDroppingPiece = [[SPGamePiece alloc] initWithGamePieceType:(rand() % SPGamePieceNumTypes)];
 		
 		// Add the game piece's component blocks and position them.
-		const CGPoint droppingPieceOrigin = CGPointMake(8.0f * 20.0f, -1.0f * [self.currentlyDroppingPiece numBlocksHigh] * 20.0f);
+		const NSInteger droppingPieceBlockOffset = self.gridNumColumns / 2;
+		const CGPoint droppingPieceOrigin = CGPointMake((CGFloat)droppingPieceBlockOffset * 20.0f, -1.0f * [self.currentlyDroppingPiece numBlocksHigh] * 20.0f);
 		[self.currentlyDroppingPiece.componentBlocks enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 			CALayer *componentBlock = (CALayer *)obj;
 			componentBlock.position = CGPointMake(droppingPieceOrigin.x + componentBlock.position.x, droppingPieceOrigin.y + componentBlock.position.y);
@@ -188,6 +189,24 @@
 }
 - (void)_clearCurrentlyDroppingPiece {
 	self.currentlyDroppingPiece = nil;
+}
+
+- (NSSet *)_blocksInRow:(NSInteger)rowIndex {
+	return nil;
+}
+- (void)_performLineClears {
+	// Check each row for filled-ness.
+	for(NSInteger rowIndex = 0; rowIndex < self.gridNumRows; rowIndex++) {
+		NSSet *blocksInRow = [self _blocksInRow:rowIndex];
+		if(blocksInRow.count >= self.gridNumColumns) {
+			// Clear the row!
+			[blocksInRow enumerateObjectsUsingBlock:^(id obj, BOOL *stop) {
+				CALayer *block = (CALayer *)obj;
+				[block removeFromSuperlayer];
+				[self.gameBlocks removeObject:block];
+			}];
+		}
+	}
 }
 
 - (void)updateWithTimeDelta:(NSTimeInterval)timeDelta {
@@ -225,6 +244,9 @@
 		// Clear the game action.
 		self.nextGameAction = nil;
 	}
+	
+	// Check for line-clear!
+	[self _performLineClears];
 	
 	// Make sure our background layer gets displayed.
 	[self.gameContainerLayer setNeedsDisplay];
