@@ -15,6 +15,9 @@
 		DF4DA4D71574810300E04A84 /* SPAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DF4DA4D61574810300E04A84 /* SPAppDelegate.m */; };
 		DF4DA4DA1574810400E04A84 /* SPViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DF4DA4D91574810400E04A84 /* SPViewController.m */; };
 		DF4DA4DD1574810400E04A84 /* SPViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DF4DA4DB1574810400E04A84 /* SPViewController.xib */; };
+		DF4DA4E41574819D00E04A84 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF4DA4E31574819D00E04A84 /* QuartzCore.framework */; };
+		DF4DA4EC1574891700E04A84 /* SPGameController.m in Sources */ = {isa = PBXBuildFile; fileRef = DF4DA4EB1574891700E04A84 /* SPGameController.m */; };
+		DF4DA4EF15748C9600E04A84 /* SPGamePiece.m in Sources */ = {isa = PBXBuildFile; fileRef = DF4DA4EE15748C9600E04A84 /* SPGamePiece.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,15 +25,20 @@
 		DF4DA4C61574810200E04A84 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		DF4DA4C81574810200E04A84 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		DF4DA4CA1574810200E04A84 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		DF4DA4CE1574810300E04A84 /* Hackris-Info.plist */ = {isa = PBXFileReference; path = "Hackris-Info.plist"; sourceTree = "<group>"; };
+		DF4DA4CE1574810300E04A84 /* Hackris-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Hackris-Info.plist"; sourceTree = "<group>"; };
 		DF4DA4D01574810300E04A84 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		DF4DA4D21574810300E04A84 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		DF4DA4D41574810300E04A84 /* Hackris-Prefix.pch */ = {isa = PBXFileReference; path = "Hackris-Prefix.pch"; sourceTree = "<group>"; };
-		DF4DA4D51574810300E04A84 /* SPAppDelegate.h */ = {isa = PBXFileReference; path = SPAppDelegate.h; sourceTree = "<group>"; };
+		DF4DA4D41574810300E04A84 /* Hackris-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Hackris-Prefix.pch"; sourceTree = "<group>"; };
+		DF4DA4D51574810300E04A84 /* SPAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SPAppDelegate.h; sourceTree = "<group>"; };
 		DF4DA4D61574810300E04A84 /* SPAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SPAppDelegate.m; sourceTree = "<group>"; };
-		DF4DA4D81574810300E04A84 /* SPViewController.h */ = {isa = PBXFileReference; path = SPViewController.h; sourceTree = "<group>"; };
+		DF4DA4D81574810300E04A84 /* SPViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SPViewController.h; sourceTree = "<group>"; };
 		DF4DA4D91574810400E04A84 /* SPViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SPViewController.m; sourceTree = "<group>"; };
 		DF4DA4DC1574810400E04A84 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/SPViewController.xib; sourceTree = "<group>"; };
+		DF4DA4E31574819D00E04A84 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		DF4DA4EA1574891700E04A84 /* SPGameController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPGameController.h; sourceTree = "<group>"; };
+		DF4DA4EB1574891700E04A84 /* SPGameController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPGameController.m; sourceTree = "<group>"; };
+		DF4DA4ED15748C9600E04A84 /* SPGamePiece.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPGamePiece.h; sourceTree = "<group>"; };
+		DF4DA4EE15748C9600E04A84 /* SPGamePiece.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPGamePiece.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -38,6 +46,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DF4DA4E41574819D00E04A84 /* QuartzCore.framework in Frameworks */,
 				DF4DA4C71574810200E04A84 /* UIKit.framework in Frameworks */,
 				DF4DA4C91574810200E04A84 /* Foundation.framework in Frameworks */,
 				DF4DA4CB1574810200E04A84 /* CoreGraphics.framework in Frameworks */,
@@ -70,6 +79,7 @@
 				DF4DA4C61574810200E04A84 /* UIKit.framework */,
 				DF4DA4C81574810200E04A84 /* Foundation.framework */,
 				DF4DA4CA1574810200E04A84 /* CoreGraphics.framework */,
+				DF4DA4E31574819D00E04A84 /* QuartzCore.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -82,6 +92,10 @@
 				DF4DA4D81574810300E04A84 /* SPViewController.h */,
 				DF4DA4D91574810400E04A84 /* SPViewController.m */,
 				DF4DA4DB1574810400E04A84 /* SPViewController.xib */,
+				DF4DA4EA1574891700E04A84 /* SPGameController.h */,
+				DF4DA4EB1574891700E04A84 /* SPGameController.m */,
+				DF4DA4ED15748C9600E04A84 /* SPGamePiece.h */,
+				DF4DA4EE15748C9600E04A84 /* SPGamePiece.m */,
 				DF4DA4CD1574810300E04A84 /* Supporting Files */,
 			);
 			path = Hackris;
@@ -126,6 +140,7 @@
 			attributes = {
 				CLASSPREFIX = SP;
 				LastUpgradeCheck = 0430;
+				ORGANIZATIONNAME = smallpower;
 			};
 			buildConfigurationList = DF4DA4BC1574810100E04A84 /* Build configuration list for PBXProject "Hackris" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -164,6 +179,8 @@
 				DF4DA4D31574810300E04A84 /* main.m in Sources */,
 				DF4DA4D71574810300E04A84 /* SPAppDelegate.m in Sources */,
 				DF4DA4DA1574810400E04A84 /* SPViewController.m in Sources */,
+				DF4DA4EC1574891700E04A84 /* SPGameController.m in Sources */,
+				DF4DA4EF15748C9600E04A84 /* SPGamePiece.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
