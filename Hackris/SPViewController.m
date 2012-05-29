@@ -9,19 +9,26 @@
 #import "SPViewController.h"
 #import <QuartzCore/QuartzCore.h>
 #import "SPGameController.h"
+#import "SPGamePlayer.h"
 
 @interface SPViewController ()
 @property(nonatomic, strong)SPGameController *gameController;
 @property(nonatomic, readonly)dispatch_source_t gameUpdateTimerSource;
+
+@property(nonatomic, strong)SPGamePlayer *gamePlayer;
 @end
 
 @implementation SPViewController
 @synthesize gameController = _gameController;
 @synthesize gameUpdateTimerSource = _gameUpdateTimerSource;
+@synthesize gamePlayer = _gamePlayer;
 
 - (void)_SPViewController_commonInit {
 	// Create our game object.
 	self.gameController = [[SPGameController alloc] init];
+	
+	// Create our game player.
+	self.gamePlayer = [[SPGamePlayer alloc] init];
 }
 - (id)init {
 	if((self = [super init])) {
@@ -66,9 +73,15 @@
 	
 	__block NSTimeInterval lastUpdateTimestamp = 0;
 	dispatch_source_set_event_handler(self.gameUpdateTimerSource, ^ {
+		// Determine how much time has elapsed since the last game update.
 		const NSTimeInterval currentTimestamp = [NSDate timeIntervalSinceReferenceDate];
 		const NSTimeInterval timeDelta = (0 == lastUpdateTimestamp ? 0 : currentTimestamp - lastUpdateTimestamp);
 		lastUpdateTimestamp = currentTimestamp;
+		
+		// Allow our player object to act.
+		[self.gamePlayer makeMoveInGame:self.gameController];
+		
+		// Update the game.
 		[self.gameController updateWithTimeDelta:timeDelta];
 	});
 	dispatch_source_set_cancel_handler(self.gameUpdateTimerSource, ^ {

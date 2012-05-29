@@ -47,7 +47,7 @@
 		UIColor *pieceColor = nil;
 		switch(gamePieceType) {
 			case SPGamePieceTypeStraight:
-				pieceColor = [UIColor blueColor];
+				pieceColor = [UIColor cyanColor];
 				break;
 			case SPGamePieceTypeLeftL:
 				pieceColor = [UIColor redColor];
@@ -129,7 +129,9 @@
 
 #pragma mark 
 - (void)rotate {
-	self.rotation += 1;
+	self.rotation = (self.rotation + 1) % SPGamePieceRotationNumAngles;
+	
+	
 }
 
 - (NSInteger)numBlocksHigh {

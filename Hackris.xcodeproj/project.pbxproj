@@ -18,6 +18,8 @@
 		DF4DA4E41574819D00E04A84 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF4DA4E31574819D00E04A84 /* QuartzCore.framework */; };
 		DF4DA4EC1574891700E04A84 /* SPGameController.m in Sources */ = {isa = PBXBuildFile; fileRef = DF4DA4EB1574891700E04A84 /* SPGameController.m */; };
 		DF4DA4EF15748C9600E04A84 /* SPGamePiece.m in Sources */ = {isa = PBXBuildFile; fileRef = DF4DA4EE15748C9600E04A84 /* SPGamePiece.m */; };
+		DF4DA4F51574AF1300E04A84 /* SPGameAction.m in Sources */ = {isa = PBXBuildFile; fileRef = DF4DA4F41574AF1300E04A84 /* SPGameAction.m */; };
+		DF9EB8B9157570760070BAED /* SPGamePlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = DF9EB8B8157570760070BAED /* SPGamePlayer.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,6 +41,11 @@
 		DF4DA4EB1574891700E04A84 /* SPGameController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPGameController.m; sourceTree = "<group>"; };
 		DF4DA4ED15748C9600E04A84 /* SPGamePiece.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPGamePiece.h; sourceTree = "<group>"; };
 		DF4DA4EE15748C9600E04A84 /* SPGamePiece.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPGamePiece.m; sourceTree = "<group>"; };
+		DF4DA4F01574AC1B00E04A84 /* SPGameController+SPGameInteraction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SPGameController+SPGameInteraction.h"; sourceTree = "<group>"; };
+		DF4DA4F31574AF1300E04A84 /* SPGameAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPGameAction.h; sourceTree = "<group>"; };
+		DF4DA4F41574AF1300E04A84 /* SPGameAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPGameAction.m; sourceTree = "<group>"; };
+		DF9EB8B7157570760070BAED /* SPGamePlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPGamePlayer.h; sourceTree = "<group>"; };
+		DF9EB8B8157570760070BAED /* SPGamePlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPGamePlayer.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,8 +101,13 @@
 				DF4DA4DB1574810400E04A84 /* SPViewController.xib */,
 				DF4DA4EA1574891700E04A84 /* SPGameController.h */,
 				DF4DA4EB1574891700E04A84 /* SPGameController.m */,
+				DF4DA4F01574AC1B00E04A84 /* SPGameController+SPGameInteraction.h */,
 				DF4DA4ED15748C9600E04A84 /* SPGamePiece.h */,
 				DF4DA4EE15748C9600E04A84 /* SPGamePiece.m */,
+				DF4DA4F31574AF1300E04A84 /* SPGameAction.h */,
+				DF4DA4F41574AF1300E04A84 /* SPGameAction.m */,
+				DF9EB8B7157570760070BAED /* SPGamePlayer.h */,
+				DF9EB8B8157570760070BAED /* SPGamePlayer.m */,
 				DF4DA4CD1574810300E04A84 /* Supporting Files */,
 			);
 			path = Hackris;
@@ -181,6 +193,8 @@
 				DF4DA4DA1574810400E04A84 /* SPViewController.m in Sources */,
 				DF4DA4EC1574891700E04A84 /* SPGameController.m in Sources */,
 				DF4DA4EF15748C9600E04A84 /* SPGamePiece.m in Sources */,
+				DF4DA4F51574AF1300E04A84 /* SPGameAction.m in Sources */,
+				DF9EB8B9157570760070BAED /* SPGamePlayer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -292,6 +306,7 @@
 				DF4DA4E21574810400E04A84 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

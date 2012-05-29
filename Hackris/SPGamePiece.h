@@ -20,10 +20,11 @@ typedef enum {
 
 
 typedef enum {
-	SPGamePieceRotationNone, 
+	SPGamePieceRotationNone = 0, 
 	SPGamePieceRotationClockwise, 
 	SPGamePieceRotationUpsideDown, 
 	SPGamePieceRotationCounterClockwise, 
+	SPGamePieceRotationNumAngles, 
 } SPGamePieceRotation;
 
 
