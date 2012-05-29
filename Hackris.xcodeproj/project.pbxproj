@@ -1,0 +1,282 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		DF4DA4C71574810200E04A84 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF4DA4C61574810200E04A84 /* UIKit.framework */; };
+		DF4DA4C91574810200E04A84 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF4DA4C81574810200E04A84 /* Foundation.framework */; };
+		DF4DA4CB1574810200E04A84 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF4DA4CA1574810200E04A84 /* CoreGraphics.framework */; };
+		DF4DA4D11574810300E04A84 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = DF4DA4CF1574810300E04A84 /* InfoPlist.strings */; };
+		DF4DA4D31574810300E04A84 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = DF4DA4D21574810300E04A84 /* main.m */; };
+		DF4DA4D71574810300E04A84 /* SPAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DF4DA4D61574810300E04A84 /* SPAppDelegate.m */; };
+		DF4DA4DA1574810400E04A84 /* SPViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DF4DA4D91574810400E04A84 /* SPViewController.m */; };
+		DF4DA4DD1574810400E04A84 /* SPViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DF4DA4DB1574810400E04A84 /* SPViewController.xib */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		DF4DA4C21574810200E04A84 /* Hackris.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Hackris.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		DF4DA4C61574810200E04A84 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		DF4DA4C81574810200E04A84 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		DF4DA4CA1574810200E04A84 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		DF4DA4CE1574810300E04A84 /* Hackris-Info.plist */ = {isa = PBXFileReference; path = "Hackris-Info.plist"; sourceTree = "<group>"; };
+		DF4DA4D01574810300E04A84 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		DF4DA4D21574810300E04A84 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		DF4DA4D41574810300E04A84 /* Hackris-Prefix.pch */ = {isa = PBXFileReference; path = "Hackris-Prefix.pch"; sourceTree = "<group>"; };
+		DF4DA4D51574810300E04A84 /* SPAppDelegate.h */ = {isa = PBXFileReference; path = SPAppDelegate.h; sourceTree = "<group>"; };
+		DF4DA4D61574810300E04A84 /* SPAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SPAppDelegate.m; sourceTree = "<group>"; };
+		DF4DA4D81574810300E04A84 /* SPViewController.h */ = {isa = PBXFileReference; path = SPViewController.h; sourceTree = "<group>"; };
+		DF4DA4D91574810400E04A84 /* SPViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SPViewController.m; sourceTree = "<group>"; };
+		DF4DA4DC1574810400E04A84 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/SPViewController.xib; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		DF4DA4BF1574810200E04A84 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DF4DA4C71574810200E04A84 /* UIKit.framework in Frameworks */,
+				DF4DA4C91574810200E04A84 /* Foundation.framework in Frameworks */,
+				DF4DA4CB1574810200E04A84 /* CoreGraphics.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		DF4DA4B71574810100E04A84 = {
+			isa = PBXGroup;
+			children = (
+				DF4DA4CC1574810200E04A84 /* Hackris */,
+				DF4DA4C51574810200E04A84 /* Frameworks */,
+				DF4DA4C31574810200E04A84 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		DF4DA4C31574810200E04A84 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				DF4DA4C21574810200E04A84 /* Hackris.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		DF4DA4C51574810200E04A84 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				DF4DA4C61574810200E04A84 /* UIKit.framework */,
+				DF4DA4C81574810200E04A84 /* Foundation.framework */,
+				DF4DA4CA1574810200E04A84 /* CoreGraphics.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		DF4DA4CC1574810200E04A84 /* Hackris */ = {
+			isa = PBXGroup;
+			children = (
+				DF4DA4D51574810300E04A84 /* SPAppDelegate.h */,
+				DF4DA4D61574810300E04A84 /* SPAppDelegate.m */,
+				DF4DA4D81574810300E04A84 /* SPViewController.h */,
+				DF4DA4D91574810400E04A84 /* SPViewController.m */,
+				DF4DA4DB1574810400E04A84 /* SPViewController.xib */,
+				DF4DA4CD1574810300E04A84 /* Supporting Files */,
+			);
+			path = Hackris;
+			sourceTree = "<group>";
+		};
+		DF4DA4CD1574810300E04A84 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				DF4DA4CE1574810300E04A84 /* Hackris-Info.plist */,
+				DF4DA4CF1574810300E04A84 /* InfoPlist.strings */,
+				DF4DA4D21574810300E04A84 /* main.m */,
+				DF4DA4D41574810300E04A84 /* Hackris-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		DF4DA4C11574810200E04A84 /* Hackris */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DF4DA4E01574810400E04A84 /* Build configuration list for PBXNativeTarget "Hackris" */;
+			buildPhases = (
+				DF4DA4BE1574810200E04A84 /* Sources */,
+				DF4DA4BF1574810200E04A84 /* Frameworks */,
+				DF4DA4C01574810200E04A84 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Hackris;
+			productName = Hackris;
+			productReference = DF4DA4C21574810200E04A84 /* Hackris.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		DF4DA4B91574810100E04A84 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				CLASSPREFIX = SP;
+				LastUpgradeCheck = 0430;
+			};
+			buildConfigurationList = DF4DA4BC1574810100E04A84 /* Build configuration list for PBXProject "Hackris" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = DF4DA4B71574810100E04A84;
+			productRefGroup = DF4DA4C31574810200E04A84 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				DF4DA4C11574810200E04A84 /* Hackris */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		DF4DA4C01574810200E04A84 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DF4DA4D11574810300E04A84 /* InfoPlist.strings in Resources */,
+				DF4DA4DD1574810400E04A84 /* SPViewController.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		DF4DA4BE1574810200E04A84 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DF4DA4D31574810300E04A84 /* main.m in Sources */,
+				DF4DA4D71574810300E04A84 /* SPAppDelegate.m in Sources */,
+				DF4DA4DA1574810400E04A84 /* SPViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		DF4DA4CF1574810300E04A84 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				DF4DA4D01574810300E04A84 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		DF4DA4DB1574810400E04A84 /* SPViewController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				DF4DA4DC1574810400E04A84 /* en */,
+			);
+			name = SPViewController.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		DF4DA4DE1574810400E04A84 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		DF4DA4DF1574810400E04A84 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		DF4DA4E11574810400E04A84 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Hackris/Hackris-Prefix.pch";
+				INFOPLIST_FILE = "Hackris/Hackris-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		DF4DA4E21574810400E04A84 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Hackris/Hackris-Prefix.pch";
+				INFOPLIST_FILE = "Hackris/Hackris-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		DF4DA4BC1574810100E04A84 /* Build configuration list for PBXProject "Hackris" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DF4DA4DE1574810400E04A84 /* Debug */,
+				DF4DA4DF1574810400E04A84 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DF4DA4E01574810400E04A84 /* Build configuration list for PBXNativeTarget "Hackris" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DF4DA4E11574810400E04A84 /* Debug */,
+				DF4DA4E21574810400E04A84 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = DF4DA4B91574810100E04A84 /* Project object */;
+}
