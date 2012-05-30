@@ -20,36 +20,38 @@
 @synthesize leftEdgeColumn = _leftEdgeColumn;
 @synthesize bottomEdgeRow = _bottomEdgeRow;
 @synthesize orientation = _orientation;
+- (NSString *)description {
+	return [NSString stringWithFormat:@"<%@%p -- left edge column: %i, bottom edge row: %i, orientation: %i >", [self class], self, self.leftEdgeColumn, self.bottomEdgeRow, self.orientation];
+}
 @end
 
 
 @implementation SPGamePlayer
 
-- (NSSet *)_possibleSolutionsForPiece:(SPGamePiece *)currentlyDroppingPiece gameController:(SPGameController *)gameController {
+- (NSArray *)_possibleSolutionsForPiece:(SPGamePiece *)currentlyDroppingPiece gameController:(SPGameController *)gameController {
 	// For each column...
-	NSMutableSet *solutions = [NSMutableSet set];
+	NSMutableArray *solutions = [NSMutableArray array];
 	for(NSInteger columnOffset = 0; columnOffset < gameController.gridNumColumns; columnOffset++) {
 		// Generate each valid solution in which the piece's left edge is in this column.
 		for(SPGamePieceRotation orientation = 0; orientation < SPGamePieceRotationNumAngles; orientation++) {
-			if(1) {
-				SPSolution *solution = [[SPSolution alloc] init];
-				solution.leftEdgeColumn = columnOffset;
-				solution.orientation = orientation;
-				
-				// Determine the depth to which this block would fall (in rows, from the top).
-				solution.bottomEdgeRow = [gameController fallDepthForPiece:currentlyDroppingPiece leftEdgeColumn:columnOffset orientation:orientation];
-				
-				[solutions addObject:solution];
-			}
+			SPSolution *solution = [[SPSolution alloc] init];
+			solution.leftEdgeColumn = columnOffset;
+			solution.orientation = orientation;
+			
+			// Determine the depth to which this block would fall (in rows, from the top).
+			solution.bottomEdgeRow = [gameController fallDepthForPiece:currentlyDroppingPiece leftEdgeColumn:columnOffset orientation:orientation];
+			
+			[solutions addObject:solution];
 		}
 	}
 	
-	return [NSSet setWithSet:solutions];
+	return solutions;
 }
 - (void)makeMoveInGame:(SPGameController *)gameController {
-#if 0
+#if 1
 	// Figure out all of the possible ways the currently-dropping piece can land.
-	NSMutableSet *possibleSolutions = [NSMutableSet setWithSet:[self _possibleSolutionsForPiece:gameController.currentlyDroppingPiece gameController:gameController]];
+	NSMutableArray *possibleSolutions = [NSMutableArray arrayWithArray:[self _possibleSolutionsForPiece:gameController.currentlyDroppingPiece gameController:gameController]];
+	NSLog(@"Possible solutions: %@", possibleSolutions);
 	
 	// TODO: Determine a placement score for each solution (how "good" the placement would be).
 	

@@ -102,31 +102,32 @@
 	
 	// Determine how far we have to offset the whole piece based on this orientation (such that its left edge falls in the column specified).
 	__block NSInteger pieceColumnOffset = 0;
+	__block NSInteger pieceBottomRowOffset = 0;
 	[relativeBlockLocations enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 		const CGPoint relativeLocation = [(NSValue *)obj CGPointValue];
 		const NSInteger columnOffsetForBlock = relativeLocation.x / 20.0f;
 		pieceColumnOffset = MIN(pieceColumnOffset, columnOffsetForBlock);
+		const NSInteger rowOffsetForBlock = relativeLocation.y / 20.0f;
+		pieceBottomRowOffset = MAX(pieceBottomRowOffset, rowOffsetForBlock);
 	}];
 	
-	NSArray *absoluteBlockLocations = nil;
 	NSInteger depth = 0;
 	while(depth < self.gridNumRows) {
 		// Determine the piece's absolute block locations given this depth.
 		NSMutableArray *locations = [NSMutableArray array];
 		[relativeBlockLocations enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 			const CGPoint relativeLocation = [(NSValue *)obj CGPointValue];
-			const CGPoint absoluteLocation = CGPointMake(relativeLocation.x + 20.0f * (CGFloat)pieceColumnOffset, relativeLocation.y + 20.0f * (CGFloat)depth);
+			const CGPoint absoluteLocation = CGPointMake(relativeLocation.x + 20.0f * (CGFloat)(leftEdgeColumn + pieceColumnOffset) + 10.0f, relativeLocation.y + 20.0f * (CGFloat)depth + 10.0f);
 			[locations addObject:[NSValue valueWithCGPoint:absoluteLocation]];
 		}];
-		absoluteBlockLocations = [NSArray arrayWithArray:locations];
 		
-		if(![self _canMovePiece:piece toNewBlockLocations:absoluteBlockLocations]) {
+		if(![self _canMovePiece:piece toNewBlockLocations:locations]) {
 			break;
 		}
 		depth++;
 	}
 	
-	return depth;
+	return depth ? depth + pieceBottomRowOffset : 0;
 }
 
 
@@ -139,6 +140,7 @@
 		if(positionAfterMovement.x < 10.0f || positionAfterMovement.x > 20.0f * self.gridNumColumns - 10.0f || positionAfterMovement.y > 20.0f * self.gridNumRows - 10.0f) {
 			foundIntersection = YES;
 			*stop = YES;
+			return;
 		}
 		
 		// Check to see if the component block intersects with any of the other game blocks.
