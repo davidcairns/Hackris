@@ -124,6 +124,17 @@
 }
 
 
+- (NSInteger)leftEdgeColumn {
+	__block CGFloat leftEdgePosition = CGFLOAT_MAX;
+	[self.componentBlocks enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+		CALayer *componentBlock = (CALayer *)obj;
+		leftEdgePosition = MIN(leftEdgePosition, componentBlock.position.x);
+	}];
+	
+	return (leftEdgePosition - 10.0f) / 20.0f;
+}
+
+
 #pragma mark 
 + (NSArray *)relativeBlockLocationsForPieceType:(SPGamePieceType)pieceType orientation:(SPGamePieceRotation)orientation {
 	// Calculate our blocks' locations relative to the locus position, given piece type, and rotation value.

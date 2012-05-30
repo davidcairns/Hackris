@@ -16,11 +16,6 @@
 @interface SPGameController ()
 @property(nonatomic, strong)CALayer *gameContainerLayer;
 
-// Game Rules
-@property(nonatomic, readonly)NSTimeInterval gameStepInterval;
-// How often the (computer) 'player' can issue game actions:
-@property(nonatomic, readonly)NSTimeInterval gameActionInterval;
-
 // Game State
 @property(nonatomic, assign)NSTimeInterval currentGameTime;
 @property(nonatomic, assign)NSTimeInterval lastGameStepTimestamp;
@@ -58,8 +53,8 @@
 		// Set up the game's rules.
 		_gridNumRows = 16;
 		_gridNumColumns = 10;
-		_gameStepInterval = 0.5f;
-		_gameActionInterval = 0.25f;
+		_gameStepInterval = 0.25f;
+		_gameActionInterval = 0.1f;
 		
 		// Create our game's state objects.
 		self.gameBlocks = [NSMutableSet set];
@@ -128,6 +123,41 @@
 	}
 	
 	return depth ? depth + pieceBottomRowOffset : 0;
+}
+
+- (NSSet *)gameBlocksAfterAddingPieceOfType:(SPGamePieceType)gamePieceType leftEdgeColumn:(NSInteger)leftEdgeColumn depth:(NSInteger)depth orientation:(SPGamePieceRotation)orientation {
+	// Get the relative blocks locations for this piece type and orientation.
+	NSArray *relativeBlockLocations = [SPGamePiece relativeBlockLocationsForPieceType:gamePieceType orientation:orientation];
+	
+	// Get the column offset for this piece such that it has the given left-edge column.
+	__block NSInteger pieceColumnOffset = 0;
+	__block NSInteger pieceBottomRowOffset = 0;
+	[relativeBlockLocations enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+		const CGPoint relativeLocation = [(NSValue *)obj CGPointValue];
+		const NSInteger columnOffsetForBlock = relativeLocation.x / 20.0f;
+		pieceColumnOffset = MIN(pieceColumnOffset, columnOffsetForBlock);
+		const NSInteger rowOffsetForBlock = relativeLocation.y / 20.0f;
+		pieceBottomRowOffset = MAX(pieceBottomRowOffset, rowOffsetForBlock);
+	}];
+	
+	// Get the block locations for the given piece / left edge / depth / orientation.
+	NSMutableArray *absoluteBlockLocations = [NSMutableArray array];
+	[relativeBlockLocations enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+		const CGPoint relativeLocation = [(NSValue *)obj CGPointValue];
+		const CGPoint absoluteLocation = CGPointMake(relativeLocation.x + 20.0f * (CGFloat)(leftEdgeColumn + pieceColumnOffset) + 10.0f, relativeLocation.y + 20.0f * (CGFloat)(depth - pieceBottomRowOffset) + 10.0f);
+		[absoluteBlockLocations addObject:[NSValue valueWithCGPoint:absoluteLocation]];
+	}];
+	
+	// Get a copy of our game blocks set.
+	NSMutableSet *gameBlocks = [self.gameBlocks mutableCopy];
+	
+	// Add blocks for the block locations to the game blocks set and return it.
+	[absoluteBlockLocations enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+		CALayer *pieceBlock = [CALayer layer];
+		pieceBlock.bounds = CGRectMake(0.0f, 0.0f, 18.0f, 18.0f);
+		pieceBlock.position = [(NSValue *)obj CGPointValue];
+	}];
+	return gameBlocks;
 }
 
 

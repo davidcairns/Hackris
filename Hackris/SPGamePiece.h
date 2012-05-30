@@ -35,6 +35,7 @@ typedef enum {
 @property(nonatomic, readonly)SPGamePieceType gamePieceType;
 
 @property(nonatomic, strong, readonly)NSArray *componentBlocks;
+- (NSInteger)leftEdgeColumn;
 
 + (NSArray *)relativeBlockLocationsForPieceType:(SPGamePieceType)pieceType orientation:(SPGamePieceRotation)orientation;
 - (NSArray *)blockLocationsAfterApplyingAction:(SPGameAction *)action;
