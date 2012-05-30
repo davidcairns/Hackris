@@ -32,9 +32,11 @@ typedef enum {
 @interface SPGamePiece : NSObject
 
 - (id)initWithGamePieceType:(SPGamePieceType)gamePieceType;
+@property(nonatomic, readonly)SPGamePieceType gamePieceType;
 
 @property(nonatomic, strong, readonly)NSArray *componentBlocks;
 
++ (NSArray *)relativeBlockLocationsForPieceType:(SPGamePieceType)pieceType orientation:(SPGamePieceRotation)orientation;
 - (NSArray *)blockLocationsAfterApplyingAction:(SPGameAction *)action;
 
 // Mutable state.

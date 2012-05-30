@@ -7,7 +7,6 @@
 //
 
 #import "SPGameController.h"
-#import "SPGamePiece.h"
 #import "SPGameController+SPGameInteraction.h"
 #import "SPGameAction.h"
 
@@ -18,8 +17,6 @@
 @property(nonatomic, strong)CALayer *gameContainerLayer;
 
 // Game Rules
-@property(nonatomic, readonly)NSInteger gridNumRows;
-@property(nonatomic, readonly)NSInteger gridNumColumns;
 @property(nonatomic, readonly)NSTimeInterval gameStepInterval;
 // How often the (computer) 'player' can issue game actions:
 @property(nonatomic, readonly)NSTimeInterval gameActionInterval;
@@ -33,6 +30,7 @@
 // Game Interaction.
 @property(nonatomic, assign)NSTimeInterval lastGameActionTimestamp;
 @property(nonatomic, strong)SPGameAction *nextGameAction;
+@property(nonatomic, strong)NSSet *grabbedBlocks;
 
 @end
 
@@ -48,6 +46,7 @@
 @synthesize gameBlocks = _gameBlocks;
 @synthesize lastGameActionTimestamp = _lastGameActionTimestamp;
 @synthesize nextGameAction = _nextGameAction;
+@synthesize grabbedBlocks = _grabbedBlocks;
 
 - (id)init {
 	if((self = [super init])) {
@@ -97,6 +96,40 @@
 
 
 #pragma mark 
+- (NSInteger)fallDepthForPiece:(SPGamePiece *)piece leftEdgeColumn:(NSInteger)leftEdgeColumn orientation:(SPGamePieceRotation)orientation {
+	// Get the arrangement of this piece's blocks for this orientation.
+	NSArray *relativeBlockLocations = [SPGamePiece relativeBlockLocationsForPieceType:piece.gamePieceType orientation:orientation];
+	
+	// Determine how far we have to offset the whole piece based on this orientation (such that its left edge falls in the column specified).
+	__block NSInteger pieceColumnOffset = 0;
+	[relativeBlockLocations enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+		const CGPoint relativeLocation = [(NSValue *)obj CGPointValue];
+		const NSInteger columnOffsetForBlock = relativeLocation.x / 20.0f;
+		pieceColumnOffset = MIN(pieceColumnOffset, columnOffsetForBlock);
+	}];
+	
+	NSArray *absoluteBlockLocations = nil;
+	NSInteger depth = 0;
+	while(depth < self.gridNumRows) {
+		// Determine the piece's absolute block locations given this depth.
+		NSMutableArray *locations = [NSMutableArray array];
+		[relativeBlockLocations enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+			const CGPoint relativeLocation = [(NSValue *)obj CGPointValue];
+			const CGPoint absoluteLocation = CGPointMake(relativeLocation.x + 20.0f * (CGFloat)pieceColumnOffset, relativeLocation.y + 20.0f * (CGFloat)depth);
+			[locations addObject:[NSValue valueWithCGPoint:absoluteLocation]];
+		}];
+		absoluteBlockLocations = [NSArray arrayWithArray:locations];
+		
+		if(![self _canMovePiece:piece toNewBlockLocations:absoluteBlockLocations]) {
+			break;
+		}
+		depth++;
+	}
+	
+	return depth;
+}
+
+
 - (BOOL)_canMovePiece:(SPGamePiece *)piece toNewBlockLocations:(NSArray *)newBlockLocations {
 	__block BOOL foundIntersection = NO;
 	[newBlockLocations enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
@@ -171,11 +204,27 @@
 }
 
 - (NSSet *)_blocksInRow:(NSInteger)rowIndex {
-	return nil;
+	// NOTE: Rows are indexed from the bottom (highest y-coordinate) to the top (lowest y-coordinate).
+	
+	// Determine which y-value corresponds to this row.
+	const CGFloat rowY = self.gameContainerLayer.bounds.size.height - 20.0f * (CGFloat)rowIndex - 10.0f;
+	
+	NSMutableSet *blocks = [NSMutableSet set];
+	[self.gameBlocks enumerateObjectsUsingBlock:^(id obj, BOOL *stop) {
+		CALayer *gameBlock = (CALayer *)obj;
+		if(fabsf(gameBlock.position.y - rowY) < 0.001f) {
+			[blocks addObject:gameBlock];
+		}
+	}];
+	
+	return [NSSet setWithSet:blocks];
 }
-- (void)_performLineClears {
+- (void)_performLineClearIfNecessary {
+	// TODO: Only clear the bottom-most full line.
+	
 	// Check each row for filled-ness.
-	for(NSInteger rowIndex = 0; rowIndex < self.gridNumRows; rowIndex++) {
+	NSInteger rowIndex = 0;
+	while(rowIndex < self.gridNumRows) {
 		NSSet *blocksInRow = [self _blocksInRow:rowIndex];
 		if(blocksInRow.count >= self.gridNumColumns) {
 			// Clear the row!
@@ -184,6 +233,19 @@
 				[block removeFromSuperlayer];
 				[self.gameBlocks removeObject:block];
 			}];
+			
+			// Make all of the higher lines fall.
+			for(NSInteger fallingRowIndex = rowIndex + 1; fallingRowIndex < self.gridNumRows; fallingRowIndex++) {
+				NSSet *fallingRowBlocks = [self _blocksInRow:fallingRowIndex];
+				[fallingRowBlocks enumerateObjectsUsingBlock:^(id obj, BOOL *stop) {
+					CALayer *fallingBlock = (CALayer *)obj;
+					fallingBlock.position = CGPointMake(fallingBlock.position.x, fallingBlock.position.y + 20.0f);
+				}];
+			}
+		}
+		else {
+			// Move up to the next line.
+			rowIndex++;
 		}
 	}
 }
@@ -230,10 +292,51 @@
 	}
 	
 	// Check for line-clear!
-	[self _performLineClears];
+	[self _performLineClearIfNecessary];
 	
 	// Make sure our background layer gets displayed.
 	[self.gameContainerLayer setNeedsDisplay];
+}
+
+
+- (NSSet *)grabBlocksNearestTouchLocation:(CGPoint)touchLocation {
+	// Determine the location intersection closest to this touch location.
+	const NSInteger closestColumn = roundf(touchLocation.x / 20.0f);
+	const NSInteger closestRow = roundf(touchLocation.y / 20.0f);
+	CGPoint closestIntersection = CGPointMake(20.0f * (CGFloat)closestColumn, 20.0f * (CGFloat)closestRow);
+	closestIntersection.x = MAX(20.0f, MIN(closestIntersection.x, 20.0f * self.gridNumColumns - 20.0f));
+	closestIntersection.y = MAX(20.0f, MIN(closestIntersection.y, 20.0f * self.gridNumRows - 20.0f));
+	
+	// Determine the radius in which to search.
+	const CGFloat searchRadius = sqrtf(20.0f * 20.0f + 20.0f * 20.0f);
+	
+	// Find the (maximum four) blocks closest to the location intersection.
+	NSMutableSet *closestBlocks = [NSMutableSet set];
+	[self.gameBlocks enumerateObjectsUsingBlock:^(id obj, BOOL *stop) {
+		// Calculate the distance between this game block and our 'closest intersection'.
+		CALayer *gameBlock = (CALayer *)obj;
+		const CGFloat xDiff = fabsf(gameBlock.position.x - closestIntersection.x);
+		const CGFloat yDiff = fabsf(gameBlock.position.y - closestIntersection.y);
+		const CGFloat distanceFromClosestIntersection = sqrtf(xDiff * xDiff + yDiff * yDiff);
+		
+		// If this game block is within our search radius, and isn't part of the currently-dropping piece, add it to our 'closest blocks'.
+		if(distanceFromClosestIntersection <= searchRadius && ![self.currentlyDroppingPiece.componentBlocks containsObject:gameBlock]) {
+			[closestBlocks addObject:gameBlock];
+		}
+	}];
+	
+	// Set our grabbed-blocks collection and return it.
+	self.grabbedBlocks = [NSSet setWithSet:closestBlocks];
+	return self.grabbedBlocks;
+}
+- (void)dropGrabbedBlocksAtPoint:(CGPoint)point {
+	// TODO: Determine the nearest drop point.
+	
+	// TODO: Place our grabbed blocks in the spaces surrounding the drop point.
+	
+	
+	// Clear our grabbed-blocks collection.
+	self.grabbedBlocks = nil;
 }
 
 @end

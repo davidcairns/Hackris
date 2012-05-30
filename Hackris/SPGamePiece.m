@@ -25,7 +25,6 @@
 
 #pragma mark 
 @interface SPGamePiece ()
-@property(nonatomic, readonly)SPGamePieceType gamePieceType;
 @property(nonatomic, strong)NSArray *componentBlocks;
 @end
 
@@ -126,18 +125,18 @@
 
 
 #pragma mark 
-+ (NSArray *)_blockLocationsRelativeToLocusPosition:(CGPoint)locusPosition pieceType:(SPGamePieceType)pieceType orientation:(SPGamePieceRotation)orientation {
-	// Calculate our blocks' locations based on the locus position, piece type, and rotation value.
++ (NSArray *)relativeBlockLocationsForPieceType:(SPGamePieceType)pieceType orientation:(SPGamePieceRotation)orientation {
+	// Calculate our blocks' locations relative to the locus position, given piece type, and rotation value.
 	NSMutableArray *newBlockLocations = [NSMutableArray array];
 	for(NSInteger componentBlockIndex = 0; componentBlockIndex < 4; componentBlockIndex++) {
 		CGPoint newLocation = CGPointZero;
 		switch(pieceType) {
 			case SPGamePieceTypeStraight:
 				if(SPGamePieceRotationNone == orientation || SPGamePieceRotationUpsideDown == orientation) {
-					newLocation = CGPointMake(locusPosition.x, locusPosition.y + 20.0f * (componentBlockIndex - 1));
+					newLocation = CGPointMake(0.0f, 20.0f * (componentBlockIndex - 1));
 				}
 				else {
-					newLocation = CGPointMake(locusPosition.x + 20.0f * (componentBlockIndex - 1), locusPosition.y);
+					newLocation = CGPointMake(20.0f * (componentBlockIndex - 1), 0.0f);
 				}
 				break;
 				
@@ -145,37 +144,37 @@
 				switch(orientation) {
 					case SPGamePieceRotationNone:
 						if(3 == componentBlockIndex) {
-							newLocation = CGPointMake(locusPosition.x - 20.0f, locusPosition.y - 20.0f);
+							newLocation = CGPointMake(-20.0f, -20.0f);
 						}
 						else {
-							newLocation = CGPointMake(locusPosition.x, locusPosition.y + 20.0f * (componentBlockIndex - 1));
+							newLocation = CGPointMake(0.0f, 20.0f * (componentBlockIndex - 1));
 						}
 						break;
 						
 					case SPGamePieceRotationClockwise:
 						if(3 == componentBlockIndex) {
-							newLocation = CGPointMake(locusPosition.x + 20.0f, locusPosition.y - 20.0f);
+							newLocation = CGPointMake(20.0f, -20.0f);
 						}
 						else {
-							newLocation = CGPointMake(locusPosition.x - 20.0f * (componentBlockIndex - 1), locusPosition.y);
+							newLocation = CGPointMake(-20.0f * (componentBlockIndex - 1), 0.0f);
 						}
 						break;
 						
 					case SPGamePieceRotationUpsideDown:
 						if(3 == componentBlockIndex) {
-							newLocation = CGPointMake(locusPosition.x + 20.0f, locusPosition.y + 20.0f);
+							newLocation = CGPointMake(20.0f, 20.0f);
 						}
 						else {
-							newLocation = CGPointMake(locusPosition.x, locusPosition.y - 20.0f * (componentBlockIndex - 1));
+							newLocation = CGPointMake(0.0f, -20.0f * (componentBlockIndex - 1));
 						}
 						break;
 						
 					case SPGamePieceRotationCounterClockwise:
 						if(3 == componentBlockIndex) {
-							newLocation = CGPointMake(locusPosition.x - 20.0f, locusPosition.y + 20.0f);
+							newLocation = CGPointMake(-20.0f, 20.0f);
 						}
 						else {
-							newLocation = CGPointMake(locusPosition.x + 20.0f * (componentBlockIndex - 1), locusPosition.y);
+							newLocation = CGPointMake(20.0f * (componentBlockIndex - 1), 0.0f);
 						}
 						break;
 						
@@ -188,37 +187,37 @@
 				switch(orientation) {
 					case SPGamePieceRotationNone:
 						if(3 == componentBlockIndex) {
-							newLocation = CGPointMake(locusPosition.x + 20.0f, locusPosition.y - 20.0f);
+							newLocation = CGPointMake(20.0f, -20.0f);
 						}
 						else {
-							newLocation = CGPointMake(locusPosition.x, locusPosition.y + 20.0f * (componentBlockIndex - 1));
+							newLocation = CGPointMake(0.0f, 20.0f * (componentBlockIndex - 1));
 						}
 						break;
 						
 					case SPGamePieceRotationClockwise:
 						if(3 == componentBlockIndex) {
-							newLocation = CGPointMake(locusPosition.x + 20.0f, locusPosition.y + 20.0f);
+							newLocation = CGPointMake(20.0f, 20.0f);
 						}
 						else {
-							newLocation = CGPointMake(locusPosition.x - 20.0f * (componentBlockIndex - 1), locusPosition.y);
+							newLocation = CGPointMake(-20.0f * (componentBlockIndex - 1), 0.0f);
 						}
 						break;
 						
 					case SPGamePieceRotationUpsideDown:
 						if(3 == componentBlockIndex) {
-							newLocation = CGPointMake(locusPosition.x - 20.0f, locusPosition.y + 20.0f);
+							newLocation = CGPointMake(-20.0f, 20.0f);
 						}
 						else {
-							newLocation = CGPointMake(locusPosition.x, locusPosition.y + 20.0f * (componentBlockIndex - 1));
+							newLocation = CGPointMake(0.0f, 20.0f * (componentBlockIndex - 1));
 						}
 						break;
 						
 					case SPGamePieceRotationCounterClockwise:
 						if(3 == componentBlockIndex) {
-							newLocation = CGPointMake(locusPosition.x - 20.0f, locusPosition.y - 20.0f);
+							newLocation = CGPointMake(-20.0f, -20.0f);
 						}
 						else {
-							newLocation = CGPointMake(locusPosition.x + 20.0f * (componentBlockIndex - 1), locusPosition.y);
+							newLocation = CGPointMake(20.0f * (componentBlockIndex - 1), 0.0f);
 						}
 						break;
 						
@@ -231,37 +230,37 @@
 				switch(orientation) {
 					case SPGamePieceRotationNone:
 						if(3 == componentBlockIndex) {
-							newLocation = CGPointMake(locusPosition.x + 20.0f, locusPosition.y);
+							newLocation = CGPointMake(20.0f, 0.0f);
 						}
 						else {
-							newLocation = CGPointMake(locusPosition.x, locusPosition.y + 20.0f * (componentBlockIndex - 1));
+							newLocation = CGPointMake(0.0f, 20.0f * (componentBlockIndex - 1));
 						}
 						break;
 						
 					case SPGamePieceRotationClockwise:
 						if(3 == componentBlockIndex) {
-							newLocation = CGPointMake(locusPosition.x, locusPosition.y + 20.0f);
+							newLocation = CGPointMake(0.0f, 20.0f);
 						}
 						else {
-							newLocation = CGPointMake(locusPosition.x - 20.0f * (componentBlockIndex - 1), locusPosition.y);
+							newLocation = CGPointMake(-20.0f * (componentBlockIndex - 1), 0.0f);
 						}
 						break;
 						
 					case SPGamePieceRotationUpsideDown:
 						if(3 == componentBlockIndex) {
-							newLocation = CGPointMake(locusPosition.x - 20.0f, locusPosition.y);
+							newLocation = CGPointMake(-20.0f, 0.0f);
 						}
 						else {
-							newLocation = CGPointMake(locusPosition.x, locusPosition.y - 20.0f * (componentBlockIndex - 1));
+							newLocation = CGPointMake(0.0f, -20.0f * (componentBlockIndex - 1));
 						}
 						break;
 						
 					case SPGamePieceRotationCounterClockwise:
 						if(3 == componentBlockIndex) {
-							newLocation = CGPointMake(locusPosition.x, locusPosition.y - 20.0f);
+							newLocation = CGPointMake(0.0f, -20.0f);
 						}
 						else {
-							newLocation = CGPointMake(locusPosition.x + 20.0f * (componentBlockIndex - 1), locusPosition.y);
+							newLocation = CGPointMake(20.0f * (componentBlockIndex - 1), 0.0f);
 						}
 						break;
 						
@@ -271,7 +270,7 @@
 				break;
 				
 			case SPGamePieceTypeSquare:
-				// Make no change! The square is always the same!
+				newLocation = CGPointMake(componentBlockIndex < 2 ? 0.0f : 20.0f, 20.0f * (CGFloat)(componentBlockIndex % 2) - 20.0f);
 				break;
 				
 			default:
@@ -284,11 +283,25 @@
 	
 	return [NSArray arrayWithArray:newBlockLocations];
 }
++ (NSArray *)_blockLocationsForLocusPosition:(CGPoint)locusPosition pieceType:(SPGamePieceType)pieceType orientation:(SPGamePieceRotation)orientation {
+	// Get the block locations relative to the locus position.
+	NSArray *relativeBlockLocations = [self relativeBlockLocationsForPieceType:pieceType orientation:orientation];
+	
+	// Generate the array of absolute locations.
+	NSMutableArray *absoluteBlockLocations = [NSMutableArray array];
+	[relativeBlockLocations enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+		const CGPoint relativeLocation = [(NSValue *)obj CGPointValue];
+		const CGPoint absoluteLocation = CGPointMake(relativeLocation.x + locusPosition.x, relativeLocation.y + locusPosition.y);
+		[absoluteBlockLocations addObject:[NSValue valueWithCGPoint:absoluteLocation]];
+	}];
+	
+	return [NSArray arrayWithArray:absoluteBlockLocations];
+}
 - (NSArray *)blockLocationsAfterApplyingAction:(SPGameAction *)action {
 	if(SPGameActionRotate == action.type) {
 		SPGamePieceRotation newOrientation = (self.rotation + 1) % SPGamePieceRotationNumAngles;
 		CALayer *locusBlock = [self.componentBlocks objectAtIndex:1];
-		return [[self class] _blockLocationsRelativeToLocusPosition:locusBlock.position pieceType:self.gamePieceType orientation:newOrientation];
+		return [[self class] _blockLocationsForLocusPosition:locusBlock.position pieceType:self.gamePieceType orientation:newOrientation];
 	}
 	else {
 		// Determine the proper movement vector for this action.
@@ -316,25 +329,6 @@
 		}];
 		return [NSArray arrayWithArray:newBlockLocations];
 	}
-	
-//	switch(action.type) {
-//		case SPGameActionMoveLeft:
-//			[self _movePiece:piece alongVector:CGPointMake(-20.0f, 0.0f)];
-//			break;
-//			
-//		case SPGameActionMoveRight:
-//			[self _movePiece:piece alongVector:CGPointMake(20.0f, 0.0f)];
-//			break;
-//			
-//		case SPGameActionRotate:
-//			NSLog(@"ROTATE: from %i to %i", piece.rotation, (piece.rotation + 1) % SPGamePieceRotationNumAngles);
-//			[piece rotate];
-//			break;
-//			
-//		default:
-//			NSLog(@"WARNING: Attempted to execute invalid game action type: %i", action.type);
-//			break;
-//	}
 	
 	return nil;
 }
