@@ -151,7 +151,6 @@
 		// Create a piece with a randomly-selected type.
 		const SPGamePieceType gamePieceType = rand() % SPGamePieceNumTypes;
 		self.currentlyDroppingPiece = [[SPGamePiece alloc] initWithGamePieceType:gamePieceType];
-		NSLog(@"Created piece of type: %i", gamePieceType);
 		
 		// Add the game piece's component blocks and position them.
 		const NSInteger droppingPieceBlockOffset = self.gridNumColumns / 2;
