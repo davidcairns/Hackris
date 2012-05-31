@@ -70,10 +70,14 @@
 	//			• 0.75 for a space surrounded on all sides but one
 	//			• 0.5 for a space surrounded on all sides but two
 	//			* A “bonus” of 0.1, if there's a block above at all
+//	const CGFloat kTotallySurroundedScore = 1.0f;
+//	const CGFloat kMostlySurroundedScore = 0.75f;
+//	const CGFloat kPartiallySurroundedScore = 0.5f;
+//	const CGFloat kBlockAboveBonus = 0.1f;
 	const CGFloat kTotallySurroundedScore = 1.0f;
-	const CGFloat kMostlySurroundedScore = 0.75f;
-	const CGFloat kPartiallySurroundedScore = 0.5f;
-	const CGFloat kBlockAboveBonus = 0.1f;
+	const CGFloat kMostlySurroundedScore = 0.66f;
+	const CGFloat kPartiallySurroundedScore = 0.33f;
+	const CGFloat kBlockAboveBonus = 1.0f;
 	
 	// Find the number of holes (open spaces surrounded by four blocks).
 	CGFloat holeScore = 0.0f;

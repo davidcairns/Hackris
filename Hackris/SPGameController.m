@@ -110,6 +110,11 @@
 	self.currentlyDroppingPiece = nil;
 	self.nextGameAction = nil;
 	self.currentGameTime = 0;
+	self.lastGameStepTimestamp = 0;
+	self.lastGameActionTimestamp = 0;
+	
+	self.grabbedBlocks = nil;
+	self.grabbedBlocksInitialLocations = nil;
 }
 
 
@@ -340,10 +345,16 @@
 			[self _moveBlocksForPiece:currentPiece toNewBlockLocations:newBlockLocations];
 		}
 		else {
-			[self _clearCurrentlyDroppingPiece];
-			
-			// Also clear the next game action; it's no longer valid!
-			self.nextGameAction = nil;
+			// Check to see if the game has "clogged".
+			if([(CALayer *)currentPiece.componentBlocks.lastObject position].y < 0.0f) {
+				[self resetGame];
+			}
+			else {
+				[self _clearCurrentlyDroppingPiece];
+				
+				// Also clear the next game action; it's no longer valid!
+				self.nextGameAction = nil;
+			}
 		}
 	}
 	
