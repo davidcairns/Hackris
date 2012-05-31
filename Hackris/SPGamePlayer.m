@@ -51,25 +51,6 @@
 	
 	return solutions;
 }
-#if 1
-#else
-- (NSArray *)_culledSolutions:(NSArray *)solutions forGame:(SPGameController *)gameController {
-	NSMutableArray *reachableSolutions = [NSMutableArray array];
-	[solutions enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-		// Determine if this solution is reachable.
-		SPSolution *solution = (SPSolution *)obj;
-		
-		// TODO: Determine how many moves away the solution is.
-		
-		// TODO: Determine how many game steps until the block
-		
-		if(1) {
-			[reachableSolutions addObject:solution];
-		}
-	}];
-	return reachableSolutions;
-}
-#endif
 - (CGPoint)_locationForRow:(NSInteger)rowIndex column:(NSInteger)columnIndex {
 	return CGPointMake(columnIndex * 20.0f + 0.5f * SPBlockSize, rowIndex * 20.0f + 0.5f * SPBlockSize);
 }
@@ -239,12 +220,6 @@
 - (void)makeMoveInGame:(SPGameController *)gameController {
 	// Figure out all of the possible ways the currently-dropping piece can land.
 	NSArray *possibleSolutions = [self _possibleSolutionsForPiece:gameController.currentlyDroppingPiece gameController:gameController];
-	
-#if 1
-#else
-	// TODO: Cull solutions that are impossible (e.g. too far to get to).
-	possibleSolutions = [self _culledSolutions:possibleSolutions forGame:gameController];
-#endif
 	
 	// Determine a placement score for each solution (how "good" the placement would be).
 	NSArray *solutionScores = [self _scoresForSolutions:possibleSolutions ofPiece:gameController.currentlyDroppingPiece inGame:gameController];
