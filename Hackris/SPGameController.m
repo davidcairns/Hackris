@@ -267,11 +267,15 @@
 	return [NSSet setWithSet:blocks];
 }
 - (void)_performLineClearIfNecessary {
-	// Check each row for filled-ness.
 	NSInteger rowIndex = 0;
 	while(rowIndex < self.gridNumRows) {
+		// Check each row for filled-ness.
 		NSSet *blocksInRow = [self _blocksInRow:rowIndex];
-		if(blocksInRow.count >= self.gridNumColumns) {
+		// NOTE: Blocks from the currently-dropping piece don't count for filled-ness.
+		const BOOL rowContainsDroppingBlocks = [blocksInRow intersectsSet:[NSSet setWithArray:self.currentlyDroppingPiece.componentBlocks]];
+		// NOTE: Blocks currently 'grabbed' also do not count.
+		const BOOL rowContainsGrabbedBlocks = [blocksInRow intersectsSet:[NSSet setWithArray:self.grabbedBlocks]];
+		if(blocksInRow.count >= self.gridNumColumns && !rowContainsDroppingBlocks && !rowContainsGrabbedBlocks) {
 			// Clear the row!
 			[blocksInRow enumerateObjectsUsingBlock:^(id obj, BOOL *stop) {
 				CALayer *block = (CALayer *)obj;
@@ -354,6 +358,7 @@
 }
 
 
+#pragma mark - Interaction
 - (CGPoint)_closestIntersectionForTouchLocation:(CGPoint)touchLocation {
 	// Determine the location intersection closest to this touch location.
 	const NSInteger closestColumn = roundf(touchLocation.x / 20.0f);
