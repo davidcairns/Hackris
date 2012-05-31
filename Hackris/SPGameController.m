@@ -408,6 +408,8 @@
 		
 		// If this game block is within our search radius, and isn't part of the currently-dropping piece, add it to our 'closest blocks'.
 		if(distanceFromClosestIntersection <= searchRadius && ![self.currentlyDroppingPiece.componentBlocks containsObject:gameBlock]) {
+			gameBlock.shadowRadius = 20.0f;
+			gameBlock.shadowOpacity = 0.5f;
 			[closestBlocks addObject:gameBlock];
 		}
 	}];
@@ -430,15 +432,25 @@
 	const CGPoint movementVector = CGPointMake(closestIntersection.x - self.grabInitialTouchLocation.x, closestIntersection.y - self.grabInitialTouchLocation.y);
 	
 	// Place our grabbed blocks in the spaces surrounding the drop point.
+	[CATransaction begin];
+	[CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions];
 	[self.grabbedBlocks enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 		CALayer *grabbedBlock = (CALayer *)obj;
 		CGPoint blockInitialLocation = [(NSValue *)[self.grabbedBlocksInitialLocations objectAtIndex:idx] CGPointValue];
 		grabbedBlock.position = CGPointMake(blockInitialLocation.x + movementVector.x, blockInitialLocation.y + movementVector.y);
 	}];
+	[CATransaction commit];
 }
 - (void)dropGrabbedBlocksAtTouchLocation:(CGPoint)touchLocation {
 	// Make sure the blocks get to the right place.
 	[self moveGrabbedBlocksToTouchLocation:touchLocation];
+	
+	// Reset the display state of the grabbed blocks.
+	[self.grabbedBlocks enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+		CALayer *grabbedBlock = (CALayer *)obj;
+		grabbedBlock.shadowRadius = 0.0f;
+		grabbedBlock.shadowOpacity = 0.0f;
+	}];
 	
 	// Clear our grabbed-blocks collection.
 	self.grabbedBlocks = nil;
