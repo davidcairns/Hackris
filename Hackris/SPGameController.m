@@ -53,8 +53,8 @@
 		// Set up the game's rules.
 		_gridNumRows = 16;
 		_gridNumColumns = 10;
-		_gameStepInterval = 0.25f;
-		_gameActionInterval = 0.1f;
+		_gameStepInterval = 0.2f;
+		_gameActionInterval = 0.15f;
 		
 		// Create our game's state objects.
 		self.gameBlocks = [NSMutableSet set];
@@ -106,28 +106,31 @@
 		pieceBottomRowOffset = MAX(pieceBottomRowOffset, rowOffsetForBlock);
 	}];
 	
-	NSInteger depth = 0;
+	NSInteger depth = -1;
 	while(depth < self.gridNumRows) {
+		depth++;
+		
 		// Determine the piece's absolute block locations given this depth.
 		NSMutableArray *locations = [NSMutableArray array];
 		[relativeBlockLocations enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 			const CGPoint relativeLocation = [(NSValue *)obj CGPointValue];
-			const CGPoint absoluteLocation = CGPointMake(relativeLocation.x + 20.0f * (CGFloat)(leftEdgeColumn + pieceColumnOffset) + 10.0f, relativeLocation.y + 20.0f * (CGFloat)depth + 10.0f);
+			const CGPoint absoluteLocation = CGPointMake(relativeLocation.x + 20.0f * (CGFloat)(leftEdgeColumn - pieceColumnOffset) + 10.0f, relativeLocation.y + 20.0f * (CGFloat)depth + 10.0f);
 			[locations addObject:[NSValue valueWithCGPoint:absoluteLocation]];
 		}];
 		
 		if(![self _canMovePiece:piece toNewBlockLocations:locations]) {
+			// Rewind to the last depth that worked.
+			depth -= 1;
 			break;
 		}
-		depth++;
 	}
 	
-	return depth ? depth + pieceBottomRowOffset : 0;
+	return depth > 0 ? depth + pieceBottomRowOffset : 0;
 }
 
-- (NSSet *)gameBlocksAfterAddingPieceOfType:(SPGamePieceType)gamePieceType leftEdgeColumn:(NSInteger)leftEdgeColumn depth:(NSInteger)depth orientation:(SPGamePieceRotation)orientation {
+- (NSSet *)gameBlocksAfterMovingPiece:(SPGamePiece *)gamePiece toLeftEdgeColumn:(NSInteger)leftEdgeColumn depth:(NSInteger)depth orientation:(SPGamePieceRotation)orientation {
 	// Get the relative blocks locations for this piece type and orientation.
-	NSArray *relativeBlockLocations = [SPGamePiece relativeBlockLocationsForPieceType:gamePieceType orientation:orientation];
+	NSArray *relativeBlockLocations = [SPGamePiece relativeBlockLocationsForPieceType:gamePiece.gamePieceType orientation:orientation];
 	
 	// Get the column offset for this piece such that it has the given left-edge column.
 	__block NSInteger pieceColumnOffset = 0;
@@ -144,18 +147,24 @@
 	NSMutableArray *absoluteBlockLocations = [NSMutableArray array];
 	[relativeBlockLocations enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 		const CGPoint relativeLocation = [(NSValue *)obj CGPointValue];
-		const CGPoint absoluteLocation = CGPointMake(relativeLocation.x + 20.0f * (CGFloat)(leftEdgeColumn + pieceColumnOffset) + 10.0f, relativeLocation.y + 20.0f * (CGFloat)(depth - pieceBottomRowOffset) + 10.0f);
+		const CGPoint absoluteLocation = CGPointMake(relativeLocation.x + 20.0f * (CGFloat)(leftEdgeColumn - pieceColumnOffset) + 10.0f, relativeLocation.y + 20.0f * (CGFloat)(depth - pieceBottomRowOffset) + 10.0f);
 		[absoluteBlockLocations addObject:[NSValue valueWithCGPoint:absoluteLocation]];
 	}];
 	
 	// Get a copy of our game blocks set.
 	NSMutableSet *gameBlocks = [self.gameBlocks mutableCopy];
 	
+	// Remove the piece's blocks.
+	[gamePiece.componentBlocks enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+		[gameBlocks removeObject:obj];
+	}];
+	
 	// Add blocks for the block locations to the game blocks set and return it.
 	[absoluteBlockLocations enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 		CALayer *pieceBlock = [CALayer layer];
 		pieceBlock.bounds = CGRectMake(0.0f, 0.0f, 18.0f, 18.0f);
 		pieceBlock.position = [(NSValue *)obj CGPointValue];
+		[gameBlocks addObject:pieceBlock];
 	}];
 	return gameBlocks;
 }
@@ -252,8 +261,6 @@
 	return [NSSet setWithSet:blocks];
 }
 - (void)_performLineClearIfNecessary {
-	// TODO: Only clear the bottom-most full line.
-	
 	// Check each row for filled-ness.
 	NSInteger rowIndex = 0;
 	while(rowIndex < self.gridNumRows) {
@@ -262,8 +269,15 @@
 			// Clear the row!
 			[blocksInRow enumerateObjectsUsingBlock:^(id obj, BOOL *stop) {
 				CALayer *block = (CALayer *)obj;
-				[block removeFromSuperlayer];
 				[self.gameBlocks removeObject:block];
+				
+				// Animate the blocks flying off to the side.
+				[CATransaction begin];
+				[CATransaction setCompletionBlock:^ {
+					[block removeFromSuperlayer];
+				}];
+				block.position = CGPointMake(block.position.x - 20.0f * self.gridNumColumns, block.position.y);
+				[CATransaction commit];
 			}];
 			
 			// Make all of the higher lines fall.

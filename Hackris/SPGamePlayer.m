@@ -82,9 +82,19 @@
 	}
 	return nil;
 }
-- (NSInteger)_numberOfHolesInGameBoardBlocks:(NSSet *)gameBoardBlocks inGame:(SPGameController *)gameController {
+- (CGFloat)_holeScoreForGameBoardBlocks:(NSSet *)gameBoardBlocks inGame:(SPGameController *)gameController {
+	// NOTE: How this algorithm calculates the score:
+	//			• 1.0 for a space surrounded on all sides
+	//			• 0.75 for a space surrounded on all sides but one
+	//			• 0.5 for a space surrounded on all sides but two
+	//			* A “bonus” of 0.1, if there's a block above at all
+	const CGFloat kTotallySurroundedScore = 1.0f;
+	const CGFloat kMostlySurroundedScore = 0.75f;
+	const CGFloat kPartiallySurroundedScore = 0.5f;
+	const CGFloat kBlockAboveBonus = 0.1f;
+	
 	// Find the number of holes (open spaces surrounded by four blocks).
-	NSInteger numHoles = 0;
+	CGFloat holeScore = 0.0f;
 	for(NSInteger rowIndex = 0; rowIndex < gameController.gridNumRows; rowIndex++) {
 		for(NSInteger columnIndex = 0; columnIndex < gameController.gridNumColumns; columnIndex++) {
 			// Get the location for this (row, column).
@@ -95,51 +105,118 @@
 				continue;
 			}
 			
-			// Check the spaces around this one.
+			// Check for spaces surrounded on all sides.
+			const BOOL isOnBottomEdge = (gameController.gridNumRows - 1 == rowIndex);
+			const BOOL isOnLeftEdge = (0 == columnIndex);
+			const BOOL isOnRightEdge = (gameController.gridNumColumns - 1 == columnIndex);
+			const BOOL isOnBottomLeftCorner = isOnBottomEdge && isOnLeftEdge;
+			const BOOL isOnBottomRightCorner = isOnBottomEdge && isOnRightEdge;
 			CALayer *blockAbove = [self _blockAtLocation:[self _locationForRow:rowIndex - 1 column:columnIndex] inGroup:gameBoardBlocks];
 			CALayer *blockBelow = [self _blockAtLocation:[self _locationForRow:rowIndex + 1 column:columnIndex] inGroup:gameBoardBlocks];
 			CALayer *blockLeft = [self _blockAtLocation:[self _locationForRow:rowIndex column:columnIndex - 1] inGroup:gameBoardBlocks];
 			CALayer *blockRight = [self _blockAtLocation:[self _locationForRow:rowIndex column:columnIndex + 1] inGroup:gameBoardBlocks];
+			// Check for the bottom-left corner.
+			if(isOnBottomLeftCorner && blockAbove && blockRight) {
+				holeScore += kTotallySurroundedScore;
+			}
+			// Check for the bottom-right corner.
+			else if(isOnBottomRightCorner && blockAbove && blockLeft) {
+				holeScore += kTotallySurroundedScore;
+			}
 			// Check for spaces at the bottom edge.
-			if((gameController.gridNumRows - 1 == rowIndex) && blockAbove && blockLeft && blockRight) {
-				numHoles++;
+			else if(isOnBottomEdge && blockAbove && blockLeft && blockRight) {
+				holeScore += kTotallySurroundedScore;
 			}
 			// Check for spaces on the left edge.
-			else if((0 == columnIndex) && blockAbove && blockBelow && blockRight) {
-				numHoles++;
+			else if(isOnLeftEdge && blockAbove && blockBelow && blockRight) {
+				holeScore += kTotallySurroundedScore;
 			}
 			// Check for spaces on the right edge.
-			else if((gameController.gridNumColumns - 1 == columnIndex) && blockAbove && blockBelow && blockLeft) {
-				numHoles++;
+			else if(isOnRightEdge && blockAbove && blockBelow && blockLeft) {
+				holeScore += kTotallySurroundedScore;
 			}
 			// Check for spaces in the middle.
 			else if(blockAbove && blockBelow && blockLeft && blockRight) {
-				numHoles++;
+				holeScore += kTotallySurroundedScore;
+			}
+			
+			// Check for spaces surrounded on all sides but one.
+			// Bottom-left corner.
+			else if(isOnBottomLeftCorner && (blockAbove || blockRight)) {
+				holeScore += kMostlySurroundedScore;
+			}
+			// Bottom-right corner.
+			else if(isOnBottomRightCorner && (blockAbove || blockLeft)) {
+				holeScore += kMostlySurroundedScore;
+			}
+			// Bottom edge.
+			else if(isOnBottomEdge && ((blockAbove && blockLeft) || (blockAbove && blockRight) || (blockLeft && blockRight))) {
+				holeScore += kMostlySurroundedScore;
+			}
+			// Left edge.
+			else if(isOnLeftEdge && ((blockAbove && blockBelow) || (blockAbove && blockRight) || (blockBelow && blockRight))) {
+				holeScore += kMostlySurroundedScore;
+			}
+			// Right edge.
+			else if(isOnRightEdge && ((blockAbove && blockBelow) || (blockAbove && blockLeft) || (blockBelow && blockLeft))) {
+				holeScore += kMostlySurroundedScore;
+			}
+			// Middle space.
+			else if((blockAbove && blockLeft && blockRight) || (blockAbove && blockBelow && blockLeft) || (blockAbove && blockBelow && blockRight) || (blockBelow && blockLeft && blockRight)) {
+				holeScore += kMostlySurroundedScore;
+			}
+			
+			// Check for spaces surrounded on all sides but two.
+			// Bottom-left corner.
+			else if(isOnBottomLeftCorner) {
+				holeScore += kPartiallySurroundedScore;
+			}
+			// Bottom-right corner.
+			else if(isOnBottomRightCorner) {
+				holeScore += kPartiallySurroundedScore;
+			}
+			// Bottom edge.
+			else if(isOnBottomEdge && (blockAbove || blockLeft || blockRight)) {
+				holeScore += kPartiallySurroundedScore;
+			}
+			// Left edge.
+			else if(isOnLeftEdge && (blockAbove || blockBelow || blockRight)) {
+				holeScore += kPartiallySurroundedScore;
+			}
+			// Right edge.
+			else if(isOnRightEdge && (blockAbove || blockBelow || blockLeft)) {
+				holeScore += kPartiallySurroundedScore;
+			}
+			// Middle space.
+			else if((blockAbove && blockRight) || (blockAbove && blockBelow) || (blockAbove && blockLeft) || (blockRight && blockBelow) || (blockRight && blockLeft) || (blockBelow && blockLeft)) {
+				holeScore += kPartiallySurroundedScore;
+			}
+			
+			// Add the bonus, just for the block above being filled.
+			if(blockAbove) {
+				holeScore += kBlockAboveBonus;
 			}
 		}
 	}
 	
-	return numHoles;
+	return holeScore;
 }
 - (NSArray *)_scoresForSolutions:(NSArray *)solutions ofPiece:(SPGamePiece *)piece inGame:(SPGameController *)gameController {
 	NSMutableArray *scores = [NSMutableArray array];
-	[solutions enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-		SPSolution *solution = (SPSolution *)obj;
-		
+	for(SPSolution *solution in solutions) {
 		// Calculate the depth score for this solution.
 		const float depthScore = (float)solution.bottomEdgeRow / gameController.gridNumRows;
-		const float kDepthWeight = 0.25f;
+		const float kDepthWeight = 0.75f;
 		
 		// Calculate the number of holes on the board for this solution.
-		NSSet *gameBoardBlocks = [gameController gameBlocksAfterAddingPieceOfType:piece.gamePieceType leftEdgeColumn:solution.leftEdgeColumn depth:solution.bottomEdgeRow orientation:solution.orientation];
-		const NSInteger numberOfHoles = [self _numberOfHolesInGameBoardBlocks:gameBoardBlocks inGame:gameController];
-		const float holeScore = (float)(gameController.gridNumRows * gameController.gridNumColumns - numberOfHoles) / (float)(gameController.gridNumRows * gameController.gridNumColumns);
-		const float kHoleWeight = 0.75f;
+		NSSet *gameBoardBlocks = [gameController gameBlocksAfterMovingPiece:piece toLeftEdgeColumn:solution.leftEdgeColumn depth:solution.bottomEdgeRow orientation:solution.orientation];
+		const CGFloat holeScore = [self _holeScoreForGameBoardBlocks:gameBoardBlocks inGame:gameController];
+		const float kHoleWeight = -0.75f;
 		
 		// Add all of the scores (weighted) to get the aggregate score.
 		const float aggregateScore = kDepthWeight * depthScore + kHoleWeight * holeScore;
 		[scores addObject:[NSNumber numberWithFloat:aggregateScore]];
-	}];
+	};
 	
 	return scores;
 }
@@ -160,8 +237,7 @@
 }
 - (void)makeMoveInGame:(SPGameController *)gameController {
 	// Figure out all of the possible ways the currently-dropping piece can land.
-	NSMutableArray *possibleSolutions = [NSMutableArray arrayWithArray:[self _possibleSolutionsForPiece:gameController.currentlyDroppingPiece gameController:gameController]];
-//	NSLog(@"Possible solutions: %@", possibleSolutions);
+	NSArray *possibleSolutions = [self _possibleSolutionsForPiece:gameController.currentlyDroppingPiece gameController:gameController];
 	
 #if 1
 #else
@@ -173,10 +249,10 @@
 	NSArray *solutionScores = [self _scoresForSolutions:possibleSolutions ofPiece:gameController.currentlyDroppingPiece inGame:gameController];
 	
 	// Get the highest-scored solution.
-	__block float highestScore = -1;
+	__block CGFloat highestScore = -10000.0f;
 	__block SPSolution *highestScoredSolution = nil;
 	[possibleSolutions enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-		const float solutionScore = [[solutionScores objectAtIndex:idx] floatValue];
+		const CGFloat solutionScore = [[solutionScores objectAtIndex:idx] floatValue];
 		if(solutionScore > highestScore) {
 			highestScore = solutionScore;
 			highestScoredSolution = (SPSolution *)obj;
