@@ -33,7 +33,12 @@
 - (void)updateWithTimeDelta:(NSTimeInterval)timeDelta;
 
 // Interaction
+#if 1
+- (void)grabBlocksNearestTouchLocation:(CGPoint)touchLocation;
+#else
 - (NSSet *)grabBlocksNearestTouchLocation:(CGPoint)touchLocation;
-- (void)dropGrabbedBlocksAtPoint:(CGPoint)point;
+#endif
+- (void)moveGrabbedBlocksToTouchLocation:(CGPoint)touchLocation;
+- (void)dropGrabbedBlocksAtTouchLocation:(CGPoint)touchLocation;
 
 @end

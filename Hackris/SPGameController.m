@@ -25,8 +25,9 @@
 // Game Interaction.
 @property(nonatomic, assign)NSTimeInterval lastGameActionTimestamp;
 @property(nonatomic, strong)SPGameAction *nextGameAction;
-@property(nonatomic, strong)NSSet *grabbedBlocks;
-
+@property(nonatomic, strong)NSArray *grabbedBlocks;
+@property(nonatomic, assign)CGPoint grabInitialTouchLocation;
+@property(nonatomic, strong)NSArray *grabbedBlocksInitialLocations;
 @end
 
 @implementation SPGameController
@@ -42,6 +43,8 @@
 @synthesize lastGameActionTimestamp = _lastGameActionTimestamp;
 @synthesize nextGameAction = _nextGameAction;
 @synthesize grabbedBlocks = _grabbedBlocks;
+@synthesize grabInitialTouchLocation = _grabInitialTouchLocation;
+@synthesize grabbedBlocksInitialLocations = _grabbedBlocksInitialLocations;
 
 - (id)init {
 	if((self = [super init])) {
@@ -351,22 +354,33 @@
 }
 
 
-- (NSSet *)grabBlocksNearestTouchLocation:(CGPoint)touchLocation {
+- (CGPoint)_closestIntersectionForTouchLocation:(CGPoint)touchLocation {
 	// Determine the location intersection closest to this touch location.
 	const NSInteger closestColumn = roundf(touchLocation.x / 20.0f);
 	const NSInteger closestRow = roundf(touchLocation.y / 20.0f);
 	CGPoint closestIntersection = CGPointMake(20.0f * (CGFloat)closestColumn, 20.0f * (CGFloat)closestRow);
 	closestIntersection.x = MAX(20.0f, MIN(closestIntersection.x, 20.0f * self.gridNumColumns - 20.0f));
 	closestIntersection.y = MAX(20.0f, MIN(closestIntersection.y, 20.0f * self.gridNumRows - 20.0f));
+	return closestIntersection;
+}
+- (void)grabBlocksNearestTouchLocation:(CGPoint)touchLocation {
+	// Determine the location intersection closest to this touch location.
+	const CGPoint closestIntersection = [self _closestIntersectionForTouchLocation:touchLocation];
 	
 	// Determine the radius in which to search.
 	const CGFloat searchRadius = sqrtf(20.0f * 20.0f + 20.0f * 20.0f);
 	
 	// Find the (maximum four) blocks closest to the location intersection.
-	NSMutableSet *closestBlocks = [NSMutableSet set];
+	NSMutableArray *closestBlocks = [NSMutableArray array];
 	[self.gameBlocks enumerateObjectsUsingBlock:^(id obj, BOOL *stop) {
-		// Calculate the distance between this game block and our 'closest intersection'.
 		CALayer *gameBlock = (CALayer *)obj;
+		
+		// If this block is part of the currently-dropping piece, just bail.
+		if([self.currentlyDroppingPiece.componentBlocks containsObject:gameBlock]) {
+			return;
+		}
+		
+		// Calculate the distance between this game block and our 'closest intersection'.
 		const CGFloat xDiff = fabsf(gameBlock.position.x - closestIntersection.x);
 		const CGFloat yDiff = fabsf(gameBlock.position.y - closestIntersection.y);
 		const CGFloat distanceFromClosestIntersection = sqrtf(xDiff * xDiff + yDiff * yDiff);
@@ -377,18 +391,37 @@
 		}
 	}];
 	
-	// Set our grabbed-blocks collection and return it.
-	self.grabbedBlocks = [NSSet setWithSet:closestBlocks];
-	return self.grabbedBlocks;
+	// Set our grabbed-blocks collection
+	self.grabbedBlocks = [NSArray arrayWithArray:closestBlocks];
+	self.grabInitialTouchLocation = closestIntersection;
+	
+	NSMutableArray *grabbedBlockLocations = [NSMutableArray array];
+	for(CALayer *grabbedBlock in self.grabbedBlocks) {
+		[grabbedBlockLocations addObject:[NSValue valueWithCGPoint:grabbedBlock.position]];
+	}
+	self.grabbedBlocksInitialLocations = [NSArray arrayWithArray:grabbedBlockLocations];
 }
-- (void)dropGrabbedBlocksAtPoint:(CGPoint)point {
-	// TODO: Determine the nearest drop point.
+- (void)moveGrabbedBlocksToTouchLocation:(CGPoint)touchLocation {
+	// Determine the nearest location intersection to pop to.
+	const CGPoint closestIntersection = [self _closestIntersectionForTouchLocation:touchLocation];
 	
-	// TODO: Place our grabbed blocks in the spaces surrounding the drop point.
+	// Calculate the movement vector from the initial grab point to this intersection point.
+	const CGPoint movementVector = CGPointMake(closestIntersection.x - self.grabInitialTouchLocation.x, closestIntersection.y - self.grabInitialTouchLocation.y);
 	
+	// Place our grabbed blocks in the spaces surrounding the drop point.
+	[self.grabbedBlocks enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+		CALayer *grabbedBlock = (CALayer *)obj;
+		CGPoint blockInitialLocation = [(NSValue *)[self.grabbedBlocksInitialLocations objectAtIndex:idx] CGPointValue];
+		grabbedBlock.position = CGPointMake(blockInitialLocation.x + movementVector.x, blockInitialLocation.y + movementVector.y);
+	}];
+}
+- (void)dropGrabbedBlocksAtTouchLocation:(CGPoint)touchLocation {
+	// Make sure the blocks get to the right place.
+	[self moveGrabbedBlocksToTouchLocation:touchLocation];
 	
 	// Clear our grabbed-blocks collection.
 	self.grabbedBlocks = nil;
+	self.grabbedBlocksInitialLocations = nil;
 }
 
 @end
