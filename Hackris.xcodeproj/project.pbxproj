@@ -19,6 +19,7 @@
 		DF4DA4EC1574891700E04A84 /* SPGameController.m in Sources */ = {isa = PBXBuildFile; fileRef = DF4DA4EB1574891700E04A84 /* SPGameController.m */; };
 		DF4DA4EF15748C9600E04A84 /* SPGamePiece.m in Sources */ = {isa = PBXBuildFile; fileRef = DF4DA4EE15748C9600E04A84 /* SPGamePiece.m */; };
 		DF4DA4F51574AF1300E04A84 /* SPGameAction.m in Sources */ = {isa = PBXBuildFile; fileRef = DF4DA4F41574AF1300E04A84 /* SPGameAction.m */; };
+		DF5774C0157810C000F7B59B /* block_gradient.png in Resources */ = {isa = PBXBuildFile; fileRef = DF5774BF157810C000F7B59B /* block_gradient.png */; };
 		DF9EB8B9157570760070BAED /* SPGamePlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = DF9EB8B8157570760070BAED /* SPGamePlayer.m */; };
 /* End PBXBuildFile section */
 
@@ -45,6 +46,7 @@
 		DF4DA4F31574AF1300E04A84 /* SPGameAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPGameAction.h; sourceTree = "<group>"; };
 		DF4DA4F41574AF1300E04A84 /* SPGameAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPGameAction.m; sourceTree = "<group>"; };
 		DF5774BD1577649100F7B59B /* SPBlockSize.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SPBlockSize.h; sourceTree = "<group>"; };
+		DF5774BF157810C000F7B59B /* block_gradient.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = block_gradient.png; sourceTree = "<group>"; };
 		DF9EB8B7157570760070BAED /* SPGamePlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPGamePlayer.h; sourceTree = "<group>"; };
 		DF9EB8B8157570760070BAED /* SPGamePlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPGamePlayer.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -68,6 +70,7 @@
 			isa = PBXGroup;
 			children = (
 				DF4DA4CC1574810200E04A84 /* Hackris */,
+				DF5774BE157810B400F7B59B /* Resources */,
 				DF4DA4C51574810200E04A84 /* Frameworks */,
 				DF4DA4C31574810200E04A84 /* Products */,
 			);
@@ -126,6 +129,15 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		DF5774BE157810B400F7B59B /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				DF5774BF157810C000F7B59B /* block_gradient.png */,
+			);
+			name = Resources;
+			path = Hackris;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -180,6 +192,7 @@
 			files = (
 				DF4DA4D11574810300E04A84 /* InfoPlist.strings in Resources */,
 				DF4DA4DD1574810400E04A84 /* SPViewController.xib in Resources */,
+				DF5774C0157810C000F7B59B /* block_gradient.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

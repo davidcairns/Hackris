@@ -75,9 +75,9 @@
 //	const CGFloat kPartiallySurroundedScore = 0.5f;
 //	const CGFloat kBlockAboveBonus = 0.1f;
 	const CGFloat kTotallySurroundedScore = 1.0f;
-	const CGFloat kMostlySurroundedScore = 0.66f;
-	const CGFloat kPartiallySurroundedScore = 0.33f;
-	const CGFloat kBlockAboveBonus = 1.0f;
+	const CGFloat kMostlySurroundedScore = 0.5f;
+	const CGFloat kPartiallySurroundedScore = 0.2f;
+	const CGFloat kBlockAboveBonus = 100.0f;
 	
 	// Find the number of holes (open spaces surrounded by four blocks).
 	CGFloat holeScore = 0.0f;

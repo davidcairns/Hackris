@@ -18,6 +18,7 @@
 	layer.bounds = CGRectMake(0.0f, 0.0f, SPBlockSize - 2.0f, SPBlockSize - 2.0f);
 	layer.backgroundColor = [color CGColor];
 	layer.cornerRadius = 3.0f;
+	layer.contents = (id)[[UIImage imageNamed:@"block_gradient"] CGImage];
 	return layer;
 }
 @end

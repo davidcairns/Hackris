@@ -61,8 +61,8 @@
 		const CGRect screenBounds = [[UIScreen mainScreen] bounds];
 		_gridNumRows = screenBounds.size.height / SPBlockSize;
 		_gridNumColumns = screenBounds.size.width / SPBlockSize;
-		_gameStepInterval = 0.2f;
-		_gameActionInterval = 0.15f;
+		_gameStepInterval = 0.01f;
+		_gameActionInterval = 0.01f;
 		
 		// Create our game's state objects.
 		self.gameBlocks = [NSMutableSet set];
@@ -216,6 +216,11 @@
 				continue;
 			}
 			
+			// If this game block is currently being dragged, just bail.
+			if([self.grabbedBlocks containsObject:gameBlock]) {
+				continue;
+			}
+			
 			// If this game block occupies the space below the piece's block.
 			if((fabsf(positionAfterMovement.x - gameBlock.position.x) < 0.01f) && (fabsf(positionAfterMovement.y - gameBlock.position.y) < 0.01f)) {
 				foundIntersection = YES;
@@ -228,10 +233,14 @@
 	return !foundIntersection;
 }
 - (void)_moveBlocksForPiece:(SPGamePiece *)piece toNewBlockLocations:(NSArray *)blockLocations {
+	[CATransaction begin];
+//	[CATransaction setAnimationDuration:0.1f];
+	[CATransaction setDisableActions:YES];
 	[piece.componentBlocks enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 		CALayer *componentBlock = (CALayer *)obj;
 		componentBlock.position = [(NSValue *)[blockLocations objectAtIndex:idx] CGPointValue];
 	}];
+	[CATransaction commit];
 }
 
 - (BOOL)_canExecuteGameAction:(SPGameAction *)action againstPiece:(SPGamePiece *)piece {
@@ -298,27 +307,35 @@
 		const BOOL rowContainsGrabbedBlocks = [blocksInRow intersectsSet:[NSSet setWithArray:self.grabbedBlocks]];
 		if(blocksInRow.count >= self.gridNumColumns && !rowContainsDroppingBlocks && !rowContainsGrabbedBlocks) {
 			// Clear the row!
+			[CATransaction begin];
+			[CATransaction setDisableActions:YES];
+			[CATransaction setCompletionBlock:^ {
+				// Remove the blocks from the layer hierarchy.
+				for(CALayer *block in blocksInRow) {
+					[block removeFromSuperlayer];
+					[self.gameBlocks removeObject:block];
+				}
+				
+				// Make all of the higher lines fall.
+				[CATransaction begin];
+				[CATransaction setDisableActions:YES];
+				for(NSInteger fallingRowIndex = rowIndex + 1; fallingRowIndex < self.gridNumRows; fallingRowIndex++) {
+					NSSet *fallingRowBlocks = [self _blocksInRow:fallingRowIndex];
+					[fallingRowBlocks enumerateObjectsUsingBlock:^(id obj, BOOL *stop) {
+						CALayer *fallingBlock = (CALayer *)obj;
+						fallingBlock.position = CGPointMake(fallingBlock.position.x, fallingBlock.position.y + SPBlockSize);
+					}];
+				}
+				[CATransaction commit];
+			}];
 			[blocksInRow enumerateObjectsUsingBlock:^(id obj, BOOL *stop) {
 				CALayer *block = (CALayer *)obj;
 				[self.gameBlocks removeObject:block];
 				
 				// Animate the blocks flying off to the side.
-				[CATransaction begin];
-				[CATransaction setCompletionBlock:^ {
-					[block removeFromSuperlayer];
-				}];
 				block.position = CGPointMake(block.position.x - SPBlockSize * self.gridNumColumns, block.position.y);
-				[CATransaction commit];
 			}];
-			
-			// Make all of the higher lines fall.
-			for(NSInteger fallingRowIndex = rowIndex + 1; fallingRowIndex < self.gridNumRows; fallingRowIndex++) {
-				NSSet *fallingRowBlocks = [self _blocksInRow:fallingRowIndex];
-				[fallingRowBlocks enumerateObjectsUsingBlock:^(id obj, BOOL *stop) {
-					CALayer *fallingBlock = (CALayer *)obj;
-					fallingBlock.position = CGPointMake(fallingBlock.position.x, fallingBlock.position.y + SPBlockSize);
-				}];
-			}
+			[CATransaction commit];
 		}
 		else {
 			// Move up to the next line.
@@ -420,7 +437,7 @@
 		// If this game block is within our search radius, and isn't part of the currently-dropping piece, add it to our 'closest blocks'.
 		if(distanceFromClosestIntersection <= searchRadius && ![self.currentlyDroppingPiece.componentBlocks containsObject:gameBlock]) {
 			gameBlock.shadowRadius = 20.0f;
-			gameBlock.shadowOpacity = 0.5f;
+			gameBlock.shadowOpacity = 0.75f;
 			[closestBlocks addObject:gameBlock];
 		}
 	}];
@@ -444,7 +461,7 @@
 	
 	// Place our grabbed blocks in the spaces surrounding the drop point.
 	[CATransaction begin];
-	[CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions];
+	[CATransaction setDisableActions:YES];
 	[self.grabbedBlocks enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 		CALayer *grabbedBlock = (CALayer *)obj;
 		CGPoint blockInitialLocation = [(NSValue *)[self.grabbedBlocksInitialLocations objectAtIndex:idx] CGPointValue];

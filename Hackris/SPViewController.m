@@ -72,7 +72,8 @@
 	
 	// Create and start our game update timer source.
 	_gameUpdateTimerSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_main_queue());
-	const uint64_t gameUpdateTimerInterval = NSEC_PER_SEC / 10;	// 10fps
+//	const uint64_t gameUpdateTimerInterval = NSEC_PER_SEC / 10;	// 10fps
+	const uint64_t gameUpdateTimerInterval = NSEC_PER_SEC / 100;	// 100fps
 	dispatch_source_set_timer(self.gameUpdateTimerSource, dispatch_time(DISPATCH_TIME_NOW, 0), gameUpdateTimerInterval, 0);
 	
 	__block NSTimeInterval lastUpdateTimestamp = 0;
