@@ -45,6 +45,9 @@
 
 - (id)init {
 	if((self = [super init])) {
+		// Seed the system random number generator!
+		srand(time(NULL));
+		
 		// Create our game container layer.
 		self.gameContainerLayer = [CALayer layer];
 		self.gameContainerLayer.backgroundColor = [[UIColor blueColor] CGColor];
@@ -315,6 +318,9 @@
 		}
 		else {
 			[self _clearCurrentlyDroppingPiece];
+			
+			// Also clear the next game action; it's no longer valid!
+			self.nextGameAction = nil;
 		}
 	}
 	

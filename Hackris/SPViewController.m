@@ -20,7 +20,8 @@
 // Interaction
 @property(nonatomic, strong)UITouch *trackingTouch;
 @property(nonatomic, assign)CGPoint trackingInitialLocation;
-@property(nonatomic, strong)NSSet *trackingGameBlocks;
+@property(nonatomic, strong)NSArray *trackingGameBlocks;
+@property(nonatomic, strong)NSArray *trackingInitialGameBlockLocations;
 @end
 
 @implementation SPViewController
@@ -30,6 +31,7 @@
 @synthesize trackingTouch = _trackingTouch;
 @synthesize trackingInitialLocation = _trackingInitialLocation;
 @synthesize trackingGameBlocks = _trackingGameBlocks;
+@synthesize trackingInitialGameBlockLocations = _trackingInitialGameBlockLocations;
 
 - (void)_SPViewController_commonInit {
 	// Create our game object.
@@ -122,7 +124,15 @@
 	
 	// Figure out which game blocks we're interacting with.
 	self.trackingInitialLocation = [self.trackingTouch locationInView:self.trackingTouch.view];
-	self.trackingGameBlocks = [self.gameController grabBlocksNearestTouchLocation:self.trackingInitialLocation];
+	self.trackingGameBlocks = [NSArray arrayWithArray:[[self.gameController grabBlocksNearestTouchLocation:self.trackingInitialLocation] allObjects]];
+	NSLog(@"Grabbed blocks: %@", self.trackingGameBlocks);
+	
+	// Also save the initial locations of each of the game blocks.
+	NSMutableArray *initialGameBlockLocations = [NSMutableArray array];
+	[self.trackingGameBlocks enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+		[initialGameBlockLocations addObject:[NSValue valueWithCGPoint:[(CALayer *)obj position]]];
+	}];
+	self.trackingInitialGameBlockLocations = [NSArray arrayWithArray:initialGameBlockLocations];
 }
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
 	// If none of these touches are our tracking touch, just bail.
@@ -130,7 +140,14 @@
 		return;
 	}
 	
-	// TODO: Update the position of the blocks we're currently moving around. --DRC
+	// Update the position of the blocks we're currently moving around.
+	const CGPoint touchLocation = [self.trackingTouch locationInView:self.trackingTouch.view];
+	const CGPoint movementVector = CGPointMake(touchLocation.x - self.trackingInitialLocation.x, touchLocation.y - self.trackingInitialLocation.y);
+	[self.trackingGameBlocks enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+		CALayer *gameBlock = (CALayer *)obj;
+		const CGPoint gameBlockInitialLocation = [[self.trackingInitialGameBlockLocations objectAtIndex:idx] CGPointValue];
+		gameBlock.position = CGPointMake(gameBlockInitialLocation.x + movementVector.x, gameBlockInitialLocation.y + movementVector.y);
+	}];
 }
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
 	// If none of these touches are our tracking touch, just bail.
@@ -141,6 +158,7 @@
 	// Drop the blocks we're currently moving around.
 	const CGPoint dropLocation = [self.trackingTouch locationInView:self.trackingTouch.view];
 	[self.gameController dropGrabbedBlocksAtPoint:dropLocation];
+	NSLog(@"Dropped blocks: %@, at location: %@", self.trackingGameBlocks, NSStringFromCGPoint(dropLocation));
 	
 	// Clear our tracking touch and game blocks.
 	self.trackingTouch = nil;
@@ -154,6 +172,7 @@
 	
 	// Drop the blocks we're currently moving back to their original locations.
 	[self.gameController dropGrabbedBlocksAtPoint:self.trackingInitialLocation];
+	NSLog(@"Dropped blocks: %@, at location: %@", self.trackingGameBlocks, NSStringFromCGPoint(self.trackingInitialLocation));
 	
 	// Clear our tracking touch and game blocks.
 	self.trackingTouch = nil;
