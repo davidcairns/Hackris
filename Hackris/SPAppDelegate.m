@@ -27,4 +27,8 @@
 	return YES;
 }
 
+- (void)applicationDidBecomeActive:(UIApplication *)application {
+	[self.viewController resetGame];
+}
+
 @end

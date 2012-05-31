@@ -102,7 +102,7 @@
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-	return UIInterfaceOrientationIsLandscape(interfaceOrientation);
+	return (UIInterfaceOrientationPortrait == interfaceOrientation);
 }
 
 
@@ -154,6 +154,13 @@
 	
 	// Clear our tracking touch and game blocks.
 	self.trackingTouch = nil;
+}
+
+
+#pragma mark 
+- (void)resetGame {
+	// Reset our game's state.
+	[self.gameController resetGame];
 }
 
 @end

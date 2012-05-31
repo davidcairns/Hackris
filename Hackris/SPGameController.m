@@ -9,6 +9,7 @@
 #import "SPGameController.h"
 #import "SPGameController+SPGameInteraction.h"
 #import "SPGameAction.h"
+#import "SPBlockSize.h"
 
 #define DC_DRAW_BACKGROUND_GRID 1
 
@@ -57,8 +58,9 @@
 		self.gameContainerLayer.delegate = self;
 		
 		// Set up the game's rules.
-		_gridNumRows = 16;
-		_gridNumColumns = 10;
+		const CGRect screenBounds = [[UIScreen mainScreen] bounds];
+		_gridNumRows = screenBounds.size.height / SPBlockSize;
+		_gridNumColumns = screenBounds.size.width / SPBlockSize;
 		_gameStepInterval = 0.2f;
 		_gameActionInterval = 0.15f;
 		
@@ -77,13 +79,13 @@
 	
 	if(layer == self.gameContainerLayer) {
 		// Draw a grid!
-		for(CGFloat penX = 0.0f; penX <= 20.0f * self.gridNumColumns; penX += 20.0f) {
+		for(CGFloat penX = 0.0f; penX <= SPBlockSize * self.gridNumColumns; penX += SPBlockSize) {
 			CGContextMoveToPoint(ctx, penX, 0.0f);
-			CGContextAddLineToPoint(ctx, penX, 20.0f * self.gridNumRows);
+			CGContextAddLineToPoint(ctx, penX, SPBlockSize * self.gridNumRows);
 		}
-		for(CGFloat penY = 0.0f; penY <= 20.0f * self.gridNumRows; penY += 20.0f) {
+		for(CGFloat penY = 0.0f; penY <= SPBlockSize * self.gridNumRows; penY += SPBlockSize) {
 			CGContextMoveToPoint(ctx, 0.0f, penY);
-			CGContextAddLineToPoint(ctx, 20.0f * self.gridNumColumns, penY);
+			CGContextAddLineToPoint(ctx, SPBlockSize * self.gridNumColumns, penY);
 		}
 		
 		CGContextSetStrokeColorWithColor(ctx, [[UIColor redColor] CGColor]);
@@ -97,6 +99,20 @@
 
 
 #pragma mark 
+- (void)resetGame {
+	// Remove all of our game blocks.
+	[self.gameBlocks enumerateObjectsUsingBlock:^(id obj, BOOL *stop) {
+		[(CALayer *)obj removeFromSuperlayer];
+	}];
+	[self.gameBlocks removeAllObjects];
+	
+	// Clear out pending game state.
+	self.currentlyDroppingPiece = nil;
+	self.nextGameAction = nil;
+	self.currentGameTime = 0;
+}
+
+
 - (NSInteger)fallDepthForPiece:(SPGamePiece *)piece leftEdgeColumn:(NSInteger)leftEdgeColumn orientation:(SPGamePieceRotation)orientation {
 	// Get the arrangement of this piece's blocks for this orientation.
 	NSArray *relativeBlockLocations = [SPGamePiece relativeBlockLocationsForPieceType:piece.gamePieceType orientation:orientation];
@@ -106,9 +122,9 @@
 	__block NSInteger pieceBottomRowOffset = 0;
 	[relativeBlockLocations enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 		const CGPoint relativeLocation = [(NSValue *)obj CGPointValue];
-		const NSInteger columnOffsetForBlock = relativeLocation.x / 20.0f;
+		const NSInteger columnOffsetForBlock = relativeLocation.x / SPBlockSize;
 		pieceColumnOffset = MIN(pieceColumnOffset, columnOffsetForBlock);
-		const NSInteger rowOffsetForBlock = relativeLocation.y / 20.0f;
+		const NSInteger rowOffsetForBlock = relativeLocation.y / SPBlockSize;
 		pieceBottomRowOffset = MAX(pieceBottomRowOffset, rowOffsetForBlock);
 	}];
 	
@@ -120,7 +136,7 @@
 		NSMutableArray *locations = [NSMutableArray array];
 		[relativeBlockLocations enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 			const CGPoint relativeLocation = [(NSValue *)obj CGPointValue];
-			const CGPoint absoluteLocation = CGPointMake(relativeLocation.x + 20.0f * (CGFloat)(leftEdgeColumn - pieceColumnOffset) + 10.0f, relativeLocation.y + 20.0f * (CGFloat)depth + 10.0f);
+			const CGPoint absoluteLocation = CGPointMake(relativeLocation.x + SPBlockSize * (CGFloat)(leftEdgeColumn - pieceColumnOffset) + 0.5f * SPBlockSize, relativeLocation.y + SPBlockSize * (CGFloat)depth + 0.5f * SPBlockSize);
 			[locations addObject:[NSValue valueWithCGPoint:absoluteLocation]];
 		}];
 		
@@ -143,9 +159,9 @@
 	__block NSInteger pieceBottomRowOffset = 0;
 	[relativeBlockLocations enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 		const CGPoint relativeLocation = [(NSValue *)obj CGPointValue];
-		const NSInteger columnOffsetForBlock = relativeLocation.x / 20.0f;
+		const NSInteger columnOffsetForBlock = relativeLocation.x / SPBlockSize;
 		pieceColumnOffset = MIN(pieceColumnOffset, columnOffsetForBlock);
-		const NSInteger rowOffsetForBlock = relativeLocation.y / 20.0f;
+		const NSInteger rowOffsetForBlock = relativeLocation.y / SPBlockSize;
 		pieceBottomRowOffset = MAX(pieceBottomRowOffset, rowOffsetForBlock);
 	}];
 	
@@ -153,7 +169,7 @@
 	NSMutableArray *absoluteBlockLocations = [NSMutableArray array];
 	[relativeBlockLocations enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 		const CGPoint relativeLocation = [(NSValue *)obj CGPointValue];
-		const CGPoint absoluteLocation = CGPointMake(relativeLocation.x + 20.0f * (CGFloat)(leftEdgeColumn - pieceColumnOffset) + 10.0f, relativeLocation.y + 20.0f * (CGFloat)(depth - pieceBottomRowOffset) + 10.0f);
+		const CGPoint absoluteLocation = CGPointMake(relativeLocation.x + SPBlockSize * (CGFloat)(leftEdgeColumn - pieceColumnOffset) + 0.5f * SPBlockSize, relativeLocation.y + SPBlockSize * (CGFloat)(depth - pieceBottomRowOffset) + 0.5f * SPBlockSize);
 		[absoluteBlockLocations addObject:[NSValue valueWithCGPoint:absoluteLocation]];
 	}];
 	
@@ -168,7 +184,7 @@
 	// Add blocks for the block locations to the game blocks set and return it.
 	[absoluteBlockLocations enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 		CALayer *pieceBlock = [CALayer layer];
-		pieceBlock.bounds = CGRectMake(0.0f, 0.0f, 18.0f, 18.0f);
+		pieceBlock.bounds = CGRectMake(0.0f, 0.0f, SPBlockSize - 2.0f, SPBlockSize - 2.0f);
 		pieceBlock.position = [(NSValue *)obj CGPointValue];
 		[gameBlocks addObject:pieceBlock];
 	}];
@@ -182,7 +198,7 @@
 		const CGPoint positionAfterMovement = [(NSValue *)obj CGPointValue];
 		
 		// Check to see if the component block hits the bottom of sides of the game board.
-		if(positionAfterMovement.x < 10.0f || positionAfterMovement.x > 20.0f * self.gridNumColumns - 10.0f || positionAfterMovement.y > 20.0f * self.gridNumRows - 10.0f) {
+		if(positionAfterMovement.x < 0.5f * SPBlockSize || positionAfterMovement.x > SPBlockSize * self.gridNumColumns - 0.5f * SPBlockSize || positionAfterMovement.y > SPBlockSize * self.gridNumRows - 0.5f * SPBlockSize) {
 			foundIntersection = YES;
 			*stop = YES;
 			return;
@@ -234,7 +250,7 @@
 		
 		// Add the game piece's component blocks and position them.
 		const NSInteger droppingPieceBlockOffset = self.gridNumColumns / 2;
-		const CGPoint droppingPieceOrigin = CGPointMake((CGFloat)droppingPieceBlockOffset * 20.0f, -1.0f * [self.currentlyDroppingPiece numBlocksHigh] * 20.0f);
+		const CGPoint droppingPieceOrigin = CGPointMake((CGFloat)droppingPieceBlockOffset * SPBlockSize, -1.0f * [self.currentlyDroppingPiece numBlocksHigh] * SPBlockSize);
 		[self.currentlyDroppingPiece.componentBlocks enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 			CALayer *componentBlock = (CALayer *)obj;
 			componentBlock.position = CGPointMake(droppingPieceOrigin.x + componentBlock.position.x, droppingPieceOrigin.y + componentBlock.position.y);
@@ -254,7 +270,7 @@
 	// NOTE: Rows are indexed from the bottom (highest y-coordinate) to the top (lowest y-coordinate).
 	
 	// Determine which y-value corresponds to this row.
-	const CGFloat rowY = self.gameContainerLayer.bounds.size.height - 20.0f * (CGFloat)rowIndex - 10.0f;
+	const CGFloat rowY = self.gameContainerLayer.bounds.size.height - SPBlockSize * (CGFloat)rowIndex - 0.5f * SPBlockSize;
 	
 	NSMutableSet *blocks = [NSMutableSet set];
 	[self.gameBlocks enumerateObjectsUsingBlock:^(id obj, BOOL *stop) {
@@ -286,7 +302,7 @@
 				[CATransaction setCompletionBlock:^ {
 					[block removeFromSuperlayer];
 				}];
-				block.position = CGPointMake(block.position.x - 20.0f * self.gridNumColumns, block.position.y);
+				block.position = CGPointMake(block.position.x - SPBlockSize * self.gridNumColumns, block.position.y);
 				[CATransaction commit];
 			}];
 			
@@ -295,7 +311,7 @@
 				NSSet *fallingRowBlocks = [self _blocksInRow:fallingRowIndex];
 				[fallingRowBlocks enumerateObjectsUsingBlock:^(id obj, BOOL *stop) {
 					CALayer *fallingBlock = (CALayer *)obj;
-					fallingBlock.position = CGPointMake(fallingBlock.position.x, fallingBlock.position.y + 20.0f);
+					fallingBlock.position = CGPointMake(fallingBlock.position.x, fallingBlock.position.y + SPBlockSize);
 				}];
 			}
 		}
@@ -361,11 +377,11 @@
 #pragma mark - Interaction
 - (CGPoint)_closestIntersectionForTouchLocation:(CGPoint)touchLocation {
 	// Determine the location intersection closest to this touch location.
-	const NSInteger closestColumn = roundf(touchLocation.x / 20.0f);
-	const NSInteger closestRow = roundf(touchLocation.y / 20.0f);
-	CGPoint closestIntersection = CGPointMake(20.0f * (CGFloat)closestColumn, 20.0f * (CGFloat)closestRow);
-	closestIntersection.x = MAX(20.0f, MIN(closestIntersection.x, 20.0f * self.gridNumColumns - 20.0f));
-	closestIntersection.y = MAX(20.0f, MIN(closestIntersection.y, 20.0f * self.gridNumRows - 20.0f));
+	const NSInteger closestColumn = roundf(touchLocation.x / SPBlockSize);
+	const NSInteger closestRow = roundf(touchLocation.y / SPBlockSize);
+	CGPoint closestIntersection = CGPointMake(SPBlockSize * (CGFloat)closestColumn, SPBlockSize * (CGFloat)closestRow);
+	closestIntersection.x = MAX(SPBlockSize, MIN(closestIntersection.x, SPBlockSize * self.gridNumColumns - SPBlockSize));
+	closestIntersection.y = MAX(SPBlockSize, MIN(closestIntersection.y, SPBlockSize * self.gridNumRows - SPBlockSize));
 	return closestIntersection;
 }
 - (void)grabBlocksNearestTouchLocation:(CGPoint)touchLocation {
@@ -373,7 +389,7 @@
 	const CGPoint closestIntersection = [self _closestIntersectionForTouchLocation:touchLocation];
 	
 	// Determine the radius in which to search.
-	const CGFloat searchRadius = sqrtf(20.0f * 20.0f + 20.0f * 20.0f);
+	const CGFloat searchRadius = sqrtf(SPBlockSize * SPBlockSize + SPBlockSize * SPBlockSize);
 	
 	// Find the (maximum four) blocks closest to the location intersection.
 	NSMutableArray *closestBlocks = [NSMutableArray array];

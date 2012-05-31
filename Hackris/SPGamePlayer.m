@@ -10,6 +10,7 @@
 #import "SPGameController+SPGameInteraction.h"
 #import "SPGameAction.h"
 #import "SPGamePiece.h"
+#import "SPBlockSize.h"
 
 @interface SPSolution : NSObject
 @property(nonatomic, assign)NSInteger leftEdgeColumn;
@@ -70,7 +71,7 @@
 }
 #endif
 - (CGPoint)_locationForRow:(NSInteger)rowIndex column:(NSInteger)columnIndex {
-	return CGPointMake(columnIndex * 20.0f + 10.0f, rowIndex * 20.0f + 10.0f);
+	return CGPointMake(columnIndex * 20.0f + 0.5f * SPBlockSize, rowIndex * 20.0f + 0.5f * SPBlockSize);
 }
 - (CALayer *)_blockAtLocation:(CGPoint)location inGroup:(NSSet *)blocks {
 	for(CALayer *block in blocks) {

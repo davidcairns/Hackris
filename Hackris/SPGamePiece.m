@@ -7,7 +7,7 @@
 //
 
 #import "SPGamePiece.h"
-
+#import "SPBlockSize.h"
 
 @interface CALayer (SPGamePieceBlock)
 + (CALayer *)SPGamePieceBlock_layerWithColor:(UIColor *)color;
@@ -15,7 +15,7 @@
 @implementation CALayer (SPGamePieceBlock)
 + (CALayer *)SPGamePieceBlock_layerWithColor:(UIColor *)color {
 	CALayer *layer = [CALayer layer];
-	layer.bounds = CGRectMake(0.0f, 0.0f, 18.0f, 18.0f);
+	layer.bounds = CGRectMake(0.0f, 0.0f, SPBlockSize - 2.0f, SPBlockSize - 2.0f);
 	layer.backgroundColor = [color CGColor];
 	layer.cornerRadius = 3.0f;
 	return layer;
@@ -77,40 +77,40 @@
 			// Arrange this component block based on the piece type.
 			switch(gamePieceType) {
 				case SPGamePieceTypeStraight:
-					componentBlock.position = CGPointMake(10.0f, 10.0f + 20.0f * (CGFloat)idx);
+					componentBlock.position = CGPointMake(0.5f * SPBlockSize, 0.5f * SPBlockSize + SPBlockSize * (CGFloat)idx);
 					break;
 					
 				case SPGamePieceTypeLeftL:
 					if(3 == idx) {
-						componentBlock.position = CGPointMake(10.0f, 10.0f);
+						componentBlock.position = CGPointMake(0.5f * SPBlockSize, 0.5f * SPBlockSize);
 					}
 					else {
-						componentBlock.position = CGPointMake(30.0f, 10.0f + 20.0f * (CGFloat)idx);
+						componentBlock.position = CGPointMake(1.5f * SPBlockSize, 0.5f * SPBlockSize + SPBlockSize * (CGFloat)idx);
 					}
 					break;
 					
 				case SPGamePieceTypeRightL:
 					if(3 == idx) {
-						componentBlock.position = CGPointMake(30.0f, 10.0f);
+						componentBlock.position = CGPointMake(1.5f * SPBlockSize, 0.5f * SPBlockSize);
 					}
 					else {
-						componentBlock.position = CGPointMake(10.0f, 10.0f + 20.0f * (CGFloat)idx);
+						componentBlock.position = CGPointMake(0.5f * SPBlockSize, 0.5f * SPBlockSize + SPBlockSize * (CGFloat)idx);
 					}
 					break;
 					
 				case SPGamePieceTypeT:
 					if(3 == idx) {
-						componentBlock.position = CGPointMake(30.0f, 30.0f);
+						componentBlock.position = CGPointMake(1.5f * SPBlockSize, 1.5f * SPBlockSize);
 					}
 					else {
-						componentBlock.position = CGPointMake(10.0f, 10.0f + 20.0f * (CGFloat)idx);
+						componentBlock.position = CGPointMake(0.5f * SPBlockSize, 0.5f * SPBlockSize + SPBlockSize * (CGFloat)idx);
 					}
 					break;
 					
 				case SPGamePieceTypeSquare:
 				{
-					const CGFloat blockPositionX = (idx < 2 ? 10.0f : 30.0f);
-					componentBlock.position = CGPointMake(blockPositionX, 10.0f + 20.0f * (CGFloat)(idx % 2));
+					const CGFloat blockPositionX = (idx < 2 ? 0.5f * SPBlockSize : 1.5f * SPBlockSize);
+					componentBlock.position = CGPointMake(blockPositionX, 0.5f * SPBlockSize + SPBlockSize * (CGFloat)(idx % 2));
 				}
 					break;
 					
@@ -131,7 +131,7 @@
 		leftEdgePosition = MIN(leftEdgePosition, componentBlock.position.x);
 	}];
 	
-	return (leftEdgePosition - 10.0f) / 20.0f;
+	return (leftEdgePosition - 0.5f * SPBlockSize) / SPBlockSize;
 }
 
 
@@ -144,10 +144,10 @@
 		switch(pieceType) {
 			case SPGamePieceTypeStraight:
 				if(SPGamePieceRotationNone == orientation || SPGamePieceRotationUpsideDown == orientation) {
-					newLocation = CGPointMake(0.0f, 20.0f * (componentBlockIndex - 1));
+					newLocation = CGPointMake(0.0f, SPBlockSize * (componentBlockIndex - 1));
 				}
 				else {
-					newLocation = CGPointMake(20.0f * (componentBlockIndex - 1), 0.0f);
+					newLocation = CGPointMake(SPBlockSize * (componentBlockIndex - 1), 0.0f);
 				}
 				break;
 				
@@ -155,37 +155,37 @@
 				switch(orientation) {
 					case SPGamePieceRotationNone:
 						if(3 == componentBlockIndex) {
-							newLocation = CGPointMake(-20.0f, -20.0f);
+							newLocation = CGPointMake(-SPBlockSize, -SPBlockSize);
 						}
 						else {
-							newLocation = CGPointMake(0.0f, 20.0f * (componentBlockIndex - 1));
+							newLocation = CGPointMake(0.0f, SPBlockSize * (componentBlockIndex - 1));
 						}
 						break;
 						
 					case SPGamePieceRotationClockwise:
 						if(3 == componentBlockIndex) {
-							newLocation = CGPointMake(20.0f, -20.0f);
+							newLocation = CGPointMake(SPBlockSize, -SPBlockSize);
 						}
 						else {
-							newLocation = CGPointMake(-20.0f * (componentBlockIndex - 1), 0.0f);
+							newLocation = CGPointMake(-SPBlockSize * (componentBlockIndex - 1), 0.0f);
 						}
 						break;
 						
 					case SPGamePieceRotationUpsideDown:
 						if(3 == componentBlockIndex) {
-							newLocation = CGPointMake(20.0f, 20.0f);
+							newLocation = CGPointMake(SPBlockSize, SPBlockSize);
 						}
 						else {
-							newLocation = CGPointMake(0.0f, -20.0f * (componentBlockIndex - 1));
+							newLocation = CGPointMake(0.0f, -SPBlockSize * (componentBlockIndex - 1));
 						}
 						break;
 						
 					case SPGamePieceRotationCounterClockwise:
 						if(3 == componentBlockIndex) {
-							newLocation = CGPointMake(-20.0f, 20.0f);
+							newLocation = CGPointMake(-SPBlockSize, SPBlockSize);
 						}
 						else {
-							newLocation = CGPointMake(20.0f * (componentBlockIndex - 1), 0.0f);
+							newLocation = CGPointMake(SPBlockSize * (componentBlockIndex - 1), 0.0f);
 						}
 						break;
 						
@@ -198,37 +198,37 @@
 				switch(orientation) {
 					case SPGamePieceRotationNone:
 						if(3 == componentBlockIndex) {
-							newLocation = CGPointMake(20.0f, -20.0f);
+							newLocation = CGPointMake(SPBlockSize, -SPBlockSize);
 						}
 						else {
-							newLocation = CGPointMake(0.0f, 20.0f * (componentBlockIndex - 1));
+							newLocation = CGPointMake(0.0f, SPBlockSize * (componentBlockIndex - 1));
 						}
 						break;
 						
 					case SPGamePieceRotationClockwise:
 						if(3 == componentBlockIndex) {
-							newLocation = CGPointMake(20.0f, 20.0f);
+							newLocation = CGPointMake(SPBlockSize, SPBlockSize);
 						}
 						else {
-							newLocation = CGPointMake(-20.0f * (componentBlockIndex - 1), 0.0f);
+							newLocation = CGPointMake(-SPBlockSize * (componentBlockIndex - 1), 0.0f);
 						}
 						break;
 						
 					case SPGamePieceRotationUpsideDown:
 						if(3 == componentBlockIndex) {
-							newLocation = CGPointMake(-20.0f, 20.0f);
+							newLocation = CGPointMake(-SPBlockSize, SPBlockSize);
 						}
 						else {
-							newLocation = CGPointMake(0.0f, 20.0f * (componentBlockIndex - 1));
+							newLocation = CGPointMake(0.0f, SPBlockSize * (componentBlockIndex - 1));
 						}
 						break;
 						
 					case SPGamePieceRotationCounterClockwise:
 						if(3 == componentBlockIndex) {
-							newLocation = CGPointMake(-20.0f, -20.0f);
+							newLocation = CGPointMake(-SPBlockSize, -SPBlockSize);
 						}
 						else {
-							newLocation = CGPointMake(20.0f * (componentBlockIndex - 1), 0.0f);
+							newLocation = CGPointMake(SPBlockSize * (componentBlockIndex - 1), 0.0f);
 						}
 						break;
 						
@@ -241,37 +241,37 @@
 				switch(orientation) {
 					case SPGamePieceRotationNone:
 						if(3 == componentBlockIndex) {
-							newLocation = CGPointMake(20.0f, 0.0f);
+							newLocation = CGPointMake(SPBlockSize, 0.0f);
 						}
 						else {
-							newLocation = CGPointMake(0.0f, 20.0f * (componentBlockIndex - 1));
+							newLocation = CGPointMake(0.0f, SPBlockSize * (componentBlockIndex - 1));
 						}
 						break;
 						
 					case SPGamePieceRotationClockwise:
 						if(3 == componentBlockIndex) {
-							newLocation = CGPointMake(0.0f, 20.0f);
+							newLocation = CGPointMake(0.0f, SPBlockSize);
 						}
 						else {
-							newLocation = CGPointMake(-20.0f * (componentBlockIndex - 1), 0.0f);
+							newLocation = CGPointMake(-SPBlockSize * (componentBlockIndex - 1), 0.0f);
 						}
 						break;
 						
 					case SPGamePieceRotationUpsideDown:
 						if(3 == componentBlockIndex) {
-							newLocation = CGPointMake(-20.0f, 0.0f);
+							newLocation = CGPointMake(-SPBlockSize, 0.0f);
 						}
 						else {
-							newLocation = CGPointMake(0.0f, -20.0f * (componentBlockIndex - 1));
+							newLocation = CGPointMake(0.0f, -SPBlockSize * (componentBlockIndex - 1));
 						}
 						break;
 						
 					case SPGamePieceRotationCounterClockwise:
 						if(3 == componentBlockIndex) {
-							newLocation = CGPointMake(0.0f, -20.0f);
+							newLocation = CGPointMake(0.0f, -SPBlockSize);
 						}
 						else {
-							newLocation = CGPointMake(20.0f * (componentBlockIndex - 1), 0.0f);
+							newLocation = CGPointMake(SPBlockSize * (componentBlockIndex - 1), 0.0f);
 						}
 						break;
 						
@@ -281,7 +281,7 @@
 				break;
 				
 			case SPGamePieceTypeSquare:
-				newLocation = CGPointMake(componentBlockIndex < 2 ? 0.0f : 20.0f, 20.0f * (CGFloat)(componentBlockIndex % 2) - 20.0f);
+				newLocation = CGPointMake(componentBlockIndex < 2 ? 0.0f : SPBlockSize, SPBlockSize * (CGFloat)(componentBlockIndex % 2) - SPBlockSize);
 				break;
 				
 			default:
@@ -318,13 +318,13 @@
 		// Determine the proper movement vector for this action.
 		CGPoint movementVector = CGPointZero;
 		if(SPGameActionMoveLeft == action.type) {
-			movementVector = CGPointMake(-20.0f, 0.0f);
+			movementVector = CGPointMake(-SPBlockSize, 0.0f);
 		}
 		else if(SPGameActionMoveRight == action.type) {
-			movementVector = CGPointMake(20.0f, 0.0f);
+			movementVector = CGPointMake(SPBlockSize, 0.0f);
 		}
 		else if(SPGameActionMoveDown == action.type) {
-			movementVector = CGPointMake(0.0f, 20.0f);
+			movementVector = CGPointMake(0.0f, SPBlockSize);
 		}
 		else {
 			NSLog(@"WARNING: Invalid action type: %i", action.type);

@@ -12,6 +12,8 @@
 
 @interface SPGameController : NSObject
 
+- (void)resetGame;
+
 // Game Rules
 @property(nonatomic, readonly)NSInteger gridNumRows;
 @property(nonatomic, readonly)NSInteger gridNumColumns;
@@ -33,11 +35,7 @@
 - (void)updateWithTimeDelta:(NSTimeInterval)timeDelta;
 
 // Interaction
-#if 1
 - (void)grabBlocksNearestTouchLocation:(CGPoint)touchLocation;
-#else
-- (NSSet *)grabBlocksNearestTouchLocation:(CGPoint)touchLocation;
-#endif
 - (void)moveGrabbedBlocksToTouchLocation:(CGPoint)touchLocation;
 - (void)dropGrabbedBlocksAtTouchLocation:(CGPoint)touchLocation;
 

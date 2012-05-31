@@ -10,4 +10,6 @@
 
 @interface SPViewController : UIViewController
 
+- (void)resetGame;
+
 @end
