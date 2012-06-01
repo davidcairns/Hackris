@@ -8,6 +8,7 @@
 
 #import "SPGameController.h"
 #import "SPGameController+SPGameInteraction.h"
+#import "SPGameController+SPGameBoardAccess.h"
 #import "SPGameAction.h"
 #import "SPBlockSize.h"
 
@@ -24,7 +25,6 @@
 @property(nonatomic, strong)NSMutableSet *gameBlocks;
 
 // Game Interaction.
-@property(nonatomic, assign)NSTimeInterval lastGameActionTimestamp;
 @property(nonatomic, strong)SPGameAction *nextGameAction;
 @property(nonatomic, strong)NSArray *grabbedBlocks;
 @property(nonatomic, assign)CGPoint grabInitialTouchLocation;
@@ -36,12 +36,10 @@
 @synthesize gridNumRows = _gridNumRows;
 @synthesize gridNumColumns = _gridNumColumns;
 @synthesize gameStepInterval = _gameStepInterval;
-@synthesize gameActionInterval = _gameActionInterval;
 @synthesize currentGameTime = _currentGameTime;
 @synthesize lastGameStepTimestamp = _lastGameStepTimestamp;
 @synthesize currentlyDroppingPiece = _currentlyDroppingPiece;
 @synthesize gameBlocks = _gameBlocks;
-@synthesize lastGameActionTimestamp = _lastGameActionTimestamp;
 @synthesize nextGameAction = _nextGameAction;
 @synthesize grabbedBlocks = _grabbedBlocks;
 @synthesize grabInitialTouchLocation = _grabInitialTouchLocation;
@@ -61,8 +59,7 @@
 		const CGRect screenBounds = [[UIScreen mainScreen] bounds];
 		_gridNumRows = screenBounds.size.height / SPBlockSize;
 		_gridNumColumns = screenBounds.size.width / SPBlockSize;
-		_gameStepInterval = 0.01f;
-		_gameActionInterval = 0.01f;
+		_gameStepInterval = 0.05f;
 		
 		// Create our game's state objects.
 		self.gameBlocks = [NSMutableSet set];
@@ -111,7 +108,6 @@
 	self.nextGameAction = nil;
 	self.currentGameTime = 0;
 	self.lastGameStepTimestamp = 0;
-	self.lastGameActionTimestamp = 0;
 	
 	self.grabbedBlocks = nil;
 	self.grabbedBlocksInitialLocations = nil;
@@ -155,7 +151,10 @@
 	return depth > 0 ? depth + pieceBottomRowOffset : 0;
 }
 
-- (NSSet *)gameBlocksAfterMovingPiece:(SPGamePiece *)gamePiece toLeftEdgeColumn:(NSInteger)leftEdgeColumn depth:(NSInteger)depth orientation:(SPGamePieceRotation)orientation {
+- (SPGameBoardDescription *)descriptionOfCurrentBoard {
+	return [SPGameBoardDescription gameBoardDescriptionForBlocks:self.gameBlocks gridNumRows:self.gridNumRows gridNumColumns:self.gridNumColumns];
+}
+- (SPGameBoardDescription *)descriptionAfterMovingPiece:(SPGamePiece *)gamePiece toLeftEdgeColumn:(NSInteger)leftEdgeColumn depth:(NSInteger)depth orientation:(SPGamePieceRotation)orientation {
 	// Get the relative blocks locations for this piece type and orientation.
 	NSArray *relativeBlockLocations = [SPGamePiece relativeBlockLocationsForPieceType:gamePiece.gamePieceType orientation:orientation];
 	
@@ -193,7 +192,8 @@
 		pieceBlock.position = [(NSValue *)obj CGPointValue];
 		[gameBlocks addObject:pieceBlock];
 	}];
-	return gameBlocks;
+	
+	return [SPGameBoardDescription gameBoardDescriptionForBlocks:gameBlocks gridNumRows:self.gridNumRows gridNumColumns:self.gridNumColumns];
 }
 
 
@@ -373,29 +373,27 @@
 				self.nextGameAction = nil;
 			}
 		}
-	}
-	
-	// Determine if it's time to execute the next game action.
-	if(self.nextGameAction && (self.currentGameTime - self.lastGameActionTimestamp >= self.gameActionInterval)) {
-		self.lastGameActionTimestamp = self.currentGameTime;
 		
-		// If we can do so, execute the game action.
-		if([self _canExecuteGameAction:self.nextGameAction againstPiece:currentPiece]) {
-			// Actually execute the game action.
-			[self _executeGameAction:self.nextGameAction againstPiece:currentPiece];
-			
-			// If this was a rotation action, update the piece's rotation.
-			if(SPGameActionRotate == self.nextGameAction.type) {
-				self.currentlyDroppingPiece.rotation = (self.currentlyDroppingPiece.rotation + 1) % SPGamePieceRotationNumAngles;
+		// Determine if it's time to execute the next game action.
+		if(self.nextGameAction) {
+			// If we can do so, execute the game action.
+			if([self _canExecuteGameAction:self.nextGameAction againstPiece:currentPiece]) {
+				// Actually execute the game action.
+				[self _executeGameAction:self.nextGameAction againstPiece:currentPiece];
+				
+				// If this was a rotation action, update the piece's rotation.
+				if(SPGameActionRotate == self.nextGameAction.type) {
+					self.currentlyDroppingPiece.rotation = (self.currentlyDroppingPiece.rotation + 1) % SPGamePieceRotationNumAngles;
+				}
 			}
+			
+			// Clear the game action.
+			self.nextGameAction = nil;
 		}
 		
-		// Clear the game action.
-		self.nextGameAction = nil;
+		// Check for line-clear!
+		[self _performLineClearIfNecessary];
 	}
-	
-	// Check for line-clear!
-	[self _performLineClearIfNecessary];
 	
 	// Make sure our background layer gets displayed.
 	[self.gameContainerLayer setNeedsDisplay];
@@ -490,7 +488,6 @@
 
 #pragma mark 
 @implementation SPGameController (SPGameInteraction)
-
 - (void)moveCurrentPieceLeft {
 	self.nextGameAction = [SPGameAction gameActionWithType:SPGameActionMoveLeft];
 }
@@ -500,5 +497,12 @@
 - (void)rotateCurrentPiece {
 	self.nextGameAction = [SPGameAction gameActionWithType:SPGameActionRotate];
 }
+@end
 
+
+#pragma mark 
+@implementation SPGameController (SPGameBoardAccess)
+- (NSSet *)gameBlocksSet {
+	return [NSSet setWithSet:self.gameBlocks];
+}
 @end

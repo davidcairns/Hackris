@@ -20,6 +20,7 @@
 		DF4DA4EF15748C9600E04A84 /* SPGamePiece.m in Sources */ = {isa = PBXBuildFile; fileRef = DF4DA4EE15748C9600E04A84 /* SPGamePiece.m */; };
 		DF4DA4F51574AF1300E04A84 /* SPGameAction.m in Sources */ = {isa = PBXBuildFile; fileRef = DF4DA4F41574AF1300E04A84 /* SPGameAction.m */; };
 		DF5774C0157810C000F7B59B /* block_gradient.png in Resources */ = {isa = PBXBuildFile; fileRef = DF5774BF157810C000F7B59B /* block_gradient.png */; };
+		DF7503CA157976C700110795 /* SPGameBoardDescription.m in Sources */ = {isa = PBXBuildFile; fileRef = DF7503C9157976C700110795 /* SPGameBoardDescription.m */; };
 		DF9EB8B9157570760070BAED /* SPGamePlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = DF9EB8B8157570760070BAED /* SPGamePlayer.m */; };
 /* End PBXBuildFile section */
 
@@ -47,6 +48,9 @@
 		DF4DA4F41574AF1300E04A84 /* SPGameAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPGameAction.m; sourceTree = "<group>"; };
 		DF5774BD1577649100F7B59B /* SPBlockSize.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SPBlockSize.h; sourceTree = "<group>"; };
 		DF5774BF157810C000F7B59B /* block_gradient.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = block_gradient.png; sourceTree = "<group>"; };
+		DF7503C8157976C700110795 /* SPGameBoardDescription.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPGameBoardDescription.h; sourceTree = "<group>"; };
+		DF7503C9157976C700110795 /* SPGameBoardDescription.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPGameBoardDescription.m; sourceTree = "<group>"; };
+		DF7503CC1579821700110795 /* SPGameController+SPGameBoardAccess.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SPGameController+SPGameBoardAccess.h"; sourceTree = "<group>"; };
 		DF9EB8B7157570760070BAED /* SPGamePlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPGamePlayer.h; sourceTree = "<group>"; };
 		DF9EB8B8157570760070BAED /* SPGamePlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPGamePlayer.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -107,6 +111,9 @@
 				DF4DA4EA1574891700E04A84 /* SPGameController.h */,
 				DF4DA4EB1574891700E04A84 /* SPGameController.m */,
 				DF4DA4F01574AC1B00E04A84 /* SPGameController+SPGameInteraction.h */,
+				DF7503CC1579821700110795 /* SPGameController+SPGameBoardAccess.h */,
+				DF7503C8157976C700110795 /* SPGameBoardDescription.h */,
+				DF7503C9157976C700110795 /* SPGameBoardDescription.m */,
 				DF4DA4ED15748C9600E04A84 /* SPGamePiece.h */,
 				DF4DA4EE15748C9600E04A84 /* SPGamePiece.m */,
 				DF4DA4F31574AF1300E04A84 /* SPGameAction.h */,
@@ -210,6 +217,7 @@
 				DF4DA4EF15748C9600E04A84 /* SPGamePiece.m in Sources */,
 				DF4DA4F51574AF1300E04A84 /* SPGameAction.m in Sources */,
 				DF9EB8B9157570760070BAED /* SPGamePlayer.m in Sources */,
+				DF7503CA157976C700110795 /* SPGameBoardDescription.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

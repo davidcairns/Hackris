@@ -73,18 +73,23 @@
 	// Create and start our game update timer source.
 	_gameUpdateTimerSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_main_queue());
 //	const uint64_t gameUpdateTimerInterval = NSEC_PER_SEC / 10;	// 10fps
-	const uint64_t gameUpdateTimerInterval = NSEC_PER_SEC / 100;	// 100fps
+	const uint64_t gameUpdateTimerInterval = NSEC_PER_SEC / 40;	// 40fps
 	dispatch_source_set_timer(self.gameUpdateTimerSource, dispatch_time(DISPATCH_TIME_NOW, 0), gameUpdateTimerInterval, 0);
 	
-	__block NSTimeInterval lastUpdateTimestamp = 0;
+	__block NSTimeInterval lastUpdateTimestamp = 0.0;
+	__block NSTimeInterval lastMoveTimestamp = 0.0;
+	const NSTimeInterval moveInterval = 1.0 / 10.0;
 	dispatch_source_set_event_handler(self.gameUpdateTimerSource, ^ {
 		// Determine how much time has elapsed since the last game update.
 		const NSTimeInterval currentTimestamp = [NSDate timeIntervalSinceReferenceDate];
 		const NSTimeInterval timeDelta = (0 == lastUpdateTimestamp ? 0 : currentTimestamp - lastUpdateTimestamp);
 		lastUpdateTimestamp = currentTimestamp;
 		
-		// Allow our player object to act.
-		[self.gamePlayer makeMoveInGame:self.gameController];
+		if(currentTimestamp - lastMoveTimestamp >= moveInterval) {
+			// Allow our player object to act.
+			[self.gamePlayer makeMoveInGame:self.gameController];
+			lastMoveTimestamp = currentTimestamp;
+		}
 		
 		// Update the game.
 		[self.gameController updateWithTimeDelta:timeDelta];

@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <QuartzCore/QuartzCore.h>
 #import "SPGamePiece.h"
+#import "SPGameBoardDescription.h"
 
 @interface SPGameController : NSObject
 
@@ -19,14 +20,15 @@
 @property(nonatomic, readonly)NSInteger gridNumColumns;
 // How often e.g. the piece drops:
 @property(nonatomic, readonly)NSTimeInterval gameStepInterval;
-// How often the (computer) 'player' can issue game actions:
-@property(nonatomic, readonly)NSTimeInterval gameActionInterval;
+//// How often the (computer) 'player' can issue game actions:
+//@property(nonatomic, readonly)NSTimeInterval gameActionInterval;
 
 
 // Game State
 @property(nonatomic, strong, readonly)SPGamePiece *currentlyDroppingPiece;
 - (NSInteger)fallDepthForPiece:(SPGamePiece *)piece leftEdgeColumn:(NSInteger)leftEdgeColumn orientation:(SPGamePieceRotation)orientation;
-- (NSSet *)gameBlocksAfterMovingPiece:(SPGamePiece *)gamePiece toLeftEdgeColumn:(NSInteger)leftEdgeColumn depth:(NSInteger)depth orientation:(SPGamePieceRotation)orientation;
+- (SPGameBoardDescription *)descriptionOfCurrentBoard;
+- (SPGameBoardDescription *)descriptionAfterMovingPiece:(SPGamePiece *)gamePiece toLeftEdgeColumn:(NSInteger)leftEdgeColumn depth:(NSInteger)depth orientation:(SPGamePieceRotation)orientation;
 
 // Interface
 @property(nonatomic, strong, readonly)CALayer *gameContainerLayer;
