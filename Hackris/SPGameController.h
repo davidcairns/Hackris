@@ -28,7 +28,7 @@
 @property(nonatomic, strong, readonly)SPGamePiece *currentlyDroppingPiece;
 - (NSInteger)fallDepthForPiece:(SPGamePiece *)piece leftEdgeColumn:(NSInteger)leftEdgeColumn orientation:(SPGamePieceRotation)orientation;
 - (SPGameBoardDescription *)descriptionOfCurrentBoard;
-- (SPGameBoardDescription *)descriptionAfterMovingPiece:(SPGamePiece *)gamePiece toLeftEdgeColumn:(NSInteger)leftEdgeColumn depth:(NSInteger)depth orientation:(SPGamePieceRotation)orientation;
+- (SPGameBoardDescription *)descriptionOfCurrentBoardSansPiece:(SPGamePiece *)gamePiece;
 
 // Interface
 @property(nonatomic, strong, readonly)CALayer *gameContainerLayer;

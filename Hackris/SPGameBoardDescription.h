@@ -7,10 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "SPGamePiece.h"
 
 @interface SPGameBoardDescription : NSObject
 
 + (SPGameBoardDescription *)gameBoardDescriptionForBlocks:(NSSet *)gameBlocks gridNumRows:(NSInteger)gridNumRows gridNumColumns:(NSInteger)gridNumColumns;
+//- (SPGameBoardDescription *)descriptionAfterMovingPiece:(SPGamePiece *)gamePiece toLeftEdgeColumn:(NSInteger)leftEdgeColumn depth:(NSInteger)depth orientation:(SPGamePieceRotation)orientation;
+- (SPGameBoardDescription *)gameBoardDescriptionByAddingPiece:(SPGamePiece *)gamePiece toLeftEdgeColumn:(NSInteger)leftEdgeColumn depth:(NSInteger)depth orientation:(SPGamePieceRotation)orientation;
 
 @property(nonatomic, assign, readonly)NSInteger gridNumRows;
 @property(nonatomic, assign, readonly)NSInteger gridNumColumns;

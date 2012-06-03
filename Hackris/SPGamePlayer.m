@@ -12,9 +12,6 @@
 #import "SPGamePiece.h"
 #import "SPBlockSize.h"
 
-#if 0
-// TODO: Make this a struct, for greater performance? --DRC
-#else
 @interface SPSolution : NSObject
 @property(nonatomic, assign)NSInteger leftEdgeColumn;
 @property(nonatomic, assign)NSInteger bottomEdgeRow;
@@ -28,7 +25,6 @@
 	return [NSString stringWithFormat:@"<%@%p -- left edge column: %i, bottom edge row: %i, orientation: %i >", [self class], self, self.leftEdgeColumn, self.bottomEdgeRow, self.orientation];
 }
 @end
-#endif
 
 
 @implementation SPGamePlayer
@@ -183,7 +179,7 @@
 		const float kDepthWeight = 0.75f;
 		
 		// Calculate the number of holes on the board for this solution.
-		SPGameBoardDescription *gameBoardDescription = [gameController descriptionAfterMovingPiece:piece toLeftEdgeColumn:solution.leftEdgeColumn depth:solution.bottomEdgeRow orientation:solution.orientation];
+		SPGameBoardDescription *gameBoardDescription = [baseGameBoardDescription gameBoardDescriptionByAddingPiece:piece toLeftEdgeColumn:solution.leftEdgeColumn depth:solution.bottomEdgeRow orientation:solution.orientation];
 		const CGFloat holeScore = [[self class] _holeScoreForGameBoardDescription:gameBoardDescription];
 		const float kHoleWeight = -0.75f;
 		

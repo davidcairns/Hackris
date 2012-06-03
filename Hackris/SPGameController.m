@@ -154,45 +154,23 @@
 - (SPGameBoardDescription *)descriptionOfCurrentBoard {
 	return [SPGameBoardDescription gameBoardDescriptionForBlocks:self.gameBlocks gridNumRows:self.gridNumRows gridNumColumns:self.gridNumColumns];
 }
-- (SPGameBoardDescription *)descriptionAfterMovingPiece:(SPGamePiece *)gamePiece toLeftEdgeColumn:(NSInteger)leftEdgeColumn depth:(NSInteger)depth orientation:(SPGamePieceRotation)orientation {
-	// Get the relative blocks locations for this piece type and orientation.
-	NSArray *relativeBlockLocations = [SPGamePiece relativeBlockLocationsForPieceType:gamePiece.gamePieceType orientation:orientation];
-	
-	// Get the column offset for this piece such that it has the given left-edge column.
-	__block NSInteger pieceColumnOffset = 0;
-	__block NSInteger pieceBottomRowOffset = 0;
-	[relativeBlockLocations enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-		const CGPoint relativeLocation = [(NSValue *)obj CGPointValue];
-		const NSInteger columnOffsetForBlock = relativeLocation.x / SPBlockSize;
-		pieceColumnOffset = MIN(pieceColumnOffset, columnOffsetForBlock);
-		const NSInteger rowOffsetForBlock = relativeLocation.y / SPBlockSize;
-		pieceBottomRowOffset = MAX(pieceBottomRowOffset, rowOffsetForBlock);
-	}];
-	
-	// Get the block locations for the given piece / left edge / depth / orientation.
-	NSMutableArray *absoluteBlockLocations = [NSMutableArray array];
-	[relativeBlockLocations enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-		const CGPoint relativeLocation = [(NSValue *)obj CGPointValue];
-		const CGPoint absoluteLocation = CGPointMake(relativeLocation.x + SPBlockSize * (CGFloat)(leftEdgeColumn - pieceColumnOffset) + 0.5f * SPBlockSize, relativeLocation.y + SPBlockSize * (CGFloat)(depth - pieceBottomRowOffset) + 0.5f * SPBlockSize);
-		[absoluteBlockLocations addObject:[NSValue valueWithCGPoint:absoluteLocation]];
-	}];
-	
-	// Get a copy of our game blocks set.
+- (SPGameBoardDescription *)descriptionOfCurrentBoardSansPiece:(SPGamePiece *)gamePiece {
 	NSMutableSet *gameBlocks = [self.gameBlocks mutableCopy];
+	NSMutableSet *gameBlocksToRemove = [NSMutableSet set];
 	
-	// Remove the piece's blocks.
-	[gamePiece.componentBlocks enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-		[gameBlocks removeObject:obj];
-	}];
+	// Determine which blocks we should remove from the final set.
+	for(CALayer *gameBlock in gameBlocks) {
+		if([gamePiece.componentBlocks containsObject:gameBlock]) {
+			[gameBlocksToRemove addObject:gameBlock];
+		}
+	}
 	
-	// Add blocks for the block locations to the game blocks set and return it.
-	[absoluteBlockLocations enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-		CALayer *pieceBlock = [CALayer layer];
-		pieceBlock.bounds = CGRectMake(0.0f, 0.0f, SPBlockSize - 2.0f, SPBlockSize - 2.0f);
-		pieceBlock.position = [(NSValue *)obj CGPointValue];
-		[gameBlocks addObject:pieceBlock];
-	}];
+	// Remove the blocks we've marked to remove.
+	for(CALayer *blockToRemove in gameBlocksToRemove) {
+		[gameBlocks removeObject:blockToRemove];
+	}
 	
+	// Create the game board description from these blocks and return it.
 	return [SPGameBoardDescription gameBoardDescriptionForBlocks:gameBlocks gridNumRows:self.gridNumRows gridNumColumns:self.gridNumColumns];
 }
 
