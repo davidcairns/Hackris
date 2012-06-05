@@ -7,6 +7,7 @@
 //
 
 #import "SPAppDelegate.h"
+#import "SPIntroViewController.h"
 #import "SPViewController.h"
 
 @implementation SPAppDelegate
@@ -17,11 +18,11 @@
 	// Create our window.
 	self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 	
-	// Create our main view controller and add it to our window.
-	self.viewController = [[SPViewController alloc] initWithNibName:@"SPViewController" bundle:nil];
-	self.window.rootViewController = self.viewController;
+	// Create our intro view controller.
+	SPIntroViewController *introViewController = [[SPIntroViewController alloc] initWithNibName:@"SPIntroViewController" bundle:nil];
 	
-	// TODO: Implement intro screen.
+	// Add the intro view controller to our window.
+	self.window.rootViewController = introViewController;
 	
 	// Tell the window to display.
 	[self.window makeKeyAndVisible];

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DF052597157D8F6800911139 /* SPIntroViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DF052595157D8F6700911139 /* SPIntroViewController.m */; };
+		DF052598157D8F6800911139 /* SPIntroViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DF052596157D8F6800911139 /* SPIntroViewController.xib */; };
 		DF4DA4C71574810200E04A84 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF4DA4C61574810200E04A84 /* UIKit.framework */; };
 		DF4DA4C91574810200E04A84 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF4DA4C81574810200E04A84 /* Foundation.framework */; };
 		DF4DA4CB1574810200E04A84 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF4DA4CA1574810200E04A84 /* CoreGraphics.framework */; };
@@ -25,6 +27,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		DF052594157D8F6700911139 /* SPIntroViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPIntroViewController.h; sourceTree = "<group>"; };
+		DF052595157D8F6700911139 /* SPIntroViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPIntroViewController.m; sourceTree = "<group>"; };
+		DF052596157D8F6800911139 /* SPIntroViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SPIntroViewController.xib; sourceTree = "<group>"; };
 		DF4DA4C21574810200E04A84 /* Hackris.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Hackris.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DF4DA4C61574810200E04A84 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		DF4DA4C81574810200E04A84 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -104,6 +109,7 @@
 			children = (
 				DF4DA4D51574810300E04A84 /* SPAppDelegate.h */,
 				DF4DA4D61574810300E04A84 /* SPAppDelegate.m */,
+				DFED6F05157D92B900FE31BC /* Intro Screen */,
 				DF4DA4D81574810300E04A84 /* SPViewController.h */,
 				DF4DA4D91574810400E04A84 /* SPViewController.m */,
 				DF4DA4DB1574810400E04A84 /* SPViewController.xib */,
@@ -143,6 +149,16 @@
 			);
 			name = Resources;
 			path = Hackris;
+			sourceTree = "<group>";
+		};
+		DFED6F05157D92B900FE31BC /* Intro Screen */ = {
+			isa = PBXGroup;
+			children = (
+				DF052594157D8F6700911139 /* SPIntroViewController.h */,
+				DF052595157D8F6700911139 /* SPIntroViewController.m */,
+				DF052596157D8F6800911139 /* SPIntroViewController.xib */,
+			);
+			name = "Intro Screen";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -200,6 +216,7 @@
 				DF4DA4D11574810300E04A84 /* InfoPlist.strings in Resources */,
 				DF4DA4DD1574810400E04A84 /* SPViewController.xib in Resources */,
 				DF5774C0157810C000F7B59B /* block_gradient.png in Resources */,
+				DF052598157D8F6800911139 /* SPIntroViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -218,6 +235,7 @@
 				DF4DA4F51574AF1300E04A84 /* SPGameAction.m in Sources */,
 				DF9EB8B9157570760070BAED /* SPGamePlayer.m in Sources */,
 				DF7503CA157976C700110795 /* SPGameBoardDescription.m in Sources */,
+				DF052597157D8F6800911139 /* SPIntroViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
