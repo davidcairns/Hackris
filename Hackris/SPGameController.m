@@ -22,6 +22,7 @@
 @property(nonatomic, assign)NSTimeInterval currentGameTime;
 @property(nonatomic, assign)NSTimeInterval lastGameStepTimestamp;
 @property(nonatomic, strong)SPGamePiece *currentlyDroppingPiece;
+@property(nonatomic, strong)NSMutableSet *fallingBlockSets;
 @property(nonatomic, strong)NSMutableSet *gameBlocks;
 
 // Game Interaction.
@@ -39,6 +40,7 @@
 @synthesize currentGameTime = _currentGameTime;
 @synthesize lastGameStepTimestamp = _lastGameStepTimestamp;
 @synthesize currentlyDroppingPiece = _currentlyDroppingPiece;
+@synthesize fallingBlockSets = _fallingBlockSets;
 @synthesize gameBlocks = _gameBlocks;
 @synthesize nextGameAction = _nextGameAction;
 @synthesize grabbedBlocks = _grabbedBlocks;
@@ -62,6 +64,7 @@
 		_gameStepInterval = 0.05f;
 		
 		// Create our game's state objects.
+		self.fallingBlockSets = [NSMutableSet set];
 		self.gameBlocks = [NSMutableSet set];
 	}
 	return self;
@@ -102,6 +105,7 @@
 		[(CALayer *)obj removeFromSuperlayer];
 	}];
 	[self.gameBlocks removeAllObjects];
+	[self.fallingBlockSets removeAllObjects];
 	
 	// Clear out pending game state.
 	self.currentlyDroppingPiece = nil;
@@ -113,43 +117,6 @@
 	self.grabbedBlocksInitialLocations = nil;
 }
 
-
-- (NSInteger)fallDepthForPiece:(SPGamePiece *)piece leftEdgeColumn:(NSInteger)leftEdgeColumn orientation:(SPGamePieceRotation)orientation {
-	// Get the arrangement of this piece's blocks for this orientation.
-	NSArray *relativeBlockLocations = [SPGamePiece relativeBlockLocationsForPieceType:piece.gamePieceType orientation:orientation];
-	
-	// Determine how far we have to offset the whole piece based on this orientation (such that its left edge falls in the column specified).
-	__block NSInteger pieceColumnOffset = 0;
-	__block NSInteger pieceBottomRowOffset = 0;
-	[relativeBlockLocations enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-		const CGPoint relativeLocation = [(NSValue *)obj CGPointValue];
-		const NSInteger columnOffsetForBlock = relativeLocation.x / SPBlockSize;
-		pieceColumnOffset = MIN(pieceColumnOffset, columnOffsetForBlock);
-		const NSInteger rowOffsetForBlock = relativeLocation.y / SPBlockSize;
-		pieceBottomRowOffset = MAX(pieceBottomRowOffset, rowOffsetForBlock);
-	}];
-	
-	NSInteger depth = -1;
-	while(depth < self.gridNumRows) {
-		depth++;
-		
-		// Determine the piece's absolute block locations given this depth.
-		NSMutableArray *locations = [NSMutableArray array];
-		[relativeBlockLocations enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-			const CGPoint relativeLocation = [(NSValue *)obj CGPointValue];
-			const CGPoint absoluteLocation = CGPointMake(relativeLocation.x + SPBlockSize * (CGFloat)(leftEdgeColumn - pieceColumnOffset) + 0.5f * SPBlockSize, relativeLocation.y + SPBlockSize * (CGFloat)depth + 0.5f * SPBlockSize);
-			[locations addObject:[NSValue valueWithCGPoint:absoluteLocation]];
-		}];
-		
-		if(![self _canMovePiece:piece toNewBlockLocations:locations]) {
-			// Rewind to the last depth that worked.
-			depth -= 1;
-			break;
-		}
-	}
-	
-	return depth > 0 ? depth + pieceBottomRowOffset : 0;
-}
 
 - (SPGameBoardDescription *)descriptionOfCurrentBoard {
 	return [SPGameBoardDescription gameBoardDescriptionForBlocks:self.gameBlocks gridNumRows:self.gridNumRows gridNumColumns:self.gridNumColumns];
