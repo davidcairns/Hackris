@@ -12,12 +12,13 @@
 @interface SPGameBoardDescription : NSObject
 
 + (SPGameBoardDescription *)gameBoardDescriptionForBlocks:(NSSet *)gameBlocks gridNumRows:(NSInteger)gridNumRows gridNumColumns:(NSInteger)gridNumColumns;
-//- (SPGameBoardDescription *)descriptionAfterMovingPiece:(SPGamePiece *)gamePiece toLeftEdgeColumn:(NSInteger)leftEdgeColumn depth:(NSInteger)depth orientation:(SPGamePieceRotation)orientation;
 - (SPGameBoardDescription *)gameBoardDescriptionByAddingPiece:(SPGamePiece *)gamePiece toLeftEdgeColumn:(NSInteger)leftEdgeColumn depth:(NSInteger)depth orientation:(SPGamePieceRotation)orientation;
 
-@property(nonatomic, assign, readonly)NSInteger gridNumRows;
-@property(nonatomic, assign, readonly)NSInteger gridNumColumns;
+@property(nonatomic, readonly)NSInteger gridNumRows;
+@property(nonatomic, readonly)NSInteger gridNumColumns;
 
 - (BOOL)hasBlockAtRow:(NSInteger)rowIndex column:(NSInteger)columnIndex;
+
+- (NSInteger)fallDepthForPiece:(SPGamePiece *)piece leftEdgeColumn:(NSInteger)leftEdgeColumn orientation:(SPGamePieceRotation)orientation;
 
 @end

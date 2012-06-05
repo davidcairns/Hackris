@@ -13,11 +13,14 @@
 #import "SPBlockSize.h"
 
 @interface SPSolution : NSObject
+@property(nonatomic, strong)SPGameBoardDescription *boardDescription;
+
 @property(nonatomic, assign)NSInteger leftEdgeColumn;
 @property(nonatomic, assign)NSInteger bottomEdgeRow;
 @property(nonatomic, assign)SPGamePieceRotation orientation;
 @end
 @implementation SPSolution
+@synthesize boardDescription = _boardDescription;
 @synthesize leftEdgeColumn = _leftEdgeColumn;
 @synthesize bottomEdgeRow = _bottomEdgeRow;
 @synthesize orientation = _orientation;
@@ -29,18 +32,22 @@
 
 @implementation SPGamePlayer
 
-+ (NSArray *)_possibleSolutionsForPiece:(SPGamePiece *)currentlyDroppingPiece gameController:(SPGameController *)gameController {
++ (NSArray *)_possibleSolutionsForPiece:(SPGamePiece *)currentlyDroppingPiece baseBoardDescription:(SPGameBoardDescription *)baseGameBoardDescription {
 	// For each column...
 	NSMutableArray *solutions = [NSMutableArray array];
-	for(NSInteger columnOffset = 0; columnOffset < gameController.gridNumColumns; columnOffset++) {
+	for(NSInteger columnOffset = 0; columnOffset < baseGameBoardDescription.gridNumColumns; columnOffset++) {
 		// Generate each valid solution in which the piece's left edge is in this column.
 		for(SPGamePieceRotation orientation = 0; orientation < SPGamePieceRotationNumAngles; orientation++) {
 			// Determine the depth to which this block would fall (in rows, from the top).
-			const NSInteger fallDepth = [gameController fallDepthForPiece:currentlyDroppingPiece leftEdgeColumn:columnOffset orientation:orientation];
+			const NSInteger fallDepth = [baseGameBoardDescription fallDepthForPiece:currentlyDroppingPiece leftEdgeColumn:columnOffset orientation:orientation];
 			
 			// If the piece will fall at all, save this solution.
 			if(fallDepth > 0) {
 				SPSolution *solution = [[SPSolution alloc] init];
+				
+				// Generate a game board description for this solution combo.
+				solution.boardDescription = [baseGameBoardDescription gameBoardDescriptionByAddingPiece:currentlyDroppingPiece toLeftEdgeColumn:columnOffset depth:fallDepth orientation:orientation];
+				
 				solution.leftEdgeColumn = columnOffset;
 				solution.orientation = orientation;
 				solution.bottomEdgeRow = fallDepth;
@@ -171,17 +178,14 @@
 	
 	return holeScore;
 }
-+ (NSArray *)_scoresForSolutions:(NSArray *)solutions ofPiece:(SPGamePiece *)piece inGame:(SPGameController *)gameController {
-	SPGameBoardDescription *baseGameBoardDescription = [gameController descriptionOfCurrentBoardSansPiece:piece];
-	
++ (NSArray *)_scoresForSolutions:(NSArray *)solutions ofPiece:(SPGamePiece *)piece {
 	NSMutableArray *scores = [NSMutableArray array];
 	for(SPSolution *solution in solutions) {
-		// Calculate the depth score for this solution.
-		const float depthScore = (float)solution.bottomEdgeRow / gameController.gridNumRows;
-		const float kDepthWeight = 0.75f;
+		SPGameBoardDescription *gameBoardDescription = solution.boardDescription;
 		
-		// Get the board description for this piece placement.
-		SPGameBoardDescription *gameBoardDescription = [baseGameBoardDescription gameBoardDescriptionByAddingPiece:piece toLeftEdgeColumn:solution.leftEdgeColumn depth:solution.bottomEdgeRow orientation:solution.orientation];
+		// Calculate the depth score for this solution.
+		const float depthScore = (float)solution.bottomEdgeRow / gameBoardDescription.gridNumRows;
+		const float kDepthWeight = 0.75f;
 		
 		// Calculate the number of holes on the board for this solution.
 		const CGFloat holeScore = [[self class] _holeScoreForGameBoardDescription:gameBoardDescription];
@@ -215,11 +219,14 @@
 		return;
 	}
 	
+	// Get the base game board description, from which all of our solutions will stem.
+	SPGameBoardDescription *baseGameBoardDescription = [gameController descriptionOfCurrentBoardSansPiece:currentPiece];
+	
 	// Figure out all of the possible ways the currently-dropping piece can land.
-	NSArray *possibleSolutions = [[self class] _possibleSolutionsForPiece:currentPiece gameController:gameController];
+	NSArray *possibleSolutions = [[self class] _possibleSolutionsForPiece:currentPiece baseBoardDescription:baseGameBoardDescription];
 	
 	// Determine a placement score for each solution (how "good" the placement would be).
-	NSArray *solutionScores = [[self class] _scoresForSolutions:possibleSolutions ofPiece:currentPiece inGame:gameController];
+	NSArray *solutionScores = [[self class] _scoresForSolutions:possibleSolutions ofPiece:currentPiece];
 	
 	// Get the highest-scored solution.
 	__block CGFloat highestScore = -10000.0f;

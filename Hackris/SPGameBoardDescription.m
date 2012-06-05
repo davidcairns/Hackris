@@ -12,10 +12,10 @@
 #import "SPBlockSize.h"
 
 @interface SPGameBoardDescription ()
-@property(nonatomic, assign)NSInteger gridNumRows;
-@property(nonatomic, assign)NSInteger gridNumColumns;
+//@property(nonatomic, readonly)NSInteger gridNumRows;
+//@property(nonatomic, readonly)NSInteger gridNumColumns;
 
-@property(nonatomic, assign)BOOL *blockExistenceArray;
+@property(nonatomic, readonly)BOOL *blockExistenceArray;
 @end
 
 @implementation SPGameBoardDescription
@@ -23,15 +23,21 @@
 @synthesize gridNumColumns = _gridNumColumns;
 @synthesize blockExistenceArray = _blockExistenceArray;
 
-- (id)initWithBlocks:(NSSet *)gameBlocks gridNumRows:(NSInteger)gridNumRows gridNumColumns:(NSInteger)gridNumColumns {
+- (id)initWithGridNumRows:(NSInteger)gridNumRows gridNumColumns:(NSInteger)gridNumColumns {
 	if((self = [super init])) {
-		self.gridNumRows = gridNumRows;
-		self.gridNumColumns = gridNumColumns;
+		_gridNumRows = gridNumRows;
+		_gridNumColumns = gridNumColumns;
 		
-		// Populate our block-existence array.
+		// Allocate our block-existence array.
 		const size_t blockExistenceArraySize = gridNumRows * gridNumColumns * sizeof(BOOL);
-		self.blockExistenceArray = (BOOL *)malloc(blockExistenceArraySize);
+		_blockExistenceArray = (BOOL *)malloc(blockExistenceArraySize);
 		memset(self.blockExistenceArray, 0, blockExistenceArraySize);
+	}
+	return self;
+}
+- (id)initWithBlocks:(NSSet *)gameBlocks gridNumRows:(NSInteger)gridNumRows gridNumColumns:(NSInteger)gridNumColumns {
+	if((self = [self initWithGridNumRows:gridNumRows gridNumColumns:gridNumColumns])) {
+		// Populate our block-existence array.
 		for(NSInteger rowIndex = 0; rowIndex < gridNumRows; rowIndex++) {
 			for(NSInteger columnIndex = 0; columnIndex < gridNumColumns; columnIndex++) {
 				const NSInteger idx = rowIndex * gridNumColumns + columnIndex;
@@ -42,8 +48,10 @@
 	return self;
 }
 - (void)dealloc {
-	free(_blockExistenceArray);
-	_blockExistenceArray = NULL;
+	if(_blockExistenceArray) {
+		free(_blockExistenceArray);
+		_blockExistenceArray = NULL;
+	}
 }
 
 + (CALayer *)_blockAtRow:(NSInteger)rowIndex column:(NSInteger)columnIndex inGroup:(NSSet *)blocks {
@@ -62,28 +70,19 @@
 	return [[SPGameBoardDescription alloc] initWithBlocks:gameBlocks gridNumRows:gridNumRows gridNumColumns:gridNumColumns];
 }
 - (SPGameBoardDescription *)gameBoardDescriptionByAddingPiece:(SPGamePiece *)gamePiece toLeftEdgeColumn:(NSInteger)leftEdgeColumn depth:(NSInteger)depth orientation:(SPGamePieceRotation)orientation {
-	SPGameBoardDescription *boardDescription = [[SPGameBoardDescription alloc] init];
-	
-	boardDescription.gridNumRows = self.gridNumRows;
-	boardDescription.gridNumColumns = self.gridNumColumns;
+	SPGameBoardDescription *boardDescription = [[SPGameBoardDescription alloc] initWithGridNumRows:self.gridNumRows gridNumColumns:self.gridNumColumns];
 	
 	BOOL *existenceMappingForPiece = [[self class] _existenceMappingForPiece:gamePiece gridNumRows:boardDescription.gridNumRows gridNumColumns:boardDescription.gridNumColumns leftEdgeColumn:leftEdgeColumn depth:depth orientation:orientation];
 	
 	// Populate our block-existence array.
-	const size_t blockExistenceArraySize = boardDescription.gridNumRows * boardDescription.gridNumColumns;
-	boardDescription.blockExistenceArray = (BOOL *)malloc(blockExistenceArraySize);
-	memset(boardDescription.blockExistenceArray, 0, blockExistenceArraySize);
 	for(NSInteger rowIndex = 0; rowIndex < boardDescription.gridNumRows; rowIndex++) {
 		for(NSInteger columnIndex = 0; columnIndex < boardDescription.gridNumColumns; columnIndex++) {
 			const NSInteger idx = rowIndex * boardDescription.gridNumColumns + columnIndex;
-			
-			const BOOL pieceFillsSpace = existenceMappingForPiece[idx];
-			
-			boardDescription.blockExistenceArray[idx] = (self.blockExistenceArray[idx] || pieceFillsSpace);
+			boardDescription.blockExistenceArray[idx] = (self.blockExistenceArray[idx] || existenceMappingForPiece[idx]);
 		}
 	}
-	
 	free(existenceMappingForPiece);
+	
 	return boardDescription;
 }
 + (BOOL *)_existenceMappingForPiece:(SPGamePiece *)gamePiece gridNumRows:(NSInteger)gridNumRows gridNumColumns:(NSInteger)gridNumColumns leftEdgeColumn:(NSInteger)leftEdgeColumn depth:(NSInteger)depth orientation:(SPGamePieceRotation)orientation {
@@ -109,15 +108,15 @@
 		[absoluteBlockLocations addObject:[NSValue valueWithCGPoint:absoluteLocation]];
 	}];
 	
-	const size_t blockExistenceArraySize = gridNumRows * gridNumColumns;
+	const size_t blockExistenceArraySize = gridNumRows * gridNumColumns * sizeof(BOOL);
 	BOOL *existenceMap = (BOOL *)malloc(blockExistenceArraySize);
 	memset(existenceMap, 0, blockExistenceArraySize);
 	
 	// Add blocks for the block locations to the game blocks set and return it.
 	[absoluteBlockLocations enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-		CGPoint location = [(NSValue *)obj CGPointValue];
-		const NSInteger pieceBlockColumn = (location.x - 0.5f * SPBlockSize) / SPBlockSize;
-		const NSInteger pieceBlockRow = (location.y - 0.5f * SPBlockSize) / SPBlockSize;
+		const CGPoint location = [(NSValue *)obj CGPointValue];
+		const NSInteger pieceBlockColumn = MAX(0, MIN((location.x - 0.5f * SPBlockSize) / SPBlockSize, gridNumColumns - 1));
+		const NSInteger pieceBlockRow = MAX(0, MIN((location.y - 0.5f * SPBlockSize) / SPBlockSize, gridNumRows - 1));
 		const NSInteger existenceMapIndex = pieceBlockRow * gridNumColumns + pieceBlockColumn;
 		existenceMap[existenceMapIndex] = YES;
 	}];
@@ -161,6 +160,59 @@
 	}
 	
 	return string;
+}
+
+
+- (NSInteger)fallDepthForPiece:(SPGamePiece *)piece leftEdgeColumn:(NSInteger)leftEdgeColumn orientation:(SPGamePieceRotation)orientation {
+	// Get the arrangement of this piece's blocks for this orientation.
+	NSArray *relativeBlockLocations = [SPGamePiece relativeBlockLocationsForPieceType:piece.gamePieceType orientation:orientation];
+	
+	// Determine how far we have to offset the whole piece based on this orientation (such that its left edge falls in the column specified).
+	__block NSInteger pieceColumnOffset = 0;
+	__block NSInteger pieceBottomRowOffset = 0;
+	[relativeBlockLocations enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+		const CGPoint relativeLocation = [(NSValue *)obj CGPointValue];
+		const NSInteger columnOffsetForBlock = relativeLocation.x / SPBlockSize;
+		pieceColumnOffset = MIN(pieceColumnOffset, columnOffsetForBlock);
+		const NSInteger rowOffsetForBlock = relativeLocation.y / SPBlockSize;
+		pieceBottomRowOffset = MAX(pieceBottomRowOffset, rowOffsetForBlock);
+	}];
+	
+	__block NSInteger depth = -1;
+	while(depth < self.gridNumRows) {
+		depth++;
+		
+		// Determine the piece's absolute block locations given this depth.
+		NSMutableArray *locations = [NSMutableArray array];
+		for(NSValue *relativeLocationValue in relativeBlockLocations) {
+			const CGPoint relativeLocation = [relativeLocationValue CGPointValue];
+			const CGPoint absoluteLocation = CGPointMake(relativeLocation.x + SPBlockSize * (CGFloat)(leftEdgeColumn - pieceColumnOffset) + 0.5f * SPBlockSize, relativeLocation.y + SPBlockSize * (CGFloat)depth + 0.5f * SPBlockSize);
+			[locations addObject:[NSValue valueWithCGPoint:absoluteLocation]];
+		}
+		
+		__block BOOL hasHit = NO;
+		for(NSValue *locationValue in locations) {
+			const CGPoint location = [locationValue CGPointValue];
+			const NSInteger rowIndex = (location.y - 0.5f * SPBlockSize) / SPBlockSize;
+			const NSInteger columnIndex = (location.x - 0.5f * SPBlockSize) / SPBlockSize;
+			
+			// If the location is out of bounds, skip this iteration.
+			if(rowIndex < 0 || rowIndex >= self.gridNumRows || columnIndex < 0 || columnIndex >= self.gridNumColumns) {
+				continue;
+			}
+			
+			if([self hasBlockAtRow:rowIndex column:columnIndex]) {
+				depth -= 1;
+				hasHit = YES;
+				break;
+			}
+		}
+		if(hasHit) {
+			break;
+		}
+	}
+	
+	return depth > 0 ? MIN(depth + pieceBottomRowOffset, self.gridNumRows - 1): 0;
 }
 
 @end
