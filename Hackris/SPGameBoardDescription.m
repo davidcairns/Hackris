@@ -12,9 +12,6 @@
 #import "SPBlockSize.h"
 
 @interface SPGameBoardDescription ()
-//@property(nonatomic, readonly)NSInteger gridNumRows;
-//@property(nonatomic, readonly)NSInteger gridNumColumns;
-
 @property(nonatomic, readonly)BOOL *blockExistenceArray;
 @end
 
@@ -126,6 +123,10 @@
 
 
 - (BOOL)hasBlockAtRow:(NSInteger)rowIndex column:(NSInteger)columnIndex {
+	if(rowIndex < 0 || rowIndex >= self.gridNumRows || columnIndex < 0 || columnIndex >= self.gridNumColumns) {
+		return NO;
+	}
+	
 	return self.blockExistenceArray[rowIndex * self.gridNumColumns + columnIndex];
 }
 
@@ -196,12 +197,13 @@
 			const NSInteger rowIndex = (location.y - 0.5f * SPBlockSize) / SPBlockSize;
 			const NSInteger columnIndex = (location.x - 0.5f * SPBlockSize) / SPBlockSize;
 			
-			// If the location is out of bounds, skip this iteration.
-			if(rowIndex < 0 || rowIndex >= self.gridNumRows || columnIndex < 0 || columnIndex >= self.gridNumColumns) {
+			// If the location is off the top of the screen, skip this iteration.
+			if(rowIndex >= self.gridNumRows) {
 				continue;
 			}
 			
-			if([self hasBlockAtRow:rowIndex column:columnIndex]) {
+			// If the location is off the side of the screen or if there is a collision, stop trying to drop the piece.
+			if(columnIndex < 0 || columnIndex >= self.gridNumColumns || [self hasBlockAtRow:rowIndex column:columnIndex]) {
 				depth -= 1;
 				hasHit = YES;
 				break;

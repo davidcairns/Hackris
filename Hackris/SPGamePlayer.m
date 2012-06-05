@@ -25,7 +25,7 @@
 @synthesize bottomEdgeRow = _bottomEdgeRow;
 @synthesize orientation = _orientation;
 - (NSString *)description {
-	return [NSString stringWithFormat:@"<%@%p -- left edge column: %i, bottom edge row: %i, orientation: %i >", [self class], self, self.leftEdgeColumn, self.bottomEdgeRow, self.orientation];
+	return [NSString stringWithFormat:@"<%@ %p -- left edge column: %i, bottom edge row: %i, orientation: %i>", [self class], self, self.leftEdgeColumn, self.bottomEdgeRow, self.orientation];
 }
 @end
 
@@ -65,9 +65,9 @@
 	//			• 0.5 for a space surrounded on all sides but two
 	//			* A “bonus” of 0.1, if there's a block above at all
 	//	const CGFloat kTotallySurroundedScore = 1.0f;
-	//	const CGFloat kMostlySurroundedScore = 0.75f;
-	//	const CGFloat kPartiallySurroundedScore = 0.5f;
-	//	const CGFloat kBlockAboveBonus = 0.1f;
+	//	const CGFloat kMostlySurroundedScore = 0.5f;
+	//	const CGFloat kPartiallySurroundedScore = 0.2f;
+	//	const CGFloat kBlockAboveBonus = 1.0f;
 	const CGFloat kTotallySurroundedScore = 1.0f;
 	const CGFloat kMostlySurroundedScore = 0.5f;
 	const CGFloat kPartiallySurroundedScore = 0.2f;
@@ -187,6 +187,8 @@
 		const float depthScore = (float)solution.bottomEdgeRow / gameBoardDescription.gridNumRows;
 		const float kDepthWeight = 0.75f;
 		
+//		NSLog(@"%@\n%@", solution, gameBoardDescription);
+		
 		// Calculate the number of holes on the board for this solution.
 		const CGFloat holeScore = [[self class] _holeScoreForGameBoardDescription:gameBoardDescription];
 		const float kHoleWeight = -0.75f;
@@ -238,6 +240,8 @@
 			highestScore = solutionScore;
 			highestScoredSolution = solution;
 		}
+		
+//		NSLog(@"%@ -- score: %f", solution, solutionScore);
 	}];
 	
 	// Make the move to execute the solution with the highest score.
