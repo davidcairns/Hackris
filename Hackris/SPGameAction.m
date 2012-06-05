@@ -8,6 +8,26 @@
 
 #import "SPGameAction.h"
 
+NSString *SPGameActionNameForType(SPGameActionType type) {
+	switch(type) {
+		case SPGameActionRotate:
+			return @"SPGameActionRotate";
+			break;
+		case SPGameActionMoveLeft:
+			return @"SPGameActionMoveLeft";
+			break;
+		case SPGameActionMoveRight:
+			return @"SPGameActionMoveRight";
+			break;
+		case SPGameActionMoveDown:
+			return @"SPGameActionMoveDown";
+			break;
+		default:
+			return @"???";
+			break;
+	}
+}
+
 @interface SPGameAction ()
 @property(nonatomic, assign)SPGameActionType type;
 @end

@@ -228,6 +228,8 @@
 
 - (SPGamePiece *)_currentlyDroppingPiece {
 	if(!self.currentlyDroppingPiece) {
+//		NSLog(@"NEW PIECE!");
+		
 		// Create a piece with a randomly-selected type.
 		const SPGamePieceType gamePieceType = rand() % SPGamePieceNumTypes;
 		self.currentlyDroppingPiece = [[SPGamePiece alloc] initWithGamePieceType:gamePieceType];

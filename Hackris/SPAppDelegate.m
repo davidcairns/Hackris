@@ -21,6 +21,8 @@
 	self.viewController = [[SPViewController alloc] initWithNibName:@"SPViewController" bundle:nil];
 	self.window.rootViewController = self.viewController;
 	
+	// TODO: Implement intro screen.
+	
 	// Tell the window to display.
 	[self.window makeKeyAndVisible];
 	

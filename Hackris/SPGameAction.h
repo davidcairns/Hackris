@@ -15,6 +15,8 @@ typedef enum {
 	SPGameActionMoveDown, 
 	SPGameNumActions, 
 } SPGameActionType;
+NSString *SPGameActionNameForType(SPGameActionType type);
+
 
 @interface SPGameAction : NSObject
 

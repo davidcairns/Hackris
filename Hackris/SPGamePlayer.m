@@ -236,7 +236,9 @@
 	// Make the move to execute the solution with the highest score.
 	SPGameActionType actionType = [self _actionTypeToFulfillSolution:highestScoredSolution inGame:gameController];
 	
-	// Randomly select a move.
+//	NSLog(@"Best solution: %@ --> action: %@", highestScoredSolution, SPGameActionNameForType(actionType));
+	
+	// Execute the move.
 	switch(actionType) {
 		case SPGameActionRotate:
 			[gameController rotateCurrentPiece];
