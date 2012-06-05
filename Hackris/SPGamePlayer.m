@@ -172,14 +172,18 @@
 	return holeScore;
 }
 + (NSArray *)_scoresForSolutions:(NSArray *)solutions ofPiece:(SPGamePiece *)piece inGame:(SPGameController *)gameController {
+	SPGameBoardDescription *baseGameBoardDescription = [gameController descriptionOfCurrentBoardSansPiece:piece];
+	
 	NSMutableArray *scores = [NSMutableArray array];
 	for(SPSolution *solution in solutions) {
 		// Calculate the depth score for this solution.
 		const float depthScore = (float)solution.bottomEdgeRow / gameController.gridNumRows;
 		const float kDepthWeight = 0.75f;
 		
-		// Calculate the number of holes on the board for this solution.
+		// Get the board description for this piece placement.
 		SPGameBoardDescription *gameBoardDescription = [baseGameBoardDescription gameBoardDescriptionByAddingPiece:piece toLeftEdgeColumn:solution.leftEdgeColumn depth:solution.bottomEdgeRow orientation:solution.orientation];
+		
+		// Calculate the number of holes on the board for this solution.
 		const CGFloat holeScore = [[self class] _holeScoreForGameBoardDescription:gameBoardDescription];
 		const float kHoleWeight = -0.75f;
 		
@@ -206,20 +210,26 @@
 	return SPGameActionMoveDown;
 }
 - (void)makeMoveInGame:(SPGameController *)gameController {
+	SPGamePiece *currentPiece = gameController.currentlyDroppingPiece;
+	if(!currentPiece) {
+		return;
+	}
+	
 	// Figure out all of the possible ways the currently-dropping piece can land.
-	NSArray *possibleSolutions = [[self class] _possibleSolutionsForPiece:gameController.currentlyDroppingPiece gameController:gameController];
+	NSArray *possibleSolutions = [[self class] _possibleSolutionsForPiece:currentPiece gameController:gameController];
 	
 	// Determine a placement score for each solution (how "good" the placement would be).
-	NSArray *solutionScores = [[self class] _scoresForSolutions:possibleSolutions ofPiece:gameController.currentlyDroppingPiece inGame:gameController];
+	NSArray *solutionScores = [[self class] _scoresForSolutions:possibleSolutions ofPiece:currentPiece inGame:gameController];
 	
 	// Get the highest-scored solution.
 	__block CGFloat highestScore = -10000.0f;
 	__block SPSolution *highestScoredSolution = nil;
 	[possibleSolutions enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+		SPSolution *solution = (SPSolution *)obj;
 		const CGFloat solutionScore = [[solutionScores objectAtIndex:idx] floatValue];
 		if(solutionScore > highestScore) {
 			highestScore = solutionScore;
-			highestScoredSolution = (SPSolution *)obj;
+			highestScoredSolution = solution;
 		}
 	}];
 	

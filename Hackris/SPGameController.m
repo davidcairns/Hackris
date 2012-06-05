@@ -154,20 +154,12 @@
 - (SPGameBoardDescription *)descriptionOfCurrentBoard {
 	return [SPGameBoardDescription gameBoardDescriptionForBlocks:self.gameBlocks gridNumRows:self.gridNumRows gridNumColumns:self.gridNumColumns];
 }
-- (SPGameBoardDescription *)descriptionOfCurrentBoardSansPiece:(SPGamePiece *)gamePiece {
+- (SPGameBoardDescription *)descriptionOfCurrentBoardSansPiece:(SPGamePiece *)piece {
 	NSMutableSet *gameBlocks = [self.gameBlocks mutableCopy];
-	NSMutableSet *gameBlocksToRemove = [NSMutableSet set];
 	
-	// Determine which blocks we should remove from the final set.
-	for(CALayer *gameBlock in gameBlocks) {
-		if([gamePiece.componentBlocks containsObject:gameBlock]) {
-			[gameBlocksToRemove addObject:gameBlock];
-		}
-	}
-	
-	// Remove the blocks we've marked to remove.
-	for(CALayer *blockToRemove in gameBlocksToRemove) {
-		[gameBlocks removeObject:blockToRemove];
+	// Remove the blocks that are part of this piece.
+	for(CALayer *pieceBlock in piece.componentBlocks) {
+		[gameBlocks removeObject:pieceBlock];
 	}
 	
 	// Create the game board description from these blocks and return it.
@@ -332,7 +324,7 @@
 	// Determine if it's time to move the currently-dropping piece down.
 	if(self.currentGameTime - self.lastGameStepTimestamp >= self.gameStepInterval) {
 		// Step the game state.
-		self.lastGameStepTimestamp = self.currentGameTime;
+		self.lastGameStepTimestamp += self.gameStepInterval;
 		
 		// See if we can move the piece down.
 		NSArray *newBlockLocations = [currentPiece blockLocationsAfterApplyingAction:[SPGameAction gameActionWithType:SPGameActionMoveDown]];

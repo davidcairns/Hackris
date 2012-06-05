@@ -88,7 +88,7 @@
 		if(currentTimestamp - lastMoveTimestamp >= moveInterval) {
 			// Allow our player object to act.
 			[self.gamePlayer makeMoveInGame:self.gameController];
-			lastMoveTimestamp = currentTimestamp;
+			lastMoveTimestamp += moveInterval;
 		}
 		
 		// Update the game.

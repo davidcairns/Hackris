@@ -47,7 +47,7 @@
 }
 
 + (CALayer *)_blockAtRow:(NSInteger)rowIndex column:(NSInteger)columnIndex inGroup:(NSSet *)blocks {
-	const CGPoint location = CGPointMake(1.5f * SPBlockSize * columnIndex, 1.5f * SPBlockSize * rowIndex);
+	const CGPoint location = CGPointMake(0.5f * SPBlockSize + SPBlockSize * columnIndex, 0.5f * SPBlockSize + SPBlockSize * rowIndex);
 	for(CALayer *block in blocks) {
 		const CGFloat xDiff = block.position.x - location.x;
 		const CGFloat yDiff = block.position.y - location.y;
@@ -111,12 +111,13 @@
 	
 	const size_t blockExistenceArraySize = gridNumRows * gridNumColumns;
 	BOOL *existenceMap = (BOOL *)malloc(blockExistenceArraySize);
+	memset(existenceMap, 0, blockExistenceArraySize);
 	
 	// Add blocks for the block locations to the game blocks set and return it.
 	[absoluteBlockLocations enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-		CALayer *pieceBlock = [CALayer layer];
-		const NSInteger pieceBlockColumn = (pieceBlock.position.x - 0.5f * SPBlockSize) / SPBlockSize;
-		const NSInteger pieceBlockRow = (pieceBlock.position.y - 0.5f * SPBlockSize) / SPBlockSize;
+		CGPoint location = [(NSValue *)obj CGPointValue];
+		const NSInteger pieceBlockColumn = (location.x - 0.5f * SPBlockSize) / SPBlockSize;
+		const NSInteger pieceBlockRow = (location.y - 0.5f * SPBlockSize) / SPBlockSize;
 		const NSInteger existenceMapIndex = pieceBlockRow * gridNumColumns + pieceBlockColumn;
 		existenceMap[existenceMapIndex] = YES;
 	}];
@@ -127,6 +128,39 @@
 
 - (BOOL)hasBlockAtRow:(NSInteger)rowIndex column:(NSInteger)columnIndex {
 	return self.blockExistenceArray[rowIndex * self.gridNumColumns + columnIndex];
+}
+
+
+- (NSString *)description {
+	NSMutableString *string = [NSMutableString stringWithString:@"\n"];
+	
+	// Add the top border.
+	for(NSInteger columnIndex = 0; columnIndex < self.gridNumColumns; columnIndex++) {
+		[string appendString:@"="];
+	}
+	[string appendString:@"\n"];
+	
+	// Print each row.
+	for(NSInteger rowIndex = 0; rowIndex < self.gridNumRows; rowIndex++) {
+		for(NSInteger columnIndex = 0; columnIndex < self.gridNumColumns; columnIndex++) {
+			// If this (row, column) contains a block, append an 'X'.
+			if([self hasBlockAtRow:rowIndex column:columnIndex]) {
+				[string appendString:@"X"];
+			}
+			// Otherwise, append a space.
+			else {
+				[string appendString:@" "];
+			}
+		}
+		[string appendString:@"\n"];
+	}
+	
+	// Add the bottom border.
+	for(NSInteger columnIndex = 0; columnIndex < self.gridNumColumns; columnIndex++) {
+		[string appendString:@"="];
+	}
+	
+	return string;
 }
 
 @end
