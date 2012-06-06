@@ -9,9 +9,6 @@
 #import "SPGamePiece.h"
 #import "SPBlockSize.h"
 
-@interface CALayer (SPGamePieceBlock)
-+ (CALayer *)SPGamePieceBlock_layerWithColor:(UIColor *)color;
-@end
 @implementation CALayer (SPGamePieceBlock)
 + (CALayer *)SPGamePieceBlock_layerWithColor:(UIColor *)color image:(UIImage *)image {
 	CALayer *layer = [CALayer layer];
