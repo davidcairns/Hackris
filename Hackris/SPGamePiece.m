@@ -13,12 +13,12 @@
 + (CALayer *)SPGamePieceBlock_layerWithColor:(UIColor *)color;
 @end
 @implementation CALayer (SPGamePieceBlock)
-+ (CALayer *)SPGamePieceBlock_layerWithColor:(UIColor *)color {
++ (CALayer *)SPGamePieceBlock_layerWithColor:(UIColor *)color image:(UIImage *)image {
 	CALayer *layer = [CALayer layer];
 	layer.bounds = CGRectMake(0.0f, 0.0f, SPBlockSize - 2.0f, SPBlockSize - 2.0f);
 	layer.backgroundColor = [color CGColor];
 	layer.cornerRadius = 3.0f;
-	layer.contents = (id)[[UIImage imageNamed:@"block_gradient"] CGImage];
+	layer.contents = (id)[image CGImage];
 	return layer;
 }
 @end
@@ -43,21 +43,27 @@
 		
 		// Determine the color of the blocks based on the piece type.
 		UIColor *pieceColor = nil;
+		UIImage *pieceImage = nil;
 		switch(gamePieceType) {
 			case SPGamePieceTypeStraight:
 				pieceColor = [UIColor cyanColor];
+				pieceImage = [UIImage imageNamed:@"block_gradient"];
 				break;
 			case SPGamePieceTypeLeftL:
 				pieceColor = [UIColor redColor];
+				pieceImage = [UIImage imageNamed:@"block_cross_gradient"];
 				break;
 			case SPGamePieceTypeRightL:
 				pieceColor = [UIColor magentaColor];
+				pieceImage = [UIImage imageNamed:@"block_radial_gradient"];
 				break;
 			case SPGamePieceTypeT:
 				pieceColor = [UIColor greenColor];
+				pieceImage = [UIImage imageNamed:@"block_bevel"];
 				break;
 			case SPGamePieceTypeSquare:
-				pieceColor = [UIColor orangeColor];
+				pieceColor = [UIColor yellowColor];
+				pieceImage = [UIImage imageNamed:@"block_star"];
 				break;
 			default:
 				NSLog(@"Invalid game piece type!");
@@ -66,10 +72,10 @@
 		
 		// Set up our four component blocks.
 		self.componentBlocks = [NSArray arrayWithObjects:
-								[CALayer SPGamePieceBlock_layerWithColor:pieceColor], 
-								[CALayer SPGamePieceBlock_layerWithColor:pieceColor], 
-								[CALayer SPGamePieceBlock_layerWithColor:pieceColor], 
-								[CALayer SPGamePieceBlock_layerWithColor:pieceColor], 
+								[CALayer SPGamePieceBlock_layerWithColor:pieceColor image:pieceImage], 
+								[CALayer SPGamePieceBlock_layerWithColor:pieceColor image:pieceImage], 
+								[CALayer SPGamePieceBlock_layerWithColor:pieceColor image:pieceImage], 
+								[CALayer SPGamePieceBlock_layerWithColor:pieceColor image:pieceImage], 
 								nil];
 		
 		[self.componentBlocks enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {

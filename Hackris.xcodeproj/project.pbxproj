@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		DF052597157D8F6800911139 /* SPIntroViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DF052595157D8F6700911139 /* SPIntroViewController.m */; };
 		DF052598157D8F6800911139 /* SPIntroViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DF052596157D8F6800911139 /* SPIntroViewController.xib */; };
+		DF0EAB37157ED33F0099B919 /* block_cross_gradient.png in Resources */ = {isa = PBXBuildFile; fileRef = DF0EAB35157ED33F0099B919 /* block_cross_gradient.png */; };
+		DF0EAB38157ED33F0099B919 /* block_radial_gradient.png in Resources */ = {isa = PBXBuildFile; fileRef = DF0EAB36157ED33F0099B919 /* block_radial_gradient.png */; };
+		DF0EAB3B157ED42B0099B919 /* block_bevel.png in Resources */ = {isa = PBXBuildFile; fileRef = DF0EAB3A157ED42B0099B919 /* block_bevel.png */; };
+		DF0EAB3D157ED6600099B919 /* block_star.png in Resources */ = {isa = PBXBuildFile; fileRef = DF0EAB3C157ED6600099B919 /* block_star.png */; };
 		DF4DA4C71574810200E04A84 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF4DA4C61574810200E04A84 /* UIKit.framework */; };
 		DF4DA4C91574810200E04A84 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF4DA4C81574810200E04A84 /* Foundation.framework */; };
 		DF4DA4CB1574810200E04A84 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF4DA4CA1574810200E04A84 /* CoreGraphics.framework */; };
@@ -30,6 +34,10 @@
 		DF052594157D8F6700911139 /* SPIntroViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPIntroViewController.h; sourceTree = "<group>"; };
 		DF052595157D8F6700911139 /* SPIntroViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPIntroViewController.m; sourceTree = "<group>"; };
 		DF052596157D8F6800911139 /* SPIntroViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SPIntroViewController.xib; sourceTree = "<group>"; };
+		DF0EAB35157ED33F0099B919 /* block_cross_gradient.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = block_cross_gradient.png; sourceTree = "<group>"; };
+		DF0EAB36157ED33F0099B919 /* block_radial_gradient.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = block_radial_gradient.png; sourceTree = "<group>"; };
+		DF0EAB3A157ED42B0099B919 /* block_bevel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = block_bevel.png; sourceTree = "<group>"; };
+		DF0EAB3C157ED6600099B919 /* block_star.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = block_star.png; sourceTree = "<group>"; };
 		DF4DA4C21574810200E04A84 /* Hackris.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Hackris.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DF4DA4C61574810200E04A84 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		DF4DA4C81574810200E04A84 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -146,6 +154,10 @@
 			isa = PBXGroup;
 			children = (
 				DF5774BF157810C000F7B59B /* block_gradient.png */,
+				DF0EAB35157ED33F0099B919 /* block_cross_gradient.png */,
+				DF0EAB36157ED33F0099B919 /* block_radial_gradient.png */,
+				DF0EAB3A157ED42B0099B919 /* block_bevel.png */,
+				DF0EAB3C157ED6600099B919 /* block_star.png */,
 			);
 			name = Resources;
 			path = Hackris;
@@ -217,6 +229,10 @@
 				DF4DA4DD1574810400E04A84 /* SPViewController.xib in Resources */,
 				DF5774C0157810C000F7B59B /* block_gradient.png in Resources */,
 				DF052598157D8F6800911139 /* SPIntroViewController.xib in Resources */,
+				DF0EAB37157ED33F0099B919 /* block_cross_gradient.png in Resources */,
+				DF0EAB38157ED33F0099B919 /* block_radial_gradient.png in Resources */,
+				DF0EAB3B157ED42B0099B919 /* block_bevel.png in Resources */,
+				DF0EAB3D157ED6600099B919 /* block_star.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

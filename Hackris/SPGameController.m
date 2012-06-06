@@ -22,7 +22,7 @@
 @property(nonatomic, assign)NSTimeInterval currentGameTime;
 @property(nonatomic, assign)NSTimeInterval lastGameStepTimestamp;
 @property(nonatomic, strong)SPGamePiece *currentlyDroppingPiece;
-@property(nonatomic, strong)NSMutableSet *fallingBlockSets;
+@property(nonatomic, strong)NSMutableSet *blockSets;
 @property(nonatomic, strong)NSMutableSet *gameBlocks;
 
 // Game Interaction.
@@ -40,7 +40,7 @@
 @synthesize currentGameTime = _currentGameTime;
 @synthesize lastGameStepTimestamp = _lastGameStepTimestamp;
 @synthesize currentlyDroppingPiece = _currentlyDroppingPiece;
-@synthesize fallingBlockSets = _fallingBlockSets;
+@synthesize blockSets = _blockSets;
 @synthesize gameBlocks = _gameBlocks;
 @synthesize nextGameAction = _nextGameAction;
 @synthesize grabbedBlocks = _grabbedBlocks;
@@ -64,7 +64,7 @@
 		_gameStepInterval = 0.05f;
 		
 		// Create our game's state objects.
-		self.fallingBlockSets = [NSMutableSet set];
+		self.blockSets = [NSMutableSet set];
 		self.gameBlocks = [NSMutableSet set];
 	}
 	return self;
@@ -105,7 +105,7 @@
 		[(CALayer *)obj removeFromSuperlayer];
 	}];
 	[self.gameBlocks removeAllObjects];
-	[self.fallingBlockSets removeAllObjects];
+	[self.blockSets removeAllObjects];
 	
 	// Clear out pending game state.
 	self.currentlyDroppingPiece = nil;
@@ -134,6 +134,43 @@
 }
 
 
+#if 0
+- (BOOL)_canMoveBlockSet:(NSSet *)blockSet toNewBlockLocations:(NSArray *)newBlockLocations {
+	__block BOOL foundIntersection = NO;
+	[newBlockLocations enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+		const CGPoint positionAfterMovement = [(NSValue *)obj CGPointValue];
+		
+		// Check to see if the component block hits the bottom of sides of the game board.
+		if(positionAfterMovement.x < 0.5f * SPBlockSize || positionAfterMovement.x > SPBlockSize * self.gridNumColumns - 0.5f * SPBlockSize || positionAfterMovement.y > SPBlockSize * self.gridNumRows - 0.5f * SPBlockSize) {
+			foundIntersection = YES;
+			*stop = YES;
+			return;
+		}
+		
+		// Check to see if the component block intersects with any of the other game blocks.
+		for(CALayer *gameBlock in self.gameBlocks) {
+			// If this game block is part of the game piece in question, just bail -- a piece can't intersect with itself!
+			if([blockSet containsObject:gameBlock]) {
+				continue;
+			}
+			
+			// If this game block is currently being dragged, just bail.
+			if([self.grabbedBlocks containsObject:gameBlock]) {
+				continue;
+			}
+			
+			// If this game block occupies the space below the piece's block.
+			if((fabsf(positionAfterMovement.x - gameBlock.position.x) < 0.01f) && (fabsf(positionAfterMovement.y - gameBlock.position.y) < 0.01f)) {
+				foundIntersection = YES;
+				*stop = YES;
+				break;
+			}
+		}
+	}];
+	
+	return !foundIntersection;
+}
+#else
 - (BOOL)_canMovePiece:(SPGamePiece *)piece toNewBlockLocations:(NSArray *)newBlockLocations {
 	__block BOOL foundIntersection = NO;
 	[newBlockLocations enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
@@ -169,6 +206,7 @@
 	
 	return !foundIntersection;
 }
+#endif
 - (void)_moveBlocksForPiece:(SPGamePiece *)piece toNewBlockLocations:(NSArray *)blockLocations {
 	[CATransaction begin];
 //	[CATransaction setAnimationDuration:0.1f];
@@ -180,6 +218,19 @@
 	[CATransaction commit];
 }
 
+#if 0
+- (BOOL)_canExecuteGameAction:(SPGameAction *)action againstBlockSet:(NSSet *)blockSet {
+	// Get the locations of the piece's component blocks after this action is applied.
+	NSArray *newBlockLocations = [piece blockLocationsAfterApplyingAction:action];
+	
+	// Check to see if all of the piece's component blocks locations are valid.
+	return [self _canMovePiece:piece toNewBlockLocations:newBlockLocations];
+}
+- (void)_executeGameAction:(SPGameAction *)action againstPiece:(SPGamePiece *)piece {
+	NSArray *newBlockLocations = [piece blockLocationsAfterApplyingAction:action];
+	[self _moveBlocksForPiece:piece toNewBlockLocations:newBlockLocations];
+}
+#else
 - (BOOL)_canExecuteGameAction:(SPGameAction *)action againstPiece:(SPGamePiece *)piece {
 	// Get the locations of the piece's component blocks after this action is applied.
 	NSArray *newBlockLocations = [piece blockLocationsAfterApplyingAction:action];
@@ -191,6 +242,7 @@
 	NSArray *newBlockLocations = [piece blockLocationsAfterApplyingAction:action];
 	[self _moveBlocksForPiece:piece toNewBlockLocations:newBlockLocations];
 }
+#endif
 
 
 - (SPGamePiece *)_currentlyDroppingPiece {
@@ -202,18 +254,31 @@
 		// Add the game piece's component blocks and position them.
 		const NSInteger droppingPieceBlockOffset = self.gridNumColumns / 2;
 		const CGPoint droppingPieceOrigin = CGPointMake((CGFloat)droppingPieceBlockOffset * SPBlockSize, -1.0f * [self.currentlyDroppingPiece numBlocksHigh] * SPBlockSize);
+		NSMutableSet *blockSet = [NSMutableSet set];
 		[self.currentlyDroppingPiece.componentBlocks enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 			CALayer *componentBlock = (CALayer *)obj;
 			componentBlock.position = CGPointMake(droppingPieceOrigin.x + componentBlock.position.x, droppingPieceOrigin.y + componentBlock.position.y);
 			
 			[self.gameContainerLayer addSublayer:componentBlock];
 			[self.gameBlocks addObject:componentBlock];
+			[blockSet addObject:componentBlock];
 		}];
+		[self.blockSets addObject:blockSet];
 	}
 	
 	return self.currentlyDroppingPiece;
 }
 - (void)_clearCurrentlyDroppingPiece {
+//	// Find the block set that corresponds to the currently dropping piece.
+//	NSSet *blockSetToRemove = nil;
+//	for(NSSet *blockSet in self.blockSets) {
+//		if([blockSet containsObject:[self.currentlyDroppingPiece.componentBlocks objectAtIndex:0]]) {
+//			blockSetToRemove = blockSet;
+//			break;
+//		}
+//	}
+//	[self.blockSets removeObject:blockSetToRemove];
+	
 	self.currentlyDroppingPiece = nil;
 }
 
@@ -293,6 +358,21 @@
 		// Step the game state.
 		self.lastGameStepTimestamp += self.gameStepInterval;
 		
+#if 0
+		for(NSSet *blockSet in self.blockSets) {
+			// Determine the block locations for moving this block set down.
+			NSMutableArray *newBlockLocations = [NSMutableArray array];
+			for(CALayer *blockLayer in blockSet) {
+				[currentPiece blockLocationsAfterApplyingAction:[SPGameAction gameActionWithType:SPGameActionMoveDown]];
+				[newBlockLocations addObject:<#(id)#>];
+			}
+			
+			// Check to see if this block set can move down.
+			if([self _canMovePiece:<#(SPGamePiece *)#> toNewBlockLocations:<#(NSArray *)#>]) {
+				
+			}
+		}
+#else
 		// See if we can move the piece down.
 		NSArray *newBlockLocations = [currentPiece blockLocationsAfterApplyingAction:[SPGameAction gameActionWithType:SPGameActionMoveDown]];
 		if([self _canMovePiece:currentPiece toNewBlockLocations:newBlockLocations]) {
@@ -310,6 +390,7 @@
 				self.nextGameAction = nil;
 			}
 		}
+#endif
 		
 		// Determine if it's time to execute the next game action.
 		if(self.nextGameAction) {

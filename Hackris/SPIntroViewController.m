@@ -18,7 +18,7 @@
 
 #pragma mark 
 - (IBAction)continueButtonTapped:(id)sender {
-	self.gameViewController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
+	self.gameViewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
 	[self presentViewController:self.gameViewController animated:YES completion:nil];
 }
 
