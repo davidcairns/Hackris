@@ -79,7 +79,7 @@
 	__block NSTimeInterval lastUpdateTimestamp = 0.0;
 	__block NSTimeInterval lastSolutionFindTimestamp = 0.0;
 	__block NSTimeInterval lastMoveExecutionTimestamp = 0.0;
-	const NSTimeInterval solutionFindInterval = 1.0; // 1Hz
+	const NSTimeInterval solutionFindInterval = 0.8; // (1/.8)Hz
 	const NSTimeInterval executeMoveInterval = 0.125; // 8Hz
 	__block SPSolution *currentSolution = nil;
 	dispatch_source_set_event_handler(self.gameUpdateTimerSource, ^ {

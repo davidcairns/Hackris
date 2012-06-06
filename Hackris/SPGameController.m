@@ -209,7 +209,6 @@
 #endif
 - (void)_moveBlocksForPiece:(SPGamePiece *)piece toNewBlockLocations:(NSArray *)blockLocations {
 	[CATransaction begin];
-//	[CATransaction setAnimationDuration:0.1f];
 	[CATransaction setDisableActions:YES];
 	[piece.componentBlocks enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 		CALayer *componentBlock = (CALayer *)obj;
@@ -413,8 +412,12 @@
 		[self _performLineClearIfNecessary];
 	}
 	
-	// Make sure our background layer gets displayed.
-	[self.gameContainerLayer setNeedsDisplay];
+	static BOOL _didDrawBackground = NO;
+	if(!_didDrawBackground) {
+		// Make sure our background layer gets displayed.
+		[self.gameContainerLayer setNeedsDisplay];
+		_didDrawBackground = YES;
+	}
 }
 
 
