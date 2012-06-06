@@ -8,9 +8,16 @@
 
 #import <Foundation/Foundation.h>
 #import "SPGameController.h"
+#import "SPSolution.h"
+#import "SPGameAction.h"
 
 @interface SPGamePlayer : NSObject
 
+#if 1
+- (SPSolution *)solutionForGame:(SPGameController *)gameController;
+- (SPGameActionType)actionTypeToFulfillSolution:(SPSolution *)solution inGame:(SPGameController *)gameController;
+#else
 - (void)makeMoveInGame:(SPGameController *)gameController;
+#endif
 
 @end

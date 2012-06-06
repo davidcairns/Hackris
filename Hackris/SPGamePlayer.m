@@ -8,27 +8,8 @@
 
 #import "SPGamePlayer.h"
 #import "SPGameController+SPGameInteraction.h"
-#import "SPGameAction.h"
 #import "SPGamePiece.h"
 #import "SPBlockSize.h"
-
-@interface SPSolution : NSObject
-@property(nonatomic, strong)SPGameBoardDescription *boardDescription;
-
-@property(nonatomic, assign)NSInteger leftEdgeColumn;
-@property(nonatomic, assign)NSInteger bottomEdgeRow;
-@property(nonatomic, assign)SPGamePieceRotation orientation;
-@end
-@implementation SPSolution
-@synthesize boardDescription = _boardDescription;
-@synthesize leftEdgeColumn = _leftEdgeColumn;
-@synthesize bottomEdgeRow = _bottomEdgeRow;
-@synthesize orientation = _orientation;
-- (NSString *)description {
-	return [NSString stringWithFormat:@"<%@ %p -- left edge column: %i, bottom edge row: %i, orientation: %i>", [self class], self, self.leftEdgeColumn, self.bottomEdgeRow, self.orientation];
-}
-@end
-
 
 @implementation SPGamePlayer
 
@@ -187,8 +168,6 @@
 		const float depthScore = (float)solution.bottomEdgeRow / gameBoardDescription.gridNumRows;
 		const float kDepthWeight = 0.75f;
 		
-//		NSLog(@"%@\n%@", solution, gameBoardDescription);
-		
 		// Calculate the number of holes on the board for this solution.
 		const CGFloat holeScore = [[self class] _holeScoreForGameBoardDescription:gameBoardDescription];
 		const float kHoleWeight = -0.75f;
@@ -200,7 +179,56 @@
 	
 	return scores;
 }
-- (SPGameActionType)_actionTypeToFulfillSolution:(SPSolution *)solution inGame:(SPGameController *)gameController {
+
+#if 1
+- (SPSolution *)solutionForGame:(SPGameController *)gameController {
+	SPGamePiece *currentPiece = gameController.currentlyDroppingPiece;
+	if(!currentPiece) {
+		return nil;
+	}
+	
+	// Get the base game board description, from which all of our solutions will stem.
+	SPGameBoardDescription *baseGameBoardDescription = [gameController descriptionOfCurrentBoardSansPiece:currentPiece];
+	
+	// Figure out all of the possible ways the currently-dropping piece can land.
+	NSArray *possibleSolutions = [[self class] _possibleSolutionsForPiece:currentPiece baseBoardDescription:baseGameBoardDescription];
+	
+	// Determine a placement score for each solution (how "good" the placement would be).
+	NSArray *solutionScores = [[self class] _scoresForSolutions:possibleSolutions ofPiece:currentPiece];
+	
+	// Get the highest-scored solution.
+	__block CGFloat highestScore = -10000.0f;
+	__block SPSolution *highestScoredSolution = nil;
+	[possibleSolutions enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+		SPSolution *solution = (SPSolution *)obj;
+		const CGFloat solutionScore = [[solutionScores objectAtIndex:idx] floatValue];
+		if(solutionScore > highestScore) {
+			highestScore = solutionScore;
+			highestScoredSolution = solution;
+		}
+		
+		//		NSLog(@"%@ -- score: %f", solution, solutionScore);
+	}];
+	
+	return highestScoredSolution;
+}
+- (SPGameActionType)actionTypeToFulfillSolution:(SPSolution *)solution inGame:(SPGameController *)gameController {
+	// First, check to see the difference in rotation.
+	if(gameController.currentlyDroppingPiece.rotation != solution.orientation) {
+		return SPGameActionRotate;
+	}
+	
+	// Next, check for the difference in column.
+	const NSInteger columnDiff = solution.leftEdgeColumn - gameController.currentlyDroppingPiece.leftEdgeColumn;
+	if(columnDiff) {
+		return columnDiff < 0 ? SPGameActionMoveLeft : SPGameActionMoveRight;
+	}
+	
+	// Otherwise, just return "down".
+	return SPGameActionMoveDown;
+}
+#else
+- (SPGameActionType)actionTypeToFulfillSolution:(SPSolution *)solution inGame:(SPGameController *)gameController {
 	// First, check to see the difference in rotation.
 	if(gameController.currentlyDroppingPiece.rotation != solution.orientation) {
 		return SPGameActionRotate;
@@ -245,7 +273,7 @@
 	}];
 	
 	// Make the move to execute the solution with the highest score.
-	SPGameActionType actionType = [self _actionTypeToFulfillSolution:highestScoredSolution inGame:gameController];
+	SPGameActionType actionType = [self actionTypeToFulfillSolution:highestScoredSolution inGame:gameController];
 	
 //	NSLog(@"Best solution: %@ --> action: %@", highestScoredSolution, SPGameActionNameForType(actionType));
 	
@@ -272,5 +300,6 @@
 			break;
 	}
 }
+#endif
 
 @end

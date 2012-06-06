@@ -9,6 +9,7 @@
 #import "SPViewController.h"
 #import <QuartzCore/QuartzCore.h>
 #import "SPGameController.h"
+#import "SPGameController+SPGameInteraction.h"
 #import "SPGamePlayer.h"
 
 @interface SPViewController ()
@@ -72,23 +73,44 @@
 	
 	// Create and start our game update timer source.
 	_gameUpdateTimerSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_main_queue());
-//	const uint64_t gameUpdateTimerInterval = NSEC_PER_SEC / 10;	// 10fps
-	const uint64_t gameUpdateTimerInterval = NSEC_PER_SEC / 40;	// 40fps
+	const uint64_t gameUpdateTimerInterval = NSEC_PER_SEC / 80;	// 80fps
 	dispatch_source_set_timer(self.gameUpdateTimerSource, dispatch_time(DISPATCH_TIME_NOW, 0), gameUpdateTimerInterval, 0);
 	
 	__block NSTimeInterval lastUpdateTimestamp = 0.0;
-	__block NSTimeInterval lastMoveTimestamp = 0.0;
-	const NSTimeInterval moveInterval = 1.0 / 10.0;
+	__block NSTimeInterval lastSolutionFindTimestamp = 0.0;
+	__block NSTimeInterval lastMoveExecutionTimestamp = 0.0;
+	const NSTimeInterval solutionFindInterval = 1.0; // 1Hz
+	const NSTimeInterval executeMoveInterval = 0.125; // 8Hz
+	__block SPSolution *currentSolution = nil;
 	dispatch_source_set_event_handler(self.gameUpdateTimerSource, ^ {
 		// Determine how much time has elapsed since the last game update.
 		const NSTimeInterval currentTimestamp = [NSDate timeIntervalSinceReferenceDate];
 		const NSTimeInterval timeDelta = (0 == lastUpdateTimestamp ? 0 : currentTimestamp - lastUpdateTimestamp);
 		lastUpdateTimestamp = currentTimestamp;
 		
-		if(currentTimestamp - lastMoveTimestamp >= moveInterval) {
-			// Allow our player object to act.
-			[self.gamePlayer makeMoveInGame:self.gameController];
-			lastMoveTimestamp += moveInterval;
+		// See if the player should find a new solution.
+		if(currentTimestamp - lastSolutionFindTimestamp >= solutionFindInterval) {
+			currentSolution = [self.gamePlayer solutionForGame:self.gameController];
+			
+			if(0.0 == lastSolutionFindTimestamp) {
+				lastSolutionFindTimestamp = currentTimestamp;
+			}
+			else {
+				lastSolutionFindTimestamp += solutionFindInterval;
+			}
+		}
+		
+		// See if the player can execute on the current solution.
+		if(currentTimestamp - lastMoveExecutionTimestamp >= executeMoveInterval) {
+			SPGameActionType playerActionType = [self.gamePlayer actionTypeToFulfillSolution:currentSolution inGame:self.gameController];
+			[self _executeActionOfType:playerActionType inGame:self.gameController];
+			
+			if(0.0 == lastMoveExecutionTimestamp) {
+				lastMoveExecutionTimestamp = currentTimestamp;
+			}
+			else {
+				lastMoveExecutionTimestamp += executeMoveInterval;
+			}
 		}
 		
 		// Update the game.
@@ -167,6 +189,31 @@
 - (void)resetGame {
 	// Reset our game's state.
 	[self.gameController resetGame];
+}
+
+- (void)_executeActionOfType:(SPGameActionType)actionType inGame:(SPGameController *)gameController {
+	// Execute the move.
+	switch(actionType) {
+		case SPGameActionRotate:
+			[gameController rotateCurrentPiece];
+			break;
+			
+		case SPGameActionMoveLeft:
+			[gameController moveCurrentPieceLeft];
+			break;
+			
+		case SPGameActionMoveRight:
+			[gameController moveCurrentPieceRight];
+			break;
+			
+		case SPGameActionMoveDown:
+			// no-op.
+			break;
+			
+		default:
+			NSLog(@"WARNING: Game Player attempted to produce incorrect game action type: %i", actionType);
+			break;
+	}
 }
 
 @end

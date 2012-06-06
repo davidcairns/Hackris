@@ -13,6 +13,7 @@
 		DF0EAB38157ED33F0099B919 /* block_radial_gradient.png in Resources */ = {isa = PBXBuildFile; fileRef = DF0EAB36157ED33F0099B919 /* block_radial_gradient.png */; };
 		DF0EAB3B157ED42B0099B919 /* block_bevel.png in Resources */ = {isa = PBXBuildFile; fileRef = DF0EAB3A157ED42B0099B919 /* block_bevel.png */; };
 		DF0EAB3D157ED6600099B919 /* block_star.png in Resources */ = {isa = PBXBuildFile; fileRef = DF0EAB3C157ED6600099B919 /* block_star.png */; };
+		DF0EAB40157EE1690099B919 /* SPSolution.m in Sources */ = {isa = PBXBuildFile; fileRef = DF0EAB3F157EE1690099B919 /* SPSolution.m */; };
 		DF4DA4C71574810200E04A84 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF4DA4C61574810200E04A84 /* UIKit.framework */; };
 		DF4DA4C91574810200E04A84 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF4DA4C81574810200E04A84 /* Foundation.framework */; };
 		DF4DA4CB1574810200E04A84 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF4DA4CA1574810200E04A84 /* CoreGraphics.framework */; };
@@ -38,6 +39,8 @@
 		DF0EAB36157ED33F0099B919 /* block_radial_gradient.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = block_radial_gradient.png; sourceTree = "<group>"; };
 		DF0EAB3A157ED42B0099B919 /* block_bevel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = block_bevel.png; sourceTree = "<group>"; };
 		DF0EAB3C157ED6600099B919 /* block_star.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = block_star.png; sourceTree = "<group>"; };
+		DF0EAB3E157EE1690099B919 /* SPSolution.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPSolution.h; sourceTree = "<group>"; };
+		DF0EAB3F157EE1690099B919 /* SPSolution.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPSolution.m; sourceTree = "<group>"; };
 		DF4DA4C21574810200E04A84 /* Hackris.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Hackris.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DF4DA4C61574810200E04A84 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		DF4DA4C81574810200E04A84 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -134,6 +137,8 @@
 				DF4DA4F41574AF1300E04A84 /* SPGameAction.m */,
 				DF9EB8B7157570760070BAED /* SPGamePlayer.h */,
 				DF9EB8B8157570760070BAED /* SPGamePlayer.m */,
+				DF0EAB3E157EE1690099B919 /* SPSolution.h */,
+				DF0EAB3F157EE1690099B919 /* SPSolution.m */,
 				DF4DA4CD1574810300E04A84 /* Supporting Files */,
 			);
 			path = Hackris;
@@ -252,6 +257,7 @@
 				DF9EB8B9157570760070BAED /* SPGamePlayer.m in Sources */,
 				DF7503CA157976C700110795 /* SPGameBoardDescription.m in Sources */,
 				DF052597157D8F6800911139 /* SPIntroViewController.m in Sources */,
+				DF0EAB40157EE1690099B919 /* SPSolution.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
