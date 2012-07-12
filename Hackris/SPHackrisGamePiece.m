@@ -6,7 +6,7 @@
 //  Copyright (c) 2012 smallpower. All rights reserved.
 //
 
-#import "SPGamePiece.h"
+#import "SPHackrisGamePiece.h"
 #import "SPBlockSize.h"
 
 @implementation CALayer (SPGamePieceBlock)
@@ -22,11 +22,11 @@
 
 
 #pragma mark 
-@interface SPGamePiece ()
+@interface SPHackrisGamePiece ()
 @property(nonatomic, strong)NSArray *componentBlocks;
 @end
 
-@implementation SPGamePiece
+@implementation SPHackrisGamePiece
 @synthesize gamePieceType = _gamePieceType;
 @synthesize componentBlocks = _componentBlocks;
 @synthesize rotation = _rotation;
@@ -312,8 +312,8 @@
 	
 	return [NSArray arrayWithArray:absoluteBlockLocations];
 }
-- (NSArray *)blockLocationsAfterApplyingAction:(SPGameAction *)action {
-	if(SPGameActionRotate == action.type) {
+- (NSArray *)blockLocationsAfterApplyingAction:(SPHackrisGameAction *)action {
+	if(SPHackrisGameActionRotate == action.type) {
 		SPGamePieceRotation newOrientation = (self.rotation + 1) % SPGamePieceRotationNumAngles;
 		CALayer *locusBlock = [self.componentBlocks objectAtIndex:1];
 		return [[self class] _blockLocationsForLocusPosition:locusBlock.position pieceType:self.gamePieceType orientation:newOrientation];
@@ -321,13 +321,13 @@
 	else {
 		// Determine the proper movement vector for this action.
 		CGPoint movementVector = CGPointZero;
-		if(SPGameActionMoveLeft == action.type) {
+		if(SPHackrisGameActionMoveLeft == action.type) {
 			movementVector = CGPointMake(-SPBlockSize, 0.0f);
 		}
-		else if(SPGameActionMoveRight == action.type) {
+		else if(SPHackrisGameActionMoveRight == action.type) {
 			movementVector = CGPointMake(SPBlockSize, 0.0f);
 		}
-		else if(SPGameActionMoveDown == action.type) {
+		else if(SPHackrisGameActionMoveDown == action.type) {
 			movementVector = CGPointMake(0.0f, SPBlockSize);
 		}
 		else {

@@ -1,5 +1,5 @@
 //
-//  SPSolution.h
+//  SPHackrisSolution.h
 //  Hackris
 //
 //  Created by David Cairns on 6/5/12.
@@ -7,10 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "SPGameBoardDescription.h"
+#import "SPHackrisGameBoardDescription.h"
 
-@interface SPSolution : NSObject
-@property(nonatomic, strong)SPGameBoardDescription *boardDescription;
+@interface SPHackrisSolution : NSObject
+@property(nonatomic, strong)SPHackrisGameBoardDescription *boardDescription;
 
 @property(nonatomic, assign)NSInteger leftEdgeColumn;
 @property(nonatomic, assign)NSInteger bottomEdgeRow;

@@ -13,22 +13,21 @@
 		DF0EAB38157ED33F0099B919 /* block_radial_gradient.png in Resources */ = {isa = PBXBuildFile; fileRef = DF0EAB36157ED33F0099B919 /* block_radial_gradient.png */; };
 		DF0EAB3B157ED42B0099B919 /* block_bevel.png in Resources */ = {isa = PBXBuildFile; fileRef = DF0EAB3A157ED42B0099B919 /* block_bevel.png */; };
 		DF0EAB3D157ED6600099B919 /* block_star.png in Resources */ = {isa = PBXBuildFile; fileRef = DF0EAB3C157ED6600099B919 /* block_star.png */; };
-		DF0EAB40157EE1690099B919 /* SPSolution.m in Sources */ = {isa = PBXBuildFile; fileRef = DF0EAB3F157EE1690099B919 /* SPSolution.m */; };
+		DF0EAB40157EE1690099B919 /* SPHackrisSolution.m in Sources */ = {isa = PBXBuildFile; fileRef = DF0EAB3F157EE1690099B919 /* SPHackrisSolution.m */; };
 		DF4DA4C71574810200E04A84 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF4DA4C61574810200E04A84 /* UIKit.framework */; };
 		DF4DA4C91574810200E04A84 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF4DA4C81574810200E04A84 /* Foundation.framework */; };
 		DF4DA4CB1574810200E04A84 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF4DA4CA1574810200E04A84 /* CoreGraphics.framework */; };
 		DF4DA4D11574810300E04A84 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = DF4DA4CF1574810300E04A84 /* InfoPlist.strings */; };
 		DF4DA4D31574810300E04A84 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = DF4DA4D21574810300E04A84 /* main.m */; };
 		DF4DA4D71574810300E04A84 /* SPAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DF4DA4D61574810300E04A84 /* SPAppDelegate.m */; };
-		DF4DA4DA1574810400E04A84 /* SPViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DF4DA4D91574810400E04A84 /* SPViewController.m */; };
-		DF4DA4DD1574810400E04A84 /* SPViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DF4DA4DB1574810400E04A84 /* SPViewController.xib */; };
+		DF4DA4DA1574810400E04A84 /* SPHackrisViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DF4DA4D91574810400E04A84 /* SPHackrisViewController.m */; };
 		DF4DA4E41574819D00E04A84 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF4DA4E31574819D00E04A84 /* QuartzCore.framework */; };
-		DF4DA4EC1574891700E04A84 /* SPGameController.m in Sources */ = {isa = PBXBuildFile; fileRef = DF4DA4EB1574891700E04A84 /* SPGameController.m */; };
-		DF4DA4EF15748C9600E04A84 /* SPGamePiece.m in Sources */ = {isa = PBXBuildFile; fileRef = DF4DA4EE15748C9600E04A84 /* SPGamePiece.m */; };
-		DF4DA4F51574AF1300E04A84 /* SPGameAction.m in Sources */ = {isa = PBXBuildFile; fileRef = DF4DA4F41574AF1300E04A84 /* SPGameAction.m */; };
+		DF4DA4EC1574891700E04A84 /* SPHackrisGameController.m in Sources */ = {isa = PBXBuildFile; fileRef = DF4DA4EB1574891700E04A84 /* SPHackrisGameController.m */; };
+		DF4DA4EF15748C9600E04A84 /* SPHackrisGamePiece.m in Sources */ = {isa = PBXBuildFile; fileRef = DF4DA4EE15748C9600E04A84 /* SPHackrisGamePiece.m */; };
+		DF4DA4F51574AF1300E04A84 /* SPHackrisGameAction.m in Sources */ = {isa = PBXBuildFile; fileRef = DF4DA4F41574AF1300E04A84 /* SPHackrisGameAction.m */; };
 		DF5774C0157810C000F7B59B /* block_gradient.png in Resources */ = {isa = PBXBuildFile; fileRef = DF5774BF157810C000F7B59B /* block_gradient.png */; };
-		DF7503CA157976C700110795 /* SPGameBoardDescription.m in Sources */ = {isa = PBXBuildFile; fileRef = DF7503C9157976C700110795 /* SPGameBoardDescription.m */; };
-		DF9EB8B9157570760070BAED /* SPGamePlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = DF9EB8B8157570760070BAED /* SPGamePlayer.m */; };
+		DF7503CA157976C700110795 /* SPHackrisGameBoardDescription.m in Sources */ = {isa = PBXBuildFile; fileRef = DF7503C9157976C700110795 /* SPHackrisGameBoardDescription.m */; };
+		DF9EB8B9157570760070BAED /* SPHackrisGamePlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = DF9EB8B8157570760070BAED /* SPHackrisGamePlayer.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,8 +38,8 @@
 		DF0EAB36157ED33F0099B919 /* block_radial_gradient.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = block_radial_gradient.png; sourceTree = "<group>"; };
 		DF0EAB3A157ED42B0099B919 /* block_bevel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = block_bevel.png; sourceTree = "<group>"; };
 		DF0EAB3C157ED6600099B919 /* block_star.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = block_star.png; sourceTree = "<group>"; };
-		DF0EAB3E157EE1690099B919 /* SPSolution.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPSolution.h; sourceTree = "<group>"; };
-		DF0EAB3F157EE1690099B919 /* SPSolution.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPSolution.m; sourceTree = "<group>"; };
+		DF0EAB3E157EE1690099B919 /* SPHackrisSolution.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPHackrisSolution.h; sourceTree = "<group>"; };
+		DF0EAB3F157EE1690099B919 /* SPHackrisSolution.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPHackrisSolution.m; sourceTree = "<group>"; };
 		DF4DA4C21574810200E04A84 /* Hackris.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Hackris.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DF4DA4C61574810200E04A84 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		DF4DA4C81574810200E04A84 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -51,24 +50,23 @@
 		DF4DA4D41574810300E04A84 /* Hackris-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Hackris-Prefix.pch"; sourceTree = "<group>"; };
 		DF4DA4D51574810300E04A84 /* SPAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SPAppDelegate.h; sourceTree = "<group>"; };
 		DF4DA4D61574810300E04A84 /* SPAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SPAppDelegate.m; sourceTree = "<group>"; };
-		DF4DA4D81574810300E04A84 /* SPViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SPViewController.h; sourceTree = "<group>"; };
-		DF4DA4D91574810400E04A84 /* SPViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SPViewController.m; sourceTree = "<group>"; };
-		DF4DA4DC1574810400E04A84 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/SPViewController.xib; sourceTree = "<group>"; };
+		DF4DA4D81574810300E04A84 /* SPHackrisViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SPHackrisViewController.h; sourceTree = "<group>"; };
+		DF4DA4D91574810400E04A84 /* SPHackrisViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SPHackrisViewController.m; sourceTree = "<group>"; };
 		DF4DA4E31574819D00E04A84 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		DF4DA4EA1574891700E04A84 /* SPGameController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPGameController.h; sourceTree = "<group>"; };
-		DF4DA4EB1574891700E04A84 /* SPGameController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPGameController.m; sourceTree = "<group>"; };
-		DF4DA4ED15748C9600E04A84 /* SPGamePiece.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPGamePiece.h; sourceTree = "<group>"; };
-		DF4DA4EE15748C9600E04A84 /* SPGamePiece.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPGamePiece.m; sourceTree = "<group>"; };
-		DF4DA4F01574AC1B00E04A84 /* SPGameController+SPGameInteraction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SPGameController+SPGameInteraction.h"; sourceTree = "<group>"; };
-		DF4DA4F31574AF1300E04A84 /* SPGameAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPGameAction.h; sourceTree = "<group>"; };
-		DF4DA4F41574AF1300E04A84 /* SPGameAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPGameAction.m; sourceTree = "<group>"; };
+		DF4DA4EA1574891700E04A84 /* SPHackrisGameController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPHackrisGameController.h; sourceTree = "<group>"; };
+		DF4DA4EB1574891700E04A84 /* SPHackrisGameController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPHackrisGameController.m; sourceTree = "<group>"; };
+		DF4DA4ED15748C9600E04A84 /* SPHackrisGamePiece.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPHackrisGamePiece.h; sourceTree = "<group>"; };
+		DF4DA4EE15748C9600E04A84 /* SPHackrisGamePiece.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPHackrisGamePiece.m; sourceTree = "<group>"; };
+		DF4DA4F01574AC1B00E04A84 /* SPHackrisGameController+SPGameInteraction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SPHackrisGameController+SPGameInteraction.h"; sourceTree = "<group>"; };
+		DF4DA4F31574AF1300E04A84 /* SPHackrisGameAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPHackrisGameAction.h; sourceTree = "<group>"; };
+		DF4DA4F41574AF1300E04A84 /* SPHackrisGameAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPHackrisGameAction.m; sourceTree = "<group>"; };
 		DF5774BD1577649100F7B59B /* SPBlockSize.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SPBlockSize.h; sourceTree = "<group>"; };
 		DF5774BF157810C000F7B59B /* block_gradient.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = block_gradient.png; sourceTree = "<group>"; };
-		DF7503C8157976C700110795 /* SPGameBoardDescription.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPGameBoardDescription.h; sourceTree = "<group>"; };
-		DF7503C9157976C700110795 /* SPGameBoardDescription.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPGameBoardDescription.m; sourceTree = "<group>"; };
-		DF7503CC1579821700110795 /* SPGameController+SPGameBoardAccess.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SPGameController+SPGameBoardAccess.h"; sourceTree = "<group>"; };
-		DF9EB8B7157570760070BAED /* SPGamePlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPGamePlayer.h; sourceTree = "<group>"; };
-		DF9EB8B8157570760070BAED /* SPGamePlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPGamePlayer.m; sourceTree = "<group>"; };
+		DF7503C8157976C700110795 /* SPHackrisGameBoardDescription.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPHackrisGameBoardDescription.h; sourceTree = "<group>"; };
+		DF7503C9157976C700110795 /* SPHackrisGameBoardDescription.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPHackrisGameBoardDescription.m; sourceTree = "<group>"; };
+		DF7503CC1579821700110795 /* SPHackrisGameController+SPGameBoardAccess.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SPHackrisGameController+SPGameBoardAccess.h"; sourceTree = "<group>"; };
+		DF9EB8B7157570760070BAED /* SPHackrisGamePlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPHackrisGamePlayer.h; sourceTree = "<group>"; };
+		DF9EB8B8157570760070BAED /* SPHackrisGamePlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPHackrisGamePlayer.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -121,24 +119,7 @@
 				DF4DA4D51574810300E04A84 /* SPAppDelegate.h */,
 				DF4DA4D61574810300E04A84 /* SPAppDelegate.m */,
 				DFED6F05157D92B900FE31BC /* Intro Screen */,
-				DF4DA4D81574810300E04A84 /* SPViewController.h */,
-				DF4DA4D91574810400E04A84 /* SPViewController.m */,
-				DF4DA4DB1574810400E04A84 /* SPViewController.xib */,
-				DF5774BD1577649100F7B59B /* SPBlockSize.h */,
-				DF4DA4EA1574891700E04A84 /* SPGameController.h */,
-				DF4DA4EB1574891700E04A84 /* SPGameController.m */,
-				DF4DA4F01574AC1B00E04A84 /* SPGameController+SPGameInteraction.h */,
-				DF7503CC1579821700110795 /* SPGameController+SPGameBoardAccess.h */,
-				DF7503C8157976C700110795 /* SPGameBoardDescription.h */,
-				DF7503C9157976C700110795 /* SPGameBoardDescription.m */,
-				DF4DA4ED15748C9600E04A84 /* SPGamePiece.h */,
-				DF4DA4EE15748C9600E04A84 /* SPGamePiece.m */,
-				DF4DA4F31574AF1300E04A84 /* SPGameAction.h */,
-				DF4DA4F41574AF1300E04A84 /* SPGameAction.m */,
-				DF9EB8B7157570760070BAED /* SPGamePlayer.h */,
-				DF9EB8B8157570760070BAED /* SPGamePlayer.m */,
-				DF0EAB3E157EE1690099B919 /* SPSolution.h */,
-				DF0EAB3F157EE1690099B919 /* SPSolution.m */,
+				DFF9FBE615AF931F0023657F /* Hackris Game */,
 				DF4DA4CD1574810300E04A84 /* Supporting Files */,
 			);
 			path = Hackris;
@@ -176,6 +157,30 @@
 				DF052596157D8F6800911139 /* SPIntroViewController.xib */,
 			);
 			name = "Intro Screen";
+			sourceTree = "<group>";
+		};
+		DFF9FBE615AF931F0023657F /* Hackris Game */ = {
+			isa = PBXGroup;
+			children = (
+				DF4DA4D81574810300E04A84 /* SPHackrisViewController.h */,
+				DF4DA4D91574810400E04A84 /* SPHackrisViewController.m */,
+				DF5774BD1577649100F7B59B /* SPBlockSize.h */,
+				DF4DA4EA1574891700E04A84 /* SPHackrisGameController.h */,
+				DF4DA4EB1574891700E04A84 /* SPHackrisGameController.m */,
+				DF4DA4F01574AC1B00E04A84 /* SPHackrisGameController+SPGameInteraction.h */,
+				DF7503CC1579821700110795 /* SPHackrisGameController+SPGameBoardAccess.h */,
+				DF7503C8157976C700110795 /* SPHackrisGameBoardDescription.h */,
+				DF7503C9157976C700110795 /* SPHackrisGameBoardDescription.m */,
+				DF4DA4ED15748C9600E04A84 /* SPHackrisGamePiece.h */,
+				DF4DA4EE15748C9600E04A84 /* SPHackrisGamePiece.m */,
+				DF4DA4F31574AF1300E04A84 /* SPHackrisGameAction.h */,
+				DF4DA4F41574AF1300E04A84 /* SPHackrisGameAction.m */,
+				DF9EB8B7157570760070BAED /* SPHackrisGamePlayer.h */,
+				DF9EB8B8157570760070BAED /* SPHackrisGamePlayer.m */,
+				DF0EAB3E157EE1690099B919 /* SPHackrisSolution.h */,
+				DF0EAB3F157EE1690099B919 /* SPHackrisSolution.m */,
+			);
+			name = "Hackris Game";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -231,7 +236,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				DF4DA4D11574810300E04A84 /* InfoPlist.strings in Resources */,
-				DF4DA4DD1574810400E04A84 /* SPViewController.xib in Resources */,
 				DF5774C0157810C000F7B59B /* block_gradient.png in Resources */,
 				DF052598157D8F6800911139 /* SPIntroViewController.xib in Resources */,
 				DF0EAB37157ED33F0099B919 /* block_cross_gradient.png in Resources */,
@@ -250,14 +254,14 @@
 			files = (
 				DF4DA4D31574810300E04A84 /* main.m in Sources */,
 				DF4DA4D71574810300E04A84 /* SPAppDelegate.m in Sources */,
-				DF4DA4DA1574810400E04A84 /* SPViewController.m in Sources */,
-				DF4DA4EC1574891700E04A84 /* SPGameController.m in Sources */,
-				DF4DA4EF15748C9600E04A84 /* SPGamePiece.m in Sources */,
-				DF4DA4F51574AF1300E04A84 /* SPGameAction.m in Sources */,
-				DF9EB8B9157570760070BAED /* SPGamePlayer.m in Sources */,
-				DF7503CA157976C700110795 /* SPGameBoardDescription.m in Sources */,
+				DF4DA4DA1574810400E04A84 /* SPHackrisViewController.m in Sources */,
+				DF4DA4EC1574891700E04A84 /* SPHackrisGameController.m in Sources */,
+				DF4DA4EF15748C9600E04A84 /* SPHackrisGamePiece.m in Sources */,
+				DF4DA4F51574AF1300E04A84 /* SPHackrisGameAction.m in Sources */,
+				DF9EB8B9157570760070BAED /* SPHackrisGamePlayer.m in Sources */,
+				DF7503CA157976C700110795 /* SPHackrisGameBoardDescription.m in Sources */,
 				DF052597157D8F6800911139 /* SPIntroViewController.m in Sources */,
-				DF0EAB40157EE1690099B919 /* SPSolution.m in Sources */,
+				DF0EAB40157EE1690099B919 /* SPHackrisSolution.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -270,14 +274,6 @@
 				DF4DA4D01574810300E04A84 /* en */,
 			);
 			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-		DF4DA4DB1574810400E04A84 /* SPViewController.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				DF4DA4DC1574810400E04A84 /* en */,
-			);
-			name = SPViewController.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

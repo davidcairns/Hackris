@@ -11,6 +11,13 @@
 @implementation SPIntroViewController
 @synthesize gameViewController = _gameViewController;
 
+- (void)viewDidLoad {
+	[super viewDidLoad];
+	
+	// Create our Hackris view controller manually.
+	self.gameViewController = [[SPHackrisViewController alloc] init];
+}
+
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
 	return (UIInterfaceOrientationPortrait == interfaceOrientation);
 }

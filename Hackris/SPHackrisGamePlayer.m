@@ -6,14 +6,14 @@
 //  Copyright (c) 2012 smallpower. All rights reserved.
 //
 
-#import "SPGamePlayer.h"
-#import "SPGameController+SPGameInteraction.h"
-#import "SPGamePiece.h"
+#import "SPHackrisGamePlayer.h"
+#import "SPHackrisGameController+SPGameInteraction.h"
+#import "SPHackrisGamePiece.h"
 #import "SPBlockSize.h"
 
-@implementation SPGamePlayer
+@implementation SPHackrisGamePlayer
 
-+ (NSArray *)_possibleSolutionsForPiece:(SPGamePiece *)currentlyDroppingPiece baseBoardDescription:(SPGameBoardDescription *)baseGameBoardDescription {
++ (NSArray *)_possibleSolutionsForPiece:(SPHackrisGamePiece *)currentlyDroppingPiece baseBoardDescription:(SPHackrisGameBoardDescription *)baseGameBoardDescription {
 	// For each column...
 	NSMutableArray *solutions = [NSMutableArray array];
 	for(NSInteger columnOffset = 0; columnOffset < baseGameBoardDescription.gridNumColumns; columnOffset++) {
@@ -24,7 +24,7 @@
 			
 			// If the piece will fall at all, save this solution.
 			if(fallDepth > 0) {
-				SPSolution *solution = [[SPSolution alloc] init];
+				SPHackrisSolution *solution = [[SPHackrisSolution alloc] init];
 				
 				// Generate a game board description for this solution combo.
 				solution.boardDescription = [baseGameBoardDescription gameBoardDescriptionByAddingPiece:currentlyDroppingPiece toLeftEdgeColumn:columnOffset depth:fallDepth orientation:orientation];
@@ -39,7 +39,7 @@
 	
 	return solutions;
 }
-+ (CGFloat)_holeScoreForGameBoardDescription:(SPGameBoardDescription *)gameBoardDescription {
++ (CGFloat)_holeScoreForGameBoardDescription:(SPHackrisGameBoardDescription *)gameBoardDescription {
 	// NOTE: How this algorithm calculates the score:
 	//			• 1.0 for a space surrounded on all sides
 	//			• 0.75 for a space surrounded on all sides but one
@@ -159,10 +159,10 @@
 	
 	return holeScore;
 }
-+ (NSArray *)_scoresForSolutions:(NSArray *)solutions ofPiece:(SPGamePiece *)piece {
++ (NSArray *)_scoresForSolutions:(NSArray *)solutions ofPiece:(SPHackrisGamePiece *)piece {
 	NSMutableArray *scores = [NSMutableArray array];
-	for(SPSolution *solution in solutions) {
-		SPGameBoardDescription *gameBoardDescription = solution.boardDescription;
+	for(SPHackrisSolution *solution in solutions) {
+		SPHackrisGameBoardDescription *gameBoardDescription = solution.boardDescription;
 		
 		// Calculate the depth score for this solution.
 		const float depthScore = (float)solution.bottomEdgeRow / gameBoardDescription.gridNumRows;
@@ -180,15 +180,14 @@
 	return scores;
 }
 
-#if 1
-- (SPSolution *)solutionForGame:(SPGameController *)gameController {
-	SPGamePiece *currentPiece = gameController.currentlyDroppingPiece;
+- (SPHackrisSolution *)solutionForGame:(SPHackrisGameController *)gameController {
+	SPHackrisGamePiece *currentPiece = gameController.currentlyDroppingPiece;
 	if(!currentPiece) {
 		return nil;
 	}
 	
 	// Get the base game board description, from which all of our solutions will stem.
-	SPGameBoardDescription *baseGameBoardDescription = [gameController descriptionOfCurrentBoardSansPiece:currentPiece];
+	SPHackrisGameBoardDescription *baseGameBoardDescription = [gameController descriptionOfCurrentBoardSansPiece:currentPiece];
 	
 	// Figure out all of the possible ways the currently-dropping piece can land.
 	NSArray *possibleSolutions = [[self class] _possibleSolutionsForPiece:currentPiece baseBoardDescription:baseGameBoardDescription];
@@ -198,9 +197,9 @@
 	
 	// Get the highest-scored solution.
 	__block CGFloat highestScore = -10000.0f;
-	__block SPSolution *highestScoredSolution = nil;
+	__block SPHackrisSolution *highestScoredSolution = nil;
 	[possibleSolutions enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-		SPSolution *solution = (SPSolution *)obj;
+		SPHackrisSolution *solution = (SPHackrisSolution *)obj;
 		const CGFloat solutionScore = [[solutionScores objectAtIndex:idx] floatValue];
 		if(solutionScore > highestScore) {
 			highestScore = solutionScore;
@@ -212,94 +211,20 @@
 	
 	return highestScoredSolution;
 }
-- (SPGameActionType)actionTypeToFulfillSolution:(SPSolution *)solution inGame:(SPGameController *)gameController {
+- (SPHackrisGameActionType)actionTypeToFulfillSolution:(SPHackrisSolution *)solution inGame:(SPHackrisGameController *)gameController {
 	// First, check to see the difference in rotation.
 	if(gameController.currentlyDroppingPiece.rotation != solution.orientation) {
-		return SPGameActionRotate;
+		return SPHackrisGameActionRotate;
 	}
 	
 	// Next, check for the difference in column.
 	const NSInteger columnDiff = solution.leftEdgeColumn - gameController.currentlyDroppingPiece.leftEdgeColumn;
 	if(columnDiff) {
-		return columnDiff < 0 ? SPGameActionMoveLeft : SPGameActionMoveRight;
+		return columnDiff < 0 ? SPHackrisGameActionMoveLeft : SPHackrisGameActionMoveRight;
 	}
 	
 	// Otherwise, just return "down".
-	return SPGameActionMoveDown;
+	return SPHackrisGameActionMoveDown;
 }
-#else
-- (SPGameActionType)actionTypeToFulfillSolution:(SPSolution *)solution inGame:(SPGameController *)gameController {
-	// First, check to see the difference in rotation.
-	if(gameController.currentlyDroppingPiece.rotation != solution.orientation) {
-		return SPGameActionRotate;
-	}
-	
-	// Next, check for the difference in column.
-	const NSInteger columnDiff = solution.leftEdgeColumn - gameController.currentlyDroppingPiece.leftEdgeColumn;
-	if(columnDiff) {
-		return columnDiff < 0 ? SPGameActionMoveLeft : SPGameActionMoveRight;
-	}
-	
-	// Otherwise, just return "down".
-	return SPGameActionMoveDown;
-}
-- (void)makeMoveInGame:(SPGameController *)gameController {
-	SPGamePiece *currentPiece = gameController.currentlyDroppingPiece;
-	if(!currentPiece) {
-		return;
-	}
-	
-	// Get the base game board description, from which all of our solutions will stem.
-	SPGameBoardDescription *baseGameBoardDescription = [gameController descriptionOfCurrentBoardSansPiece:currentPiece];
-	
-	// Figure out all of the possible ways the currently-dropping piece can land.
-	NSArray *possibleSolutions = [[self class] _possibleSolutionsForPiece:currentPiece baseBoardDescription:baseGameBoardDescription];
-	
-	// Determine a placement score for each solution (how "good" the placement would be).
-	NSArray *solutionScores = [[self class] _scoresForSolutions:possibleSolutions ofPiece:currentPiece];
-	
-	// Get the highest-scored solution.
-	__block CGFloat highestScore = -10000.0f;
-	__block SPSolution *highestScoredSolution = nil;
-	[possibleSolutions enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-		SPSolution *solution = (SPSolution *)obj;
-		const CGFloat solutionScore = [[solutionScores objectAtIndex:idx] floatValue];
-		if(solutionScore > highestScore) {
-			highestScore = solutionScore;
-			highestScoredSolution = solution;
-		}
-		
-//		NSLog(@"%@ -- score: %f", solution, solutionScore);
-	}];
-	
-	// Make the move to execute the solution with the highest score.
-	SPGameActionType actionType = [self actionTypeToFulfillSolution:highestScoredSolution inGame:gameController];
-	
-//	NSLog(@"Best solution: %@ --> action: %@", highestScoredSolution, SPGameActionNameForType(actionType));
-	
-	// Execute the move.
-	switch(actionType) {
-		case SPGameActionRotate:
-			[gameController rotateCurrentPiece];
-			break;
-			
-		case SPGameActionMoveLeft:
-			[gameController moveCurrentPieceLeft];
-			break;
-			
-		case SPGameActionMoveRight:
-			[gameController moveCurrentPieceRight];
-			break;
-			
-		case SPGameActionMoveDown:
-			// no-op.
-			break;
-			
-		default:
-			NSLog(@"WARNING: Game Player attempted to produce incorrect game action type: %i", actionType);
-			break;
-	}
-}
-#endif
 
 @end

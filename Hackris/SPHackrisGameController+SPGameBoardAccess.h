@@ -1,14 +1,14 @@
 //
-//  SPGameController+SPGameBoardAccess.h
+//  SPHackrisGameController+SPGameBoardAccess.h
 //  Hackris
 //
 //  Created by David Cairns on 6/1/12.
 //  Copyright (c) 2012 smallpower. All rights reserved.
 //
 
-#import "SPGameController.h"
+#import "SPHackrisGameController.h"
 
-@interface SPGameController (SPGameBoardAccess)
+@interface SPHackrisGameController (SPGameBoardAccess)
 
 - (NSSet *)gameBlocksSet;
 

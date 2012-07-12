@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface SPViewController : UIViewController
+@interface SPHackrisViewController : UIViewController
 
 - (void)resetGame;
 

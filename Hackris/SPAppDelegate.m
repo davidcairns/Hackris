@@ -8,7 +8,7 @@
 
 #import "SPAppDelegate.h"
 #import "SPIntroViewController.h"
-#import "SPViewController.h"
+#import "SPHackrisViewController.h"
 
 @implementation SPAppDelegate
 @synthesize window = _window;

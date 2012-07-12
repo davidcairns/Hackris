@@ -6,23 +6,23 @@
 //  Copyright (c) 2012 smallpower. All rights reserved.
 //
 
-#import "SPViewController.h"
+#import "SPHackrisViewController.h"
 #import <QuartzCore/QuartzCore.h>
-#import "SPGameController.h"
-#import "SPGameController+SPGameInteraction.h"
-#import "SPGamePlayer.h"
+#import "SPHackrisGameController.h"
+#import "SPHackrisGameController+SPGameInteraction.h"
+#import "SPHackrisGamePlayer.h"
 
-@interface SPViewController ()
-@property(nonatomic, strong)SPGameController *gameController;
+@interface SPHackrisViewController ()
+@property(nonatomic, strong)SPHackrisGameController *gameController;
 @property(nonatomic, readonly)dispatch_source_t gameUpdateTimerSource;
 
-@property(nonatomic, strong)SPGamePlayer *gamePlayer;
+@property(nonatomic, strong)SPHackrisGamePlayer *gamePlayer;
 
 // Interaction
 @property(nonatomic, strong)UITouch *trackingTouch;
 @end
 
-@implementation SPViewController
+@implementation SPHackrisViewController
 @synthesize gameController = _gameController;
 @synthesize gameUpdateTimerSource = _gameUpdateTimerSource;
 @synthesize gamePlayer = _gamePlayer;
@@ -30,10 +30,10 @@
 
 - (void)_SPViewController_commonInit {
 	// Create our game object.
-	self.gameController = [[SPGameController alloc] init];
+	self.gameController = [[SPHackrisGameController alloc] init];
 	
 	// Create our game player.
-	self.gamePlayer = [[SPGamePlayer alloc] init];
+	self.gamePlayer = [[SPHackrisGamePlayer alloc] init];
 }
 - (id)init {
 	if((self = [super init])) {
@@ -65,7 +65,8 @@
 - (void)viewDidLayoutSubviews {
 	[super viewDidLayoutSubviews];
 	
-	self.gameController.gameContainerLayer.frame = self.view.layer.bounds;
+	self.gameController.gameContainerLayer.bounds = CGRectMake(0.0f, 0.0f, 320.0f, 480.0f);
+	self.gameController.gameContainerLayer.position = CGPointMake(CGRectGetMidX(self.view.layer.bounds), CGRectGetMidY(self.view.layer.bounds));
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -81,7 +82,7 @@
 	__block NSTimeInterval lastMoveExecutionTimestamp = 0.0;
 	const NSTimeInterval solutionFindInterval = 0.8; // (1/.8)Hz
 	const NSTimeInterval executeMoveInterval = 0.125; // 8Hz
-	__block SPSolution *currentSolution = nil;
+	__block SPHackrisSolution *currentSolution = nil;
 	dispatch_source_set_event_handler(self.gameUpdateTimerSource, ^ {
 		// Determine how much time has elapsed since the last game update.
 		const NSTimeInterval currentTimestamp = [NSDate timeIntervalSinceReferenceDate];
@@ -102,7 +103,7 @@
 		
 		// See if the player can execute on the current solution.
 		if(currentTimestamp - lastMoveExecutionTimestamp >= executeMoveInterval) {
-			SPGameActionType playerActionType = [self.gamePlayer actionTypeToFulfillSolution:currentSolution inGame:self.gameController];
+			SPHackrisGameActionType playerActionType = [self.gamePlayer actionTypeToFulfillSolution:currentSolution inGame:self.gameController];
 			[self _executeActionOfType:playerActionType inGame:self.gameController];
 			
 			if(0.0 == lastMoveExecutionTimestamp) {
@@ -191,22 +192,22 @@
 	[self.gameController resetGame];
 }
 
-- (void)_executeActionOfType:(SPGameActionType)actionType inGame:(SPGameController *)gameController {
+- (void)_executeActionOfType:(SPHackrisGameActionType)actionType inGame:(SPHackrisGameController *)gameController {
 	// Execute the move.
 	switch(actionType) {
-		case SPGameActionRotate:
+		case SPHackrisGameActionRotate:
 			[gameController rotateCurrentPiece];
 			break;
 			
-		case SPGameActionMoveLeft:
+		case SPHackrisGameActionMoveLeft:
 			[gameController moveCurrentPieceLeft];
 			break;
 			
-		case SPGameActionMoveRight:
+		case SPHackrisGameActionMoveRight:
 			[gameController moveCurrentPieceRight];
 			break;
 			
-		case SPGameActionMoveDown:
+		case SPHackrisGameActionMoveDown:
 			// no-op.
 			break;
 			

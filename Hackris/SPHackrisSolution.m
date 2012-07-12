@@ -1,14 +1,14 @@
 //
-//  SPSolution.m
+//  SPHackrisSolution.m
 //  Hackris
 //
 //  Created by David Cairns on 6/5/12.
 //  Copyright (c) 2012 smallpower. All rights reserved.
 //
 
-#import "SPSolution.h"
+#import "SPHackrisSolution.h"
 
-@implementation SPSolution
+@implementation SPHackrisSolution
 @synthesize boardDescription = _boardDescription;
 @synthesize leftEdgeColumn = _leftEdgeColumn;
 @synthesize bottomEdgeRow = _bottomEdgeRow;

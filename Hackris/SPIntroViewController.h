@@ -7,11 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "SPViewController.h"
+#import "SPHackrisViewController.h"
 
 @interface SPIntroViewController : UIViewController
 
-@property(nonatomic, strong)IBOutlet SPViewController *gameViewController;
+@property(nonatomic, strong)IBOutlet SPHackrisViewController *gameViewController;
 
 - (IBAction)continueButtonTapped:(id)sender;
 

@@ -1,38 +1,38 @@
 //
-//  SPGameController.m
+//  SPHackrisGameController.m
 //  Hackris
 //
 //  Created by David Cairns on 5/28/12.
 //  Copyright (c) 2012 smallpower. All rights reserved.
 //
 
-#import "SPGameController.h"
-#import "SPGameController+SPGameInteraction.h"
-#import "SPGameController+SPGameBoardAccess.h"
-#import "SPGameAction.h"
+#import "SPHackrisGameController.h"
+#import "SPHackrisGameController+SPGameInteraction.h"
+#import "SPHackrisGameController+SPGameBoardAccess.h"
+#import "SPHackrisGameAction.h"
 #import "SPBlockSize.h"
 
 #define DC_DRAW_BACKGROUND_GRID 1
 
 #pragma mark 
-@interface SPGameController ()
+@interface SPHackrisGameController ()
 @property(nonatomic, strong)CALayer *gameContainerLayer;
 
 // Game State
 @property(nonatomic, assign)NSTimeInterval currentGameTime;
 @property(nonatomic, assign)NSTimeInterval lastGameStepTimestamp;
-@property(nonatomic, strong)SPGamePiece *currentlyDroppingPiece;
+@property(nonatomic, strong)SPHackrisGamePiece *currentlyDroppingPiece;
 @property(nonatomic, strong)NSMutableSet *blockSets;
 @property(nonatomic, strong)NSMutableSet *gameBlocks;
 
 // Game Interaction.
-@property(nonatomic, strong)SPGameAction *nextGameAction;
+@property(nonatomic, strong)SPHackrisGameAction *nextGameAction;
 @property(nonatomic, strong)NSArray *grabbedBlocks;
 @property(nonatomic, assign)CGPoint grabInitialTouchLocation;
 @property(nonatomic, strong)NSArray *grabbedBlocksInitialLocations;
 @end
 
-@implementation SPGameController
+@implementation SPHackrisGameController
 @synthesize gameContainerLayer = _gameContainerLayer;
 @synthesize gridNumRows = _gridNumRows;
 @synthesize gridNumColumns = _gridNumColumns;
@@ -118,10 +118,10 @@
 }
 
 
-- (SPGameBoardDescription *)descriptionOfCurrentBoard {
-	return [SPGameBoardDescription gameBoardDescriptionForBlocks:self.gameBlocks gridNumRows:self.gridNumRows gridNumColumns:self.gridNumColumns];
+- (SPHackrisGameBoardDescription *)descriptionOfCurrentBoard {
+	return [SPHackrisGameBoardDescription gameBoardDescriptionForBlocks:self.gameBlocks gridNumRows:self.gridNumRows gridNumColumns:self.gridNumColumns];
 }
-- (SPGameBoardDescription *)descriptionOfCurrentBoardSansPiece:(SPGamePiece *)piece {
+- (SPHackrisGameBoardDescription *)descriptionOfCurrentBoardSansPiece:(SPHackrisGamePiece *)piece {
 	NSMutableSet *gameBlocks = [self.gameBlocks mutableCopy];
 	
 	// Remove the blocks that are part of this piece.
@@ -130,7 +130,7 @@
 	}
 	
 	// Create the game board description from these blocks and return it.
-	return [SPGameBoardDescription gameBoardDescriptionForBlocks:gameBlocks gridNumRows:self.gridNumRows gridNumColumns:self.gridNumColumns];
+	return [SPHackrisGameBoardDescription gameBoardDescriptionForBlocks:gameBlocks gridNumRows:self.gridNumRows gridNumColumns:self.gridNumColumns];
 }
 
 
@@ -171,7 +171,7 @@
 	return !foundIntersection;
 }
 #else
-- (BOOL)_canMovePiece:(SPGamePiece *)piece toNewBlockLocations:(NSArray *)newBlockLocations {
+- (BOOL)_canMovePiece:(SPHackrisGamePiece *)piece toNewBlockLocations:(NSArray *)newBlockLocations {
 	__block BOOL foundIntersection = NO;
 	[newBlockLocations enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 		const CGPoint positionAfterMovement = [(NSValue *)obj CGPointValue];
@@ -207,7 +207,7 @@
 	return !foundIntersection;
 }
 #endif
-- (void)_moveBlocksForPiece:(SPGamePiece *)piece toNewBlockLocations:(NSArray *)blockLocations {
+- (void)_moveBlocksForPiece:(SPHackrisGamePiece *)piece toNewBlockLocations:(NSArray *)blockLocations {
 	[CATransaction begin];
 	[CATransaction setDisableActions:YES];
 	[piece.componentBlocks enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
@@ -218,37 +218,37 @@
 }
 
 #if 0
-- (BOOL)_canExecuteGameAction:(SPGameAction *)action againstBlockSet:(NSSet *)blockSet {
+- (BOOL)_canExecuteGameAction:(SPHackrisGameAction *)action againstBlockSet:(NSSet *)blockSet {
 	// Get the locations of the piece's component blocks after this action is applied.
 	NSArray *newBlockLocations = [piece blockLocationsAfterApplyingAction:action];
 	
 	// Check to see if all of the piece's component blocks locations are valid.
 	return [self _canMovePiece:piece toNewBlockLocations:newBlockLocations];
 }
-- (void)_executeGameAction:(SPGameAction *)action againstPiece:(SPGamePiece *)piece {
+- (void)_executeGameAction:(SPHackrisGameAction *)action againstPiece:(SPGamePiece *)piece {
 	NSArray *newBlockLocations = [piece blockLocationsAfterApplyingAction:action];
 	[self _moveBlocksForPiece:piece toNewBlockLocations:newBlockLocations];
 }
 #else
-- (BOOL)_canExecuteGameAction:(SPGameAction *)action againstPiece:(SPGamePiece *)piece {
+- (BOOL)_canExecuteGameAction:(SPHackrisGameAction *)action againstPiece:(SPHackrisGamePiece *)piece {
 	// Get the locations of the piece's component blocks after this action is applied.
 	NSArray *newBlockLocations = [piece blockLocationsAfterApplyingAction:action];
 	
 	// Check to see if all of the piece's component blocks locations are valid.
 	return [self _canMovePiece:piece toNewBlockLocations:newBlockLocations];
 }
-- (void)_executeGameAction:(SPGameAction *)action againstPiece:(SPGamePiece *)piece {
+- (void)_executeGameAction:(SPHackrisGameAction *)action againstPiece:(SPHackrisGamePiece *)piece {
 	NSArray *newBlockLocations = [piece blockLocationsAfterApplyingAction:action];
 	[self _moveBlocksForPiece:piece toNewBlockLocations:newBlockLocations];
 }
 #endif
 
 
-- (SPGamePiece *)_currentlyDroppingPiece {
+- (SPHackrisGamePiece *)_currentlyDroppingPiece {
 	if(!self.currentlyDroppingPiece) {
 		// Create a piece with a randomly-selected type.
 		const SPGamePieceType gamePieceType = rand() % SPGamePieceNumTypes;
-		self.currentlyDroppingPiece = [[SPGamePiece alloc] initWithGamePieceType:gamePieceType];
+		self.currentlyDroppingPiece = [[SPHackrisGamePiece alloc] initWithGamePieceType:gamePieceType];
 		
 		// Add the game piece's component blocks and position them.
 		const NSInteger droppingPieceBlockOffset = self.gridNumColumns / 2;
@@ -350,7 +350,7 @@
 	self.currentGameTime += timeDelta;
 	
 	// Get the currently-dropping piece.
-	SPGamePiece *currentPiece = [self _currentlyDroppingPiece];
+	SPHackrisGamePiece *currentPiece = [self _currentlyDroppingPiece];
 	
 	// Determine if it's time to move the currently-dropping piece down.
 	if(self.currentGameTime - self.lastGameStepTimestamp >= self.gameStepInterval) {
@@ -362,7 +362,7 @@
 			// Determine the block locations for moving this block set down.
 			NSMutableArray *newBlockLocations = [NSMutableArray array];
 			for(CALayer *blockLayer in blockSet) {
-				[currentPiece blockLocationsAfterApplyingAction:[SPGameAction gameActionWithType:SPGameActionMoveDown]];
+				[currentPiece blockLocationsAfterApplyingAction:[SPHackrisGameAction gameActionWithType:SPHackrisGameActionMoveDown]];
 				[newBlockLocations addObject:<#(id)#>];
 			}
 			
@@ -373,7 +373,7 @@
 		}
 #else
 		// See if we can move the piece down.
-		NSArray *newBlockLocations = [currentPiece blockLocationsAfterApplyingAction:[SPGameAction gameActionWithType:SPGameActionMoveDown]];
+		NSArray *newBlockLocations = [currentPiece blockLocationsAfterApplyingAction:[SPHackrisGameAction gameActionWithType:SPHackrisGameActionMoveDown]];
 		if([self _canMovePiece:currentPiece toNewBlockLocations:newBlockLocations]) {
 			[self _moveBlocksForPiece:currentPiece toNewBlockLocations:newBlockLocations];
 		}
@@ -399,7 +399,7 @@
 				[self _executeGameAction:self.nextGameAction againstPiece:currentPiece];
 				
 				// If this was a rotation action, update the piece's rotation.
-				if(SPGameActionRotate == self.nextGameAction.type) {
+				if(SPHackrisGameActionRotate == self.nextGameAction.type) {
 					self.currentlyDroppingPiece.rotation = (self.currentlyDroppingPiece.rotation + 1) % SPGamePieceRotationNumAngles;
 				}
 			}
@@ -508,21 +508,21 @@
 
 
 #pragma mark 
-@implementation SPGameController (SPGameInteraction)
+@implementation SPHackrisGameController (SPGameInteraction)
 - (void)moveCurrentPieceLeft {
-	self.nextGameAction = [SPGameAction gameActionWithType:SPGameActionMoveLeft];
+	self.nextGameAction = [SPHackrisGameAction gameActionWithType:SPHackrisGameActionMoveLeft];
 }
 - (void)moveCurrentPieceRight {
-	self.nextGameAction = [SPGameAction gameActionWithType:SPGameActionMoveRight];
+	self.nextGameAction = [SPHackrisGameAction gameActionWithType:SPHackrisGameActionMoveRight];
 }
 - (void)rotateCurrentPiece {
-	self.nextGameAction = [SPGameAction gameActionWithType:SPGameActionRotate];
+	self.nextGameAction = [SPHackrisGameAction gameActionWithType:SPHackrisGameActionRotate];
 }
 @end
 
 
 #pragma mark 
-@implementation SPGameController (SPGameBoardAccess)
+@implementation SPHackrisGameController (SPGameBoardAccess)
 - (NSSet *)gameBlocksSet {
 	return [NSSet setWithSet:self.gameBlocks];
 }

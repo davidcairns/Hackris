@@ -6,16 +6,16 @@
 //  Copyright (c) 2012 smallpower. All rights reserved.
 //
 
-#import "SPGameBoardDescription.h"
+#import "SPHackrisGameBoardDescription.h"
 #import <QuartzCore/QuartzCore.h>
-#import "SPGameController+SPGameBoardAccess.h"
+#import "SPHackrisGameController+SPGameBoardAccess.h"
 #import "SPBlockSize.h"
 
-@interface SPGameBoardDescription ()
+@interface SPHackrisGameBoardDescription ()
 @property(nonatomic, readonly)BOOL *blockExistenceArray;
 @end
 
-@implementation SPGameBoardDescription
+@implementation SPHackrisGameBoardDescription
 @synthesize gridNumRows = _gridNumRows;
 @synthesize gridNumColumns = _gridNumColumns;
 @synthesize blockExistenceArray = _blockExistenceArray;
@@ -63,11 +63,11 @@
 	return nil;
 }
 
-+ (SPGameBoardDescription *)gameBoardDescriptionForBlocks:(NSSet *)gameBlocks gridNumRows:(NSInteger)gridNumRows gridNumColumns:(NSInteger)gridNumColumns {
-	return [[SPGameBoardDescription alloc] initWithBlocks:gameBlocks gridNumRows:gridNumRows gridNumColumns:gridNumColumns];
++ (SPHackrisGameBoardDescription *)gameBoardDescriptionForBlocks:(NSSet *)gameBlocks gridNumRows:(NSInteger)gridNumRows gridNumColumns:(NSInteger)gridNumColumns {
+	return [[SPHackrisGameBoardDescription alloc] initWithBlocks:gameBlocks gridNumRows:gridNumRows gridNumColumns:gridNumColumns];
 }
-- (SPGameBoardDescription *)gameBoardDescriptionByAddingPiece:(SPGamePiece *)gamePiece toLeftEdgeColumn:(NSInteger)leftEdgeColumn depth:(NSInteger)depth orientation:(SPGamePieceRotation)orientation {
-	SPGameBoardDescription *boardDescription = [[SPGameBoardDescription alloc] initWithGridNumRows:self.gridNumRows gridNumColumns:self.gridNumColumns];
+- (SPHackrisGameBoardDescription *)gameBoardDescriptionByAddingPiece:(SPHackrisGamePiece *)gamePiece toLeftEdgeColumn:(NSInteger)leftEdgeColumn depth:(NSInteger)depth orientation:(SPGamePieceRotation)orientation {
+	SPHackrisGameBoardDescription *boardDescription = [[SPHackrisGameBoardDescription alloc] initWithGridNumRows:self.gridNumRows gridNumColumns:self.gridNumColumns];
 	
 	BOOL *existenceMappingForPiece = [[self class] _existenceMappingForPiece:gamePiece gridNumRows:boardDescription.gridNumRows gridNumColumns:boardDescription.gridNumColumns leftEdgeColumn:leftEdgeColumn depth:depth orientation:orientation];
 	
@@ -82,9 +82,9 @@
 	
 	return boardDescription;
 }
-+ (BOOL *)_existenceMappingForPiece:(SPGamePiece *)gamePiece gridNumRows:(NSInteger)gridNumRows gridNumColumns:(NSInteger)gridNumColumns leftEdgeColumn:(NSInteger)leftEdgeColumn depth:(NSInteger)depth orientation:(SPGamePieceRotation)orientation {
++ (BOOL *)_existenceMappingForPiece:(SPHackrisGamePiece *)gamePiece gridNumRows:(NSInteger)gridNumRows gridNumColumns:(NSInteger)gridNumColumns leftEdgeColumn:(NSInteger)leftEdgeColumn depth:(NSInteger)depth orientation:(SPGamePieceRotation)orientation {
 	// Get the relative blocks locations for this piece type and orientation.
-	NSArray *relativeBlockLocations = [SPGamePiece relativeBlockLocationsForPieceType:gamePiece.gamePieceType orientation:orientation];
+	NSArray *relativeBlockLocations = [SPHackrisGamePiece relativeBlockLocationsForPieceType:gamePiece.gamePieceType orientation:orientation];
 	
 	// Get the column offset for this piece such that it has the given left-edge column.
 	__block NSInteger pieceColumnOffset = 0;
@@ -164,9 +164,9 @@
 }
 
 
-- (NSInteger)fallDepthForPiece:(SPGamePiece *)piece leftEdgeColumn:(NSInteger)leftEdgeColumn orientation:(SPGamePieceRotation)orientation {
+- (NSInteger)fallDepthForPiece:(SPHackrisGamePiece *)piece leftEdgeColumn:(NSInteger)leftEdgeColumn orientation:(SPGamePieceRotation)orientation {
 	// Get the arrangement of this piece's blocks for this orientation.
-	NSArray *relativeBlockLocations = [SPGamePiece relativeBlockLocationsForPieceType:piece.gamePieceType orientation:orientation];
+	NSArray *relativeBlockLocations = [SPHackrisGamePiece relativeBlockLocationsForPieceType:piece.gamePieceType orientation:orientation];
 	
 	// Determine how far we have to offset the whole piece based on this orientation (such that its left edge falls in the column specified).
 	__block NSInteger pieceColumnOffset = 0;

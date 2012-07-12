@@ -9,6 +9,6 @@
 #ifndef Hackris_SPBlockSize_h
 #define Hackris_SPBlockSize_h
 
-#define SPBlockSize 20.0f
+#define SPBlockSize 30.0f
 
 #endif

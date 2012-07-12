@@ -1,5 +1,5 @@
 //
-//  SPGameController.h
+//  SPHackrisGameController.h
 //  Hackris
 //
 //  Created by David Cairns on 5/28/12.
@@ -8,10 +8,10 @@
 
 #import <Foundation/Foundation.h>
 #import <QuartzCore/QuartzCore.h>
-#import "SPGamePiece.h"
-#import "SPGameBoardDescription.h"
+#import "SPHackrisGamePiece.h"
+#import "SPHackrisGameBoardDescription.h"
 
-@interface SPGameController : NSObject
+@interface SPHackrisGameController : NSObject
 
 - (void)resetGame;
 
@@ -25,9 +25,9 @@
 
 
 // Game State
-@property(nonatomic, strong, readonly)SPGamePiece *currentlyDroppingPiece;
-- (SPGameBoardDescription *)descriptionOfCurrentBoard;
-- (SPGameBoardDescription *)descriptionOfCurrentBoardSansPiece:(SPGamePiece *)piece;
+@property(nonatomic, strong, readonly)SPHackrisGamePiece *currentlyDroppingPiece;
+- (SPHackrisGameBoardDescription *)descriptionOfCurrentBoard;
+- (SPHackrisGameBoardDescription *)descriptionOfCurrentBoardSansPiece:(SPHackrisGamePiece *)piece;
 
 // Interface
 @property(nonatomic, strong, readonly)CALayer *gameContainerLayer;

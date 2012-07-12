@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <QuartzCore/QuartzCore.h>
-#import "SPGameAction.h"
+#import "SPHackrisGameAction.h"
 
 typedef enum {
 	SPGamePieceTypeStraight = 0, 
@@ -29,7 +29,7 @@ typedef enum {
 } SPGamePieceRotation;
 
 
-@interface SPGamePiece : NSObject
+@interface SPHackrisGamePiece : NSObject
 
 - (id)initWithGamePieceType:(SPGamePieceType)gamePieceType;
 @property(nonatomic, readonly)SPGamePieceType gamePieceType;
@@ -38,7 +38,7 @@ typedef enum {
 - (NSInteger)leftEdgeColumn;
 
 + (NSArray *)relativeBlockLocationsForPieceType:(SPGamePieceType)pieceType orientation:(SPGamePieceRotation)orientation;
-- (NSArray *)blockLocationsAfterApplyingAction:(SPGameAction *)action;
+- (NSArray *)blockLocationsAfterApplyingAction:(SPHackrisGameAction *)action;
 
 // Mutable state.
 @property(nonatomic, assign)SPGamePieceRotation rotation;
