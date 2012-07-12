@@ -7,7 +7,7 @@
 //
 
 #import "SPHackrisGamePiece.h"
-#import "SPBlockSize.h"
+#import "SPHackrisBlockSize.h"
 
 @implementation CALayer (SPGamePieceBlock)
 + (CALayer *)SPGamePieceBlock_layerWithColor:(UIColor *)color image:(UIImage *)image {

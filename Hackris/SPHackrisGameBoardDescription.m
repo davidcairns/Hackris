@@ -9,7 +9,7 @@
 #import "SPHackrisGameBoardDescription.h"
 #import <QuartzCore/QuartzCore.h>
 #import "SPHackrisGameController+SPGameBoardAccess.h"
-#import "SPBlockSize.h"
+#import "SPHackrisBlockSize.h"
 
 @interface SPHackrisGameBoardDescription ()
 @property(nonatomic, readonly)BOOL *blockExistenceArray;

@@ -60,7 +60,7 @@
 		DF4DA4F01574AC1B00E04A84 /* SPHackrisGameController+SPGameInteraction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SPHackrisGameController+SPGameInteraction.h"; sourceTree = "<group>"; };
 		DF4DA4F31574AF1300E04A84 /* SPHackrisGameAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPHackrisGameAction.h; sourceTree = "<group>"; };
 		DF4DA4F41574AF1300E04A84 /* SPHackrisGameAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPHackrisGameAction.m; sourceTree = "<group>"; };
-		DF5774BD1577649100F7B59B /* SPBlockSize.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SPBlockSize.h; sourceTree = "<group>"; };
+		DF5774BD1577649100F7B59B /* SPHackrisBlockSize.h */ = {isa = PBXFileReference; path = SPHackrisBlockSize.h; sourceTree = "<group>"; };
 		DF5774BF157810C000F7B59B /* block_gradient.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = block_gradient.png; sourceTree = "<group>"; };
 		DF7503C8157976C700110795 /* SPHackrisGameBoardDescription.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPHackrisGameBoardDescription.h; sourceTree = "<group>"; };
 		DF7503C9157976C700110795 /* SPHackrisGameBoardDescription.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPHackrisGameBoardDescription.m; sourceTree = "<group>"; };
@@ -164,7 +164,7 @@
 			children = (
 				DF4DA4D81574810300E04A84 /* SPHackrisViewController.h */,
 				DF4DA4D91574810400E04A84 /* SPHackrisViewController.m */,
-				DF5774BD1577649100F7B59B /* SPBlockSize.h */,
+				DF5774BD1577649100F7B59B /* SPHackrisBlockSize.h */,
 				DF4DA4EA1574891700E04A84 /* SPHackrisGameController.h */,
 				DF4DA4EB1574891700E04A84 /* SPHackrisGameController.m */,
 				DF4DA4F01574AC1B00E04A84 /* SPHackrisGameController+SPGameInteraction.h */,

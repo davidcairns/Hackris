@@ -10,7 +10,7 @@
 #import "SPHackrisGameController+SPGameInteraction.h"
 #import "SPHackrisGameController+SPGameBoardAccess.h"
 #import "SPHackrisGameAction.h"
-#import "SPBlockSize.h"
+#import "SPHackrisBlockSize.h"
 
 #define DC_DRAW_BACKGROUND_GRID 1
 

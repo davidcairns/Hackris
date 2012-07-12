@@ -1,5 +1,5 @@
 //
-//  SPBlockSize.h
+//  SPHackrisBlockSize.h
 //  Hackris
 //
 //  Created by David Cairns on 5/31/12.

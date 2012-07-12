@@ -9,7 +9,7 @@
 #import "SPHackrisGamePlayer.h"
 #import "SPHackrisGameController+SPGameInteraction.h"
 #import "SPHackrisGamePiece.h"
-#import "SPBlockSize.h"
+#import "SPHackrisBlockSize.h"
 
 @implementation SPHackrisGamePlayer
 
